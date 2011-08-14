@@ -1,0 +1,19 @@
+% Copyright 2009 by Jérôme Pouiller
+%
+% This file may be distributed and/or modified under term of the Creative
+% Common Licence
+\documentclass[a4paper, landscape]{article}
+
+\usepackage{pgfpages}
+\pgfpagesuselayout{4 on 1}[border shrink=5mm]
+
+% Pour mettre deux pages sur une
+\usepackage{pdfpages}
+
+\begin{document}
+\includepdf[pages=-]{main-print.pdf}
+% , templatesize={128mm}{96mm}
+%\includepdf[pages=-, delta=3 3, nup=2x2, landscape]{main-print.pdf}
+%\includepdf[pages=-, delta=0 2, nup=1x2]{main-print.pdf}
+%\includepdf[pages={198-231}, delta=0 2, nup=1x2]{main-present.pdf}
+\end{document}

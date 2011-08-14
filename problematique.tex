@@ -1,0 +1,180 @@
+\part{Problèmatique}
+
+\begin{frame}{Qu'est-ce que le temps réel ?}
+  Deux exemples :
+  \begin{itemize} 
+  \item Un  système de navigation calculant le  meilleur parcours d'un
+    navire.
+  \item Un système de navigation  calculant la position d'un navire en
+    mouvement.
+  \end{itemize}     
+  \begin{itemize}
+  \item  Dans le  premier cas  le  temps nécessaire  à l'obtention  du
+    calcul est accessoire.
+  \item Dans le deuxième cas, si  le calcul est trop long, la position
+    est erronée.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Le système temps réel et son environnement}
+  \textbf{Système}  :  ensemble d'"activités"  correspondant  à un  ou
+  plusieurs traitements effectués en séquence ou en concurrence et qui
+  communiquent  éventuellement entre eux.\\[3mm]
+
+  Un système temps réel interagit avec son environnement
+  \begin{itemize}
+  \item Capteurs : signaux et mesure de signaux
+  \item Unité de traitement
+  \item Actionneurs : actions sur l'environnement à des moment précis
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Une définition informelle}
+  \textbf{Système  temps réel  }  : un  système  dont le  comportement
+  dépend,  non seulement  de l'exactitude  des  traitements effectués,
+  mais également
+  du temps où les résultats de ces traitements sont produits.\\[3mm]
+
+  En d'autres  termes, un  retard est considéré  comme une  erreur qui
+  peut entrainer de graves  conséquences.  
+
+  \note{Un système temps réel n'est  pas forcement rapide (il est meme
+    souvent plutot sous optimal dans le cas moyen)}
+\end{frame}
+
+\begin{frame}{Echéances et systèmes temps réel}
+  On distingue différents types d'échéances
+  \begin{itemize}
+  \item  \textbf{Echéance dure}  :  un retard  provoque une  exception
+    (traitement d'erreur) (exemple:  carte son)
+  \item \textbf{Echéance molle  ou lâche} : un retard  ne provoque pas
+    d'exception (exemple: IHM)
+  \end{itemize}
+
+  On distingue par conséquent différents types de systèmes temps réels
+  \begin{itemize}
+  \item \textbf{Temps  réel dur} :  les échéances ne doivent  en aucun
+    cas  être  dépassées 
+  \item \textbf{Temps réel lâche  ou mou} : le dépassement occasionnel
+    des échéances ne met pas  le système en péril
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Criticité}
+  En plus de la tolérance à l'erreur, nous devons prendre en compte la
+  criticité de l'erreur:
+  \begin{itemize} 
+  \item Téléphone portable
+  \item Carte son professionnelle
+  \item Système de commande d'un robot industriel
+  \item Système de commande d'un avion de ligne
+  \end{itemize} 
+\end{frame}
+
+% \begin{frame}{Approche centralisée}
+%   Un processeur traite l'inforation issue de capteurs et envoie le résultat vers
+%   les actionneurs\\[1cm]
+%   
+%   \begin{center}
+%     \includegraphics[width = 12cm]{centralise.eps}
+%   \end{center}
+% \end{frame}
+% 
+% \begin{frame}{Approche multi-systèmes}
+%   Une système contrôlé et un système contrôleur interagissant avec des capteurs et
+%   des contrôleurs\\[3mm]
+%   
+%   \begin{center}
+%     \includegraphics[width = 8cm]{multisysteme.eps}
+%   \end{center}
+% \end{frame}
+% 
+% 
+% \begin{frame}{Cadencement temporel}
+%   \begin{itemize}
+%   \item selon une mesure du temps (système piloté par le temps -
+%     \textsl{time-driven system})
+%   \item selon des événements (système piloté par les événements -
+%     \textsl{event-driven system})
+%   \item réponse en temps limité : système réactif
+%   \end{itemize}
+% \end{frame}
+
+
+\begin{frame}{Prévisibilité, déterminisme, fiabilité}
+
+  Systèmes temps réels : prévus pour le pire cas.\\[3mm]
+
+  \textbf{Prévisibilité} : Pouvoir déterminer à l'avance si un système
+  va pouvoir  respecter ses contraintes  temporelles. Connaissance des
+  paramètres liés  aux calculs.\\[3mm]
+
+  \textbf{Déterminisme}   :   Enlever   toute   incertitude   sur   le
+  comportement  des  tâches  individuelles  et sur  leur  comportement
+  lorsqu'elles sont mises ensemble.
+  \begin{itemize}
+  \item variation des durées d'exécution des tâches
+  \item durée des E/S, temps de réaction
+  \item réaction aux interruptions, etc.
+  \end{itemize}
+
+  \textbf{Fiabilité} : comportement et tolérance aux fautes.
+\end{frame} 
+
+\begin{frame}{Autour du temps réel}
+  Par conséquent, le temps réel possède plusieurs facettes:
+  \begin{itemize} 
+  \item Ingénierie informatique: Algorithmique, développement
+  \item  Ingérierie   électromécanique:  Maitrise  de  l'environnement
+    physique
+  \item Processus: Maitrise de la qualité du produit, garantie sur les
+    bugs
+  \item Administrative: Certification
+  \end{itemize} 
+  \textbf{Exemple} : Un airbag est un système temps réel très dur avec
+  une échéance de temps très faible. La puissance du système n'est pas
+  dans sa  conception, mais dans  sa garantie de qualité.   C'est très
+  facile  de faire  un  airbag,  c'est beaucoup  plus  complexe de  le
+  garantir.
+\end{frame}
+
+
+\begin{frame}{Exemple - Combiné GSM}
+  Le système doit combiner :
+  \begin{itemize}
+  \item Couche physique : émission, réception, activation du vocodeur,
+    mesures du niveau de réception, etc.
+  \item  Procédures  logicielles  :  communication avec  les  base  de
+    données  du  système  pour  les  mises  à  jour  de  localisation,
+    transmission  des résultats  de mesure  de qualité,  scrutation de
+    messages d'appel, etc.
+  \end{itemize}
+
+  Les  contraintes de temps  : 577  $\mu$s de  parole emis  puis reçus
+  toutes les  4,6 ms.\\[3mm]
+
+  Les  contraintes de  mobilité  :  emettre plus  tôt  si la  distance
+  augmente,  plus tard si elle diminue.\\[3mm]
+
+  Le  système  doit  être  assez  réactif pour  que  l'utilisateur  ne
+  s'appercoive de rien.
+
+\end{frame}
+
+
+% \begin{frame}{Limite des systèmes classiques}
+%   Les systèmes classiques s'appuient sur un système d'exploitation en général
+%   mal adaptés au temps réel.
+%   \begin{itemize}
+%   \item Politique d'ordonnancement visant à équilibrer équitablement
+%     le temps alloué à chaque tâche
+%   \item mécanismes d'accès aux ressources partagées et de
+%     synchronisation comportent des incertitudes temporelles
+%   \item gestion des interruptions non optimisées
+%   \item la gestion de la mémoire virtuelle, des caches engendrent
+%     des fluctuations temporelles
+%   \item la gestion des temporisateurs qui servent à la manipulation
+%     du temps pas assez fin
+%   \end{itemize}
+% \end{frame}
+
