@@ -8,19 +8,6 @@
 
 \input{style}
   
-\tikzstyle{main}     = [node distance=1cm, transform shape, inner sep=0pt, outer sep=0pt, rounded corners=2mm, text centered, minimum height=0.9cm]
-\tikzstyle{cred}     = [fill=red!20!white,     draw=red!50!black,     rounded corners=2mm]
-\tikzstyle{cblue}    = [fill=blue!20!white,    draw=blue!50!black,    rounded corners=2mm]
-\tikzstyle{cgreen}   = [fill=green!20!white,   draw=green!50!black,   rounded corners=2mm]
-\tikzstyle{corange}  = [fill=orange!20!white,  draw=orange!50!black,  rounded corners=2mm]
-\tikzstyle{cyellow}  = [fill=yellow!20!white,  draw=yellow!50!black,  rounded corners=2mm]
-\tikzstyle{ccyan}    = [fill=cyan!20!white,    draw=cyan!50!black,    rounded corners=2mm]
-\tikzstyle{cbrown}   = [fill=brown!20!white,   draw=brown!50!black,   rounded corners=2mm]
-\tikzstyle{cpurple}  = [fill=purple!20!white,  draw=purple!50!black,  rounded corners=2mm]
-\tikzstyle{size1}=[main, minimum width=1.9cm, text width=1.8cm]
-\tikzstyle{size2}=[main, minimum width=3.9cm, text width=3.8cm]
-\tikzstyle{size3}=[main, minimum width=5.9cm, text width=5.8cm]
-\tikzstyle{size4}=[main, minimum width=7.9cm, text width=7.8cm]
                       
 % Apparait sur chaque slide:
 \logo{\pgfimage[height=5mm]{logo}}
@@ -52,7 +39,8 @@
   \begin{frame}{Sommaire}
     \begin{itemize} 
     \item Problèmatique
-    \item Du monotâche au multitâche
+    \item Le monotâche
+    \item Le multitâches
     \item L'ordonnanement
     \item Le partage de ressources
     \item Problèmatiques des OS temps réels
@@ -65,6 +53,10 @@
   \input{problematique}
   \begin{frame}{Sommaire}
     \tableofcontents[part=2]
+  \end{frame}
+  \input{monotache}
+  \begin{frame}{Sommaire}
+    \tableofcontents[part=3]
   \end{frame}
   \input{multitaches}
   \begin{frame}{Sommaire}

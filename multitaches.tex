@@ -1,332 +1,17 @@
-% fg/bg, intertuptions, etc... désactivation des interruption. 
+%                                                                                                               
+% This document is available under the Creative Commons Attribution-ShareAlike
+% License; additional terms may apply. See
+%   * http://creativecommons.org/licenses/by-sa/3.0/
+%   * http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+% Created: 2011-08-14 17:43:38+02:00
+% Main authors:
+%     - Jérôme Pouiller <jezz@sysmic.org>
+%
 
 \part{Le multitâches}
 
-\section{Fonctionnement monotâches}
-
-\begin{frame}{Quelques définitions}
-  \begin{itemize}
-  \item \textbf{Temps de réponse} : temps entre un évènement et la fin
-    du traitement de l'évènement.
-  \end{itemize} 
-\end{frame}
-
-\subsection{Par scrutation des évènements}
-\begin{frame}[fragile]{Scrutation des évènements}
-  \begin{itemize} 
-  \item Aussi appellé \emph{polling}
-  \item Boucle infinie 
-  \item On teste des valeurs des entrées à chaque tour de boucle
-  \end{itemize} 
-  \begin{lstlisting} 
-#define sensor1 *((char *) 0x1234)
-#define sensor2 *((char *) 0xABCD)
-
-int main() {
-  while (1) {
-    if (sensor1)
-      action1();
-    if (sensor2)
-      action2();
-  }
-}
-  \end{lstlisting} 
-\end{frame}
-
-\begin{frame}{Scrutation}
-  \begin{itemize} 
-  \item Temps de réponse au  évènements en pire cas facile à calculer:
-    Pire temps pour parcourir la boucle
-  \item Utilisation du CPU sous optimal. Beaucoup de temps est utilisé
-    pour lire la valeur des  entrée. Ceci est particulièrement vrai si
-    les évènements sont peu fréquents
-  \item Si certains évènements entrainent des temps de traitement long
-    ou si il y a beaucoup  d'entrées à scruter, le temps de réponse en
-    pire cas peut rapidement devenir très grand
-  \end{itemize} 
-\end{frame} 
-
-\subsection{Gestion d'interruptions synchrones} 
-
-\begin{frame}{Interruptions synchrones}
-  \begin{itemize} 
-  \item Appellé aussi Background/Foreground
-  \item Gestion des évènements dans les interruptions
-  \end{itemize} 
-  \begin{center}
-    \pgfimage[width=6cm]{model_bgfg.png}
-  \end{center}
-\end{frame}
-
-\begin{frame}[fragile]{Interruptions synchrones}
-  Concrètement:
-  \begin{lstlisting}
-#define sensor1 *((char *) 0x1234)
-
-void interrupt() {
-  action1();
-}
-
-int main() {
-  enable_interrupt(interrupt, 0x1);
-  while(1) {
-// Optionnal background computing 
-  }
-}
-  \end{lstlisting} 
-\end{frame}
-
-\begin{frame}{Interruptions synchrones}
-  \begin{itemize} 
-  \item Temps de réponse au évènements plutôt bon
-  \item Temps de réponse assez simple à calculer. Somme de 
-    \begin{itemize}
-    \item Temps de traitement de l'évenement
-    \item Temps de traitement des évènemnts de priorité supérieures
-    \item Temps du changement de contexte (plus ou moins constant)
-    \item Pire interval de temps ou les interruptions sont désactivée 
-    \end{itemize} 
-  \item[$\rightarrow$] Dans un système simple, ça peut se calculer à la louche
-  \end{itemize} 
-\end{frame} 
-
-\begin{frame}{Qu'est-ce qu'une interruption?}
-  Il existe trois type d'interruptions:
-  \begin{itemize} 
-  \item Les interrruption matérielles:
-    \begin{itemize} 
-    \item IRQ (aussi appellé Interruption externe). Asynchrone. Exemples: clavier, horloge, bus, DMA, second processeur, etc...
-    \item Exception.  Asynchrone ou Synchrone.  Exemples: Division par
-      zéro,   Erreur   arithmétique,   Erreur  d'instruction,   Erreur
-      d'alignement, Erreur de page, Breakpoint matériel, Double faute,
-      etc...
-      \note{Une overflow  arithmétique ne produit  pas d'exception, il
-        lève le flags ``retenue''}
-      \note{Un  breakpoint  logiciel change  une  instruction par  une
-        interruption  logicielle. Un  break point  software  n'est pas
-        possible en ROM alors que le breakpoint hardware oui}
-    \end{itemize} 
-  \item Logicielle. Déclenché par une instruction. Synchrone.
-  \end{itemize}
-\end{frame} 
-
-\begin{frame}{Fonctionnement d'une interruption}
-  Quand une  interruption est levée:
-  \begin{itemize} 
-  \item le CPU sauve en  partie ou en totalité le contexte d'execution
-    (principalement le pointeur d'instruction) sur la pile
-  \item Le CPU passe en mode superviseur (nous y reviendrons)
-  \item il recherche dans  l'IVT (Interrupt Vector Table aussi appellé
-    IDT,  Interrupt  Description  Table) l'ISR  (Interruption  Service
-    Routine) associée
-  \item Le CPU place le pointeur d'instruction sur l'ISR
-  \item  L'ISR traitement  l'évènement (fin  de traitement  d'une E/S,
-    etc...)
-  \item L'ISR acquite la  réception de l'interruption indiquant qu'une
-    nouvelle  donnée peut-être  traitée.
-  \item L'ISR restore le (un) contexte
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Fonctionnement d'une interruption} 
-  \begin{center}
-    \pgfimage[width=10cm]{interuption-1.png}
-  \end{center}
-\end{frame}  
-
-\begin{frame}{Fonctionnement d'un PIC}
-  Le PIC (Programmable Interrupt Controller) est un composant matériel
-  permettant  la gestion  des  IRQ.  Il peut-être  intégré  au CPU  ou
-  externe (ou à cheval entre les deux...). Il permet en particulier:
-  \begin{itemize}
-  \item Activer ou de désactiver des IRQ
-  \item De masquer temporairement une IRQ
-  \item De mettre en queue une interruption temporairement masquée
-  \item De controller la priorité des interruptions
-  \end{itemize} 
-  Il arrive fréquement  qu'un PIC soit multiplexé sur  une seule ligne
-  d'IRQ. Dans  ce cas, le premier  étage d'ISR lit un  registre du PIC
-  pour connaitre  le numéro de l'IRQ.   (Cas notoire du  8259A sur les
-  architecture x86)
-
-  \note {Il existe aussi des APIC (Advanced PIC). Sur PC notament}
-\end{frame} 
-
-\begin{frame}{Exemple}
-  Exemple classique d'intégration d'un PIC avec multiplexage sur un IRQ:
-  \begin{center}
-    \pgfimage[width=10cm]{interuption-3.png}
-  \end{center}
-\end{frame} 
-
-\begin{frame}{Exemple}
-  \begin{enumerate}
-  \item Le périphérique \emph{Timer} lève sa ligne d'IRQ
-  \item Le PIC recoit l'interruption et lève une IRQ du processeur
-  \item  Le processeur  complète  l'instruction courante  et sauve  le
-    registre d'instruction (PC) et le registre d'état (PSW)
-  \item La tâche courante devient interrompue
-  \item Le premier étage d'ISR est appellé
-  \item  Le  gestionnaire d'interruption  complète  la sauvegarde  des
-    registres
-  \item   Le  gestionnaire  d'interruption   demande  au   PIC  quelle
-    interruption à  été appellée et il  lit dans l'IVT  quelle ISR est
-    associée
-  \end{enumerate}
-\end{frame}
-
-\begin{frame}{Exemple}
-  \begin{enumerate}
-  \item Le  gestionnaire d'interruption se branche  sur l'ISR associée
-    (ici, ISR1)
-  \item L'IRQ du processeur est  acquitée. Les autre IRQ peuvent ainsi
-    être levées
-  \item L'ISR1 lit lit la  valeur provenant du \emph{Timer} et acquite
-    l'interruption  du \emph{Timer}. Ce  périphérique peut  de nouveau
-    lever des IRQ.
-  \item Les registres généraux sont restaurés
-  \item Le contexte d'éxecution est restauré
-  \item Le registre PC est restauré
-  \end{enumerate}
-\end{frame} 
-
-\begin{frame}{Exemple}
-  Exemple de différence d'approche entre la gestion par scrutation et 
-  la gestion par interruption:\\
-
-  Prennons  l'acquisition  de   donnée  à  partir  d'un  convertisseur
-  analogique/numérique asynchrone
-  \begin{itemize}
-  \item  Dans  le  cas  du  traitement  par  scrutation,  nous  allons
-    periodiquement voir  si un résultat est arrivé.  Beaucoup de temps
-    est  consommé  pour  rien   et  lorsque  le  résultat  arrive,  le
-    traitement du résultats sera retardé
-  \item  Une interruption  est  levée quand  une  nouvelle donnée  est
-    disponible. Le processeur peut alors la traiter.
-  \end{itemize}
-\end{frame} 
-
-\begin{frame}{Latence des interruptions}
-  \begin{itemize} 
-  \item Un périphérique  en doit pas regénérer d'IRQ  si la précédante
-    n'est pas acquitée
-  \item  Vu les que  les interruptions  sont souvent  multiplexée, les
-    sont souvent  désactivées lors de la première  phase de traitement
-    des interruptions
-  \item Il est parfois nécessaire de désactiver les interruptions 
-  \item  Le partage  de l'information  entre les  interruptions  et le
-    reste   du   programme  nécessite   parfois   de  désactiver   les
-    interruptions (Nous y reviendrons)
-  \end{itemize} 
-  Les conséquences:
-  \begin{itemize} 
-  \item Augmente le temps de réponse
-  \item  Risque   de  perdre  des  interruption  (Dans   ce  cas,  une
-    interruption \emph{overrun} est (devrait être) déclenchée)
-  \end{itemize} 
-\end{frame} 
-
-\begin{frame}{Precautions avec les interruption}
-  \begin{itemize} 
-  \item Acquiter l'interruption le plus tot possible
-  \item Rester le moins de temps possible dans dans une interruption
-  \item Accèder à un minimum de données pour eviter d'avoir à partager
-    des données avec le background
-  \item Transferer un maximum de traitement hors de l'interruption
-  \item[$\rightarrow$] Gestion des interruption asynchrone
-  \end{itemize} 
-\end{frame} 
-
-\subsection{Gestion d'interruptions asynchrones} 
-
-\begin{frame}[fragile]{Interruptions asynchrones}
-  \begin{itemize} 
-  \item Interruption séparée en deux parties: \emph{top half} et \emph{bottom half}
-  \item On délègue le maximum de traitement au \emph{bottom half}
-  \item Permet de décharger les interruptions
-  \end{itemize}
-  \begin{lstlisting} 
-#define sensor1 *((char *) 0x1234)
-
-int gotit = 0;
-void interrupt() {
-    gotit++;
-}
-
-int main() {
-  enable_interrupt(interrupt, 0x1);
-  while(1) {
-     if (gotit) {
-       gotit--;
-       action1();
-     }
-// Optionnal background computing 
-  }
-}
-  \end{lstlisting} 
-  \note{Il y a un bug à cause du partage de gotit, mais on en parlera plus tard}
-\end{frame} 
-
-\begin{frame}[fragile]{Partage d'information avec une interruption}
-  \note{Je suis embêté. Est-ce que je triate ca ici moi?}
-  \begin{lstlisting} 
-int data = 0;
-void isr() {
-  data++;
-  *PTR_DEVICE_ACK = 1;
-}
-
-void main() {
-  for (;;) {
-    if (data) {
-      printf("Interrupt\n");
-      data--;
-    }
-// Optionnal background computing 
-  }
-}
-  \end{lstlisting} 
-\end{frame} 
-
-\begin{frame}{Partage de l'information}
-  Partage d'information avec des interruptions:
-  \begin{itemize} 
-  \item  operation atomique
-  \item  buffer ciculaires et queue
-  \item  désactivation des interruptions
-  \end{itemize} 
-  \begin{itemize} 
-  \item Utilisation de structures de partage de données sans mutex: buffer circulaire et queue
-  \item Les sections critiques  doivent être faites en désactivant les
-    interruption (attention à la lattence induite, cf slide précédant)
-  \end{itemize} 
-\end{frame} 
-
-\begin{frame}{Cas des interruption en milieu multi coeur}
-  \begin{itemize} 
-  \item On ne désactive que les interruption locale
-  \item Une interruption peut se produire sur un autre coeur
-  \item Nécessité d'utiliser un mécanisme supplémentaire d'exclusion
-  \item \emph{Spin lock} suvent utilisé pour ce cas.
-  \item  Pas  beaucoup  d'autres  choix.  Par  conséquent  les  sections
-    critiques dans les interruptions doivent être très limitées
-  \end{itemize} 
-\end{frame} 
-
-\begin{frame}{Problèmes de la gestion des interruption asynchrone}
-  Nous n'avons pas résolu notre problème récurent:
-  \begin{itemize} 
-  \item  Le partage  de l'information  entre les  interruptions  et la
-    boucle principale entraine des latences
-  \end{itemize} 
-  On retrouve certains problèmes que l'on avait avec la scrutation:
-  \begin{itemize} 
-  \item Ne permet pas de prioriser les traitement dans la boucle principale
-  \item Interaction entre les évènements complexe
-  \end{itemize} 
-\end{frame} 
-
-\subsection{Le temps partagé}
+\section{Le temps partagé}
 
 \begin{frame}{Concurence}
   Des tâches concurente sont  des tâches éxécutée séquentiellement sur
@@ -382,19 +67,22 @@ void main() {
 \end{frame} 
 
 \begin{frame}{Multitâche non-préemptif}
-
   Le changement de contexte  peut-être volontaire par les tâches. Dans
   ce   cas,  la   tâcha   ayant  terminé   son  traitement   appellera
   explicitement   la  fonction   \emph{schedule}   qui  effectura   la
   changement  de   contexte.  le  système  est   dit  non-péemptif  ou
   multitache collaboratif.
+\end{frame}
 
-
+\begin{frame}{Multitâche non-préemptif}
   Ce type  de système implique une  latence difficilement quantifiable
   entre un évènement et sont traitement:
   \begin{center}
     \pgfimage[width=10cm]{preemptive-no.png}
   \end{center}
+\end{frame}
+
+\begin{frame}{Multitâche non-préemptif}
   \begin{enumerate} 
   \item  Une tâche  non prioritaire  est en  cours d'éxecution  et est
     interrupue par un évènement (une IRQ)
@@ -416,6 +104,9 @@ void main() {
   \begin{center}
     \pgfimage[width=10cm]{preemptive-yes.png}
   \end{center}
+\end{frame}
+
+\begin{frame}{Multitâche préemptif}
   \begin{enumerate} 
   \item  Une tâche  non prioritaire  est en  cours d'éxecution  et est
     interrupue par un évènement (une IRQ)
@@ -459,7 +150,7 @@ puis une  période à  \emph{task2} et ainsi  de suite.  Ce comportement
 s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
 \end{frame} 
 
-\subsection{Pagination de la mémoire}
+\section{Pagination de la mémoire}
 
 \begin{frame}{La MMU}
   Le temps partagé  permet de simuler que chaque tâche  est la seule à
@@ -534,7 +225,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \end{itemize} 
 \end{frame} 
 
-\subsection{Optimisation possible grace à la MMU}
+\section{Optimisation possible grace à la MMU}
 
 \begin{frame}{La MMU - gestion des exceptions}
   Le MMU permet à l'OS de mieux utiliser la mémoire:
@@ -660,7 +351,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \item   Chaque  \emph{syscall}   est   associé  à   un  numéro   (cf
     \texttt{sys/syscall.h}                   \texttt{asm/unistd\_32.h},
     \emph{syscalls(2)})
-  \end{itemize}\end{itemize} 
+  \end{itemize}
 
 \end{frame}
 
