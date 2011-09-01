@@ -29,6 +29,17 @@
 
 \section{Problématique des OS RT} %(45min)
 
+\begin{frame}{Limites des système classiques}
+  Les systèmes classiques s'appuient sur un système d'exploitation en général mal adapté pour le temps réel:
+  \begin{itemize}
+  \item Politique d'ordonnancement visant à équiliber équitablement le temps alloué à chaque tâche
+  \item Mécanismes d'accès aux ressources partagées et de synchronisation comportent des incertitudes temporelles
+  \item Gestion des interruptions non-optimisées
+  \item La gestion de la mémoire virtuelle, des caches engendrent des fluctuation temporelles
+  \item La gestion des temporisateurs qui servent à la manipulation des temps pas assez fin
+  \end{itemize} 
+\end{frame}
+
 \begin{frame}{Contexte}
   Garantie qu'une action est éxecutée en moins d'un temps donné.
 

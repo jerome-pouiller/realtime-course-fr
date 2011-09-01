@@ -14,30 +14,24 @@
 \section{Le temps partagé}
 
 \begin{frame}{Concurence}
-  Des tâches concurente sont  des tâches éxécutée séquentiellement sur
-  un seul processeur en entrelacant l'éxécution de chaque tâches.
+  \begin{itemize}
+  \item   Des    tâches   concurente   sont    des   tâches   éxécutée
+    séquentiellement sur un seul processeur en entrelacant l'éxécution
+    de chaque tâches
+  \item  Pour les tâches,  le temps  partagé est  transparent.  Chaque
+    tâche à l'impression d'avoir le CPU pour elle-seule
+  \item  On  trouvera aussi  les  terme  de  \emph{multitâches} ou  de
+    \emph{temps partagé}
+  \end{itemize}
+\end{frame} 
 
-  La programmation concurente N'EST  PAS de la programmation parallèle
+\begin{frame}{Concurence}
+   La programmation concurente N'EST  PAS de la programmation parallèle
   (même les système multicoeur sont souvent concurent et parallèle):
   \begin{center}
     \pgfimage[width=10cm]{concurentVsParallel.png}
   \end{center}
-
-  Pour les tâches,  le temps partagé est transparent.  Chaque tâche à
-  l'impression d'avoir le CPU pour elle-seule.
-
-  On trouvera aussi les terme de multitâche ou de \emph{temps partagé}.
-\end{frame} 
-
-\begin{frame}{Taches concurentes}
-  Pour les  systèmes plus complexe ou pour  facilité la réutilisation,
-  un   système   multitâche   est   plus   approprié   qu'un   système
-  \emph{Foreground/Background}.
-  \begin{itemize} 
-  \item Permet de prioriser les traitements
-  \item Facilite la gestion des évènements
-  \end{itemize} 
-\end{frame} 
+\end{frame}
 
 \begin{frame}{Concurence}
   Migration d'un système avec gestion asynchrone des interruption vers
@@ -45,11 +39,64 @@
   \begin{center}
     \pgfimage[width=10cm]{model_multitask.png}
   \end{center}
-\note{Parler des différentes états des tâches ici}
 \end{frame} 
+
+\begin{frame}{Taches concurentes}
+  Pour les  systèmes plus complexe ou pour  facilité la réutilisation,
+  un   système   multitâche   est   plus   approprié   qu'un   système
+  \emph{Foreground/Background}.
+  \begin{itemize} 
+  \item Facilite la gestion des évènements
+  \item Permet de prioriser les traitements
+  \end{itemize} 
+  \note{Parler  des différentes  états des  tâches ici.  Il  manque un
+    slide avec du code.}
+\end{frame} 
+
+\begin{frame}{Etats des tâches}
+  \begin{center}
+    \begin{tikzpicture}[scale=2]
+      \node (Wa)  at (2,1) {Waiting};
+      \node (In)  at (0,0) {};
+      \node (Re)  at (1,0) {Ready};
+      \node (Ru)  at (2,0) {Running};
+      \node (Out) at (3,0) {};
+      \node (Int) at (2,-1) {Interrupt};
+      \draw[->] (Re)  -- (Ru);
+      \draw[->] (Ru)  -- (Wa);
+      \draw[->] (Ru)  -- (Int);
+      \draw[->] (Int) -- (Ru);
+      \draw[->] (Wa)  -- (Re);
+      \draw[->] (Ru)  -- (Out);
+      \draw[->] (In)  -- (Re);
+    \end{tikzpicture}
+  \end{center}
+\end{frame} 
+
+\begin{frame}[fragile]{Programmation multitâche}
+\begin{lstlisting}
+#include <unistd.h>
+
+int main() {
+  int r;
+
+  r = fork();
+  if (r < 0) {
+     // Error
+  } else if (r > 0) {
+    // Parent
+  } else /* r == 0 */ {
+    // Child
+  }
+}
+\end{lstlisting} 
+\end{frame} 
+
+\subsection{Changement de contexte}
 
 \begin{frame}{Le changement de contexte}
   Chaque tâche possède une pile en mémoire. Une liste globale contient:
+  \note{Faire un schema}
   \begin{itemize} 
   \item les état de toute les tâches
   \item l'emplacement de la pile en mémoire
@@ -78,7 +125,7 @@
   Ce type  de système implique une  latence difficilement quantifiable
   entre un évènement et sont traitement:
   \begin{center}
-    \pgfimage[width=10cm]{preemptive-no.png}
+    \pgfimage[width=7cm]{preemptive-no.png}
   \end{center}
 \end{frame}
 
@@ -138,16 +185,18 @@ task1() {
 task2() {
   for(;;) ;
 }
-\end{lstlisting} 
-Dans ce cas, si aucune interruption ne se produit, la premiere tâche à
-avoir pris la main ne la  rendra jamais. Afin de reprendre la main, on
-utilise une  interruption d'horloge.  Celle-ci garanti que  le système
-pourra  périodiquement reordonnacer les  tâche. La  periode l'horologe
-utilisé est appelle quantum de temps ou HZ dans le cas de Linux.
+  \end{lstlisting} 
 
-Dans ce cas-ci, l'ordonnanceur  devra donner un période à \emph{task1}
-puis une  période à  \emph{task2} et ainsi  de suite.  Ce comportement
-s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
+  Dans ce cas, si aucune interruption ne se produit, la premiere tâche
+  à avoir pris la main ne la rendra jamais. Afin de reprendre la main,
+  on  utilise une  interruption  d'horloge.  Celle-ci  garanti que  le
+  système  pourra périodiquement  reordonnacer les  tâche.  La periode
+  l'horologe utilisé est appelle quantum de temps ou HZ dans le cas de
+  Linux.
+
+  Dans   ce  cas-ci,   l'ordonnanceur  devra   donner  un   période  à
+  \emph{task1} puis une période à  \emph{task2} et ainsi de suite.  Ce
+  comportement s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
 \end{frame} 
 
 \section{Pagination de la mémoire}
@@ -174,7 +223,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \item  On parle d'addresses physiques et virtuelles
   \item Lorsque le MMU est  actif (normalement, tout le temps), toutes
     les addresses du code assembleur sont des addresse virtuelles
-  \item  Il est  posisble de  configurer le  MMU avec  une instruction
+  \item  Il est  possible de  configurer le  MMU avec  une instruction
     spéciale et  en lui  donnant un pointeur  sur un tableau  (dans la
     pratique,  il s'agit  plutot d'un  arbre) associant  les addresses
     physique et les addresse virtuelle
@@ -188,7 +237,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
     \item  Superviseur
     \end{itemize} 
   \item  Seul  le  mode  superviseur  (l'OS) permet  de  modifier  les
-    association de la MMU
+    associations de la MMU
   \end{itemize}
   \note{Nous verrons  par la suite comment passer  du mode superviseur
     au mode utilisateur et vice versa}
@@ -245,7 +294,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \end{itemize} 
 \end{frame}
 
-\begin{frame}{ Gestion de la mémoire}
+\begin{frame}{Gestion de la mémoire}
   Retarder l'association:
   \begin{itemize}
   \item Une tâche demande une allocation
@@ -262,7 +311,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{ Gestion de la mémoire}
+\begin{frame}{Gestion de la mémoire}
   Utilisation de la Swap:
   \begin{itemize}
   \item Lorsque le système n'a plus assez de mémoire
@@ -279,7 +328,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{ Gestion de la mémoire}
+\begin{frame}{Gestion de la mémoire}
   Gestion des droits sur les pages
   \begin{itemize}
   \item    Il    est     possible    d'affecter    des    droits    en
@@ -294,7 +343,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
     \end{itemize} 
 \end{frame}
 
-\begin{frame}{ Gestion de la mémoire}
+\begin{frame}{Gestion de la mémoire}
   Simplification des accès au IO
   \begin{itemize} 
   \item La tâche demande de mapper un fichier en mémoire
@@ -317,7 +366,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{ Gestion de la mémoire}
+\begin{frame}{Gestion de la mémoire}
   Sécurisation des accès aux periphériques
   \begin{itemize}
   \item Lorsque  ls registres des périfériques sont  mappé en mémoire,
@@ -327,7 +376,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \item Un système utilisant  très fortement cette méthode est appellé
     micro-kernel
   \item La méthode est peu utilisée sous Linux
-  \item cf \emph{ioperm(2)}
+  \item cf. \emph{ioperm(2)}
   \end{itemize}
 \end{frame}
 
@@ -337,7 +386,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   Comment passer en mode superviseur?
   \begin{itemize} 
   \item Lorsqu'une interruption/exception est déclenchée
-  \item Cela nous permet de gérer tous les cas précédants
+  \item Cela nous permet de faire fonctionner les optimisations précédentes
   \end{itemize} 
 
   Comment appeller une fonction du système?
@@ -370,7 +419,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   optimiser les \emph{syscall}
 \end{frame}
 
-\begin{frame}{ Gestion de la mémoire}
+\begin{frame}{Threads}
   Thread versus Processus
   \begin{itemize}
   \item On  appelle les tâche  ayant des contexte  mémoires différents
@@ -390,6 +439,31 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \end{itemize}
   \note{Attention au latence lors de l'allocation, et du swap}
 \end{frame} 
+
+% \begin{frame}{Programmation multitâche, avec des processus}
+% \begin{lstlisting}
+% // Tache initiale
+% int main() {
+
+% }
+% \end{lstlisting} 
+% \end{frame} 
+
+% \begin{frame}{Programmation multitâche, avec des threads}
+% \begin{lstlisting}
+% void *task(void *arg) {
+%   int val = (int) arg;
+%   // Computing
+% }
+
+% // Tache initiale
+% int main() {
+%   int arg = 42
+%   pthread_create(&id, NULL, task, (void *) arg)
+% }
+% \end{lstlisting} 
+% \end{frame} 
+
 
 % \begin{frame}{Résumé sur le multiptâche. Commandes ps et pmap, et /proc}
 % Memoire
@@ -559,7 +633,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
 
 % \end{frame} 
 
-\begin{frame}{multitâche, MMU et Temps réel} 
+\begin{frame}{Multitâche, MMU et Temps réel} 
   \begin{itemize}
   \item Le multitâche permet une meilleure gestion de la concurence
   \item MMU à de multiple avantages (sécurité, optimisation)
@@ -575,6 +649,7 @@ s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
     mémoire)
   \item  Il ne  faut pas  oublié d'allouer  uen pile  suffisante avant
     d'appeller \texttt{mlock\_all}
+    \note{Ajouter du code à ce sujet} 
   \item Néanmoins, cela ne change pas que l'allocation dynamique ne se
     fait pas en temps constant
   \end{itemize} 

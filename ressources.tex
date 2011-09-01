@@ -19,26 +19,32 @@
 
 \begin{frame}{Contraintes de précédence (1)} 
   \begin{itemize}
-  \item ici, seulement précédence simple: si Ti est périodique de période Pi, alors Tj l'est aussi et Pj 
+  \item ici,  seulement précédence simple: si $i$  est périodique de
+    période $T_i$, alors $j$ l'est aussi et $T_j$
   \item principe de l'établissement de l'ordonnancement :
     \begin{itemize} 
-    \item transformer l'ensemble des tâches dépendantes en un ensemble de tâches \textbf{indépendantes} que l'on ordonnancera par un algorithme classique
-    \item par des modifications des paramètres des tâches : si $T_i \leftarrow T_j$ alors la règle de transformation doit respecter:
+    \item transformer l'ensemble des tâches dépendantes en un ensemble
+      de  tâches \textbf{indépendantes} que  l'on ordonnancera  par un
+      algorithme classique
+    \item par des modifications des  paramètres des tâches : si $i →
+      j$ alors la règle de transformation doit respecter:
       \begin{itemize} 
-      \item $r_j \le r_i$
-      \item $Prio_i < Prio_j$
+      \item $r_j ≤ r_i$
+      \item $P_i < P_j$
       \end{itemize} 
-    \item validation de l'ordonnançabilité selon des critères utilisés pour des tâches indépendantes
+    \item  validation  de   l'ordonnancabilité  selon  des  critères
+      utilisés pour des tâches indépendantes
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Contraintes de précédence (2)} 
-  Contraintes de précédence et Rate Monotonic:
-  la transformation s'opère hors ligne sur la date de réveil et sur les délais critiques
+  Contraintes  de  précédence  et  Rate Monotonic:  la  transformation
+  s'opère hors ligne sur la date de réveil et sur les délais critiques
   \begin{itemize} 
-  \item $r^*_i = Max{r_i, r^*_j}$ pour tous les $j$ tels que $Tj →  Ti$
-  \item si $T_i  → T_j$ alors $Prio_i > Prio_j$ dans  le respect de la
+  \item $r^*_i = \max\{r_i, r^*_j\}$ pour tous les $j$ tels que $j →
+    i$
+  \item si $i  → j$ alors $P_i > P_j$ dans  le respect de la
     règle d'affectation des priorités par Rate Monotonic
   \end{itemize}
 \end{frame} 
@@ -47,9 +53,11 @@
   Contraintes de  précédence et Deadline  Monotonic: la transformation
   s'opère hors ligne sur la date de réveil et sur les délais critiques
   \begin{itemize}
-  \item $r^*_i = Max{r_i, r^*_j}$ pour tous les j tels que $Tj \leftarrow Ti$
-  \item $D*i = Max{Di, D*j}$ pour tous les j tels que $T_j \leftarrow  T_i$
-  \item  si $T_i  \leftarrow  T_j$  alors $Prio_i  >  Prio_j$ dans  le
+  \item $r^*_i =  \max \left\{ r_i, r^*_j \right\}$  pour tous les $j$
+    tels que $j → i$
+  \item $D^*_i =  \max \left\{ D_i, D^*_j \right\}$  pour tous les $j$
+    tels que $j → i$
+  \item  si $i  →  j$  alors $P_i  >  P_j$ dans  le
     respect de la règle d'affectation des priorités par DMA
   \end{itemize} 
 \end{frame} 
@@ -60,10 +68,12 @@
     \begin{itemize}
     \item sur l'ordre d'exécution des  tâches les unes par rapport aux
       autres
-    \item généralement décrites par un graphe orienté G 
+    \item généralement décrites par un graphe orienté $G$
       \begin{itemize}
-      \item $Ja < Jb$ indique que la tâche Ja est un prédécesseur de Jb 
-      \item $Ja → Jb$ indique que la tâche Ja est un prédécesseur immédiat de Jb 
+      \item $J_a < J_b$ indique que la tâche $J_a$ est un prédécesseur
+        de $J_b$
+      \item $J_a → J_b$ indique que la tâche $J_a$ est un prédécesseur
+        immédiat de $J_b$
       \end{itemize}
     \end{itemize}
   \end{itemize}
@@ -72,20 +82,29 @@
 \begin{frame}{Contraintes de précédence (3)} 
   contraintes de précédence et EDF
   \begin{itemize}
-  \item modification des échéances de façon à ce qu'une tâche ait toujours un di inférieur à celui de ses successeurs (algorithme de Chetto et al.)
-  \item une tâche ne doit être activable que si tous ses prédécesseurs ont terminé leur exécution 
+  \item  modification des  échéances de  façon à  ce qu'une  tâche ait
+    toujours un di inférieur à celui de ses successeurs (algorithme de
+    Chetto et al.)
+  \item une tâche ne doit être activable que si tous ses prédécesseurs
+    ont terminé leur exécution
   \item modification de la date de réveil et de l'échéance
     \begin{itemize}
-    \item  r*i = Max{ri, Max{r*j + Cj}} pour tous les j tels que Tj → Ti
-    \item d*i = Min{di, Min{d*j - Cj}} pour tous les j tels que Ti → Tj
+    \item $r^*_i = \max \left\{ r_i, \max \left\{ r^*_j + C_j \right\}
+      \right\}$ pour tous les $j$ tels que $j → i$
+    \item $d^*_i = \min \left\{ d_i, \min \left\{ d^*_j - C_j \right\}
+      \right\}$ pour tous les $j$ tels que $i → j$
     \item on itère sur les prédécesseurs et successeurs immédiats
-    \item on commence les calculs par les tâches qui n'ont pas de prédécesseurs pour le calcul des r et par les tâches qui n'ont pas de successeur pour le calcul des d
+    \item  on commence les  calculs par  les tâches  qui n'ont  pas de
+      prédécesseurs pour le calcul des $r$ et par les tâches qui n'ont
+      pas de successeur pour le calcul des $d$
     \end{itemize}
   \end{itemize}
+  \note{Ajouter des exemples, etc...}
 \end{frame}
 
 \section{Problèmatique des accès concurents}
 
+\note{Il faut replacer tout ca au niveau de la présentation des interruptions}
 \subsection{Protection des structures de données}
 
 \begin{frame}[fragile]{Exemple de partage de données}
@@ -210,23 +229,20 @@ void send(int data) {
 \end{frame} 
 
 \begin{frame}{Partage de ressources critiques} 
+  Une ressource critique ne peut :
   \begin{itemize}
-  \item Une ressource critique ne peut :
+  \item être utilisée simultanément par plusieurs tâches
+  \item être réquisitionnée par une autre tâche
+  \end{itemize}
+  Notion de section critique :
+  \begin{itemize}
+  \item  séquence  d'instructions pendant  lesquelles  on utilise  une
+    ressource critique \note{hein?}
+  \item sans  problème dans le cas d'un  ordonnancement non préemptif,
+    mais  c'est rarement  le cas  dans un  environnement temps  réel ⇒
+    évaluation du temps de réponse très difficile, sinon impossible
     \begin{itemize}
-    \item être utilisée simultanément par plusieurs tâches 
-    \item être réquisitionnée par une autre tâche 
-    \end{itemize}
-  \item Notion de section critique :
-    \begin{itemize}
-    \item  séquence d'instructions pendant  lesquelles on  utilise une
-      ressource critique
-      \note{hein?}
-    \item sans problème dans le cas d'un ordonnancement non préemptif,
-      mais c'est  rarement le cas  dans un environnement temps  réel ⇒
-      évaluation du temps de réponse très difficile, sinon impossible
-      \begin{itemize}
-      \item abondante littérature ! 
-      \end{itemize}
+    \item abondante littérature ! 
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -275,6 +291,7 @@ void unlock(mutex_t *m) {
 
 \subsection{Partage de ressource entre interruptions}
 \begin{frame}{ressource et interruptions}
+\note{A réécrire, trop dense}
 \note{Pour l'instant, on passe}
 Une interruption s'execute dans le contexte de la tâche courante.
 Par conséquent, l'utilisation d'un mutex dans une interruption pourrait entrainer un double lock. 
@@ -285,6 +302,7 @@ Ceci entraine de la latence dans les interruptions
 
 \subsection{Partage de ressource dans le cadre d'un multicoeur}
 \begin{frame}{Dans un multicoeur}
+\note{A réécrire, trop dense}
 Dans le cas d'un multicoeur, on ne désactive que les interruptions ``locale'' (sur le CPU courant).
 Les interruptions peuvent donc s'ecuter sur les autres CPU.
 Il faut tout de même protèger la ressource. 
@@ -331,8 +349,8 @@ lock(m1);
         \fill[cred]   (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 4;
         \pattern[pattern=north east lines] (1, -1.5) rectangle +(7, 1);
         \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
-        \draw[cgreen] (0 + 0.5, -1) circle (3pt);
-        \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
+        \pb{0}{-1}{cgreen};
+        \pb{2}{-2.5}{cred};
       \end{tikzpicture}
     \end{column}
   \end{columns}
@@ -379,8 +397,8 @@ lock();
         \timeline{10}{-3.5}{-1.0/A, -2.5/B}
          \fill[cgreen] (0,-1.5)  \hi 2 \lo 3 \hi 4 \lo 1;
          \fill[cred]   (0,-3.0)  \lo 2 \hi 3 \lo 4 \lo 1;
-         \draw[cgreen] (0 + 0.5, -1) circle (3pt);
-         \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
+         \pb{0}{-1}{cgreen};
+         \pb{2}{-2.5}{cred};
      \end{tikzpicture}
       $$TR_B = 3$$
     \end{center}
@@ -394,8 +412,8 @@ lock();
         \fill[cred]   (0,-3.0)  \lo 2 \hi 1 \lo 3 \hi 2 \lo 1 \lo 1;
         \pattern[pattern=north east lines] (1, -1.5) rectangle +(5, 1);
         \pattern[pattern=north east lines] (6, -3.0) rectangle +(1, 1);
-        \draw[cgreen] (0 + 0.5, -1) circle (3pt);
-        \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
+        \pb{0}{-1}{cgreen};
+        \pb{2}{-2.5}{cred};
       \end{tikzpicture}
       $$TR_B = 6$$
     \end{center}
@@ -431,9 +449,9 @@ lock();
            \fill[cgreen] (0,-1.5)  \hi 2 \lo 4 \lo 9 \hi 2;
            \fill[cred]   (0,-3.0)  \lo 2 \hi 4 \lo 9 \lo 2;
            \fill[cblue]  (0,-4.5)  \lo 2 \lo 4 \hi 9 \lo 2;
-           \draw[cgreen] (0 + 0.5, -1) circle (3pt);
-           \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
-           \draw[cblue]  (2 + 0.5, -4) circle (3pt);
+           \pb{0}{-1}{cgreen};
+           \pb{2}{-2.5}{cred};
+           \pb{2}{-4}{cblue};
          \end{tikzpicture}
     \end{center}
   \item   Cas avec un mutex:
@@ -447,9 +465,9 @@ lock();
         \fill[cblue]  (0,-4.5)  \lo 2 \lo 1 \hi 9 \lo 1 \lo 3 \lo 1;
         \pattern[pattern=north east lines] (1, -1.5) rectangle +(12, 1);
         \pattern[pattern=north east lines] (13, -3.0) rectangle +(1, 1);
-        \draw[cgreen] (0 + 0.5, -1) circle (3pt);
-        \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
-        \draw[cblue]  (2 + 0.5, -4) circle (3pt);
+        \pb{0}{-1}{cgreen};
+        \pb{2}{-2.5}{cred};
+        \pb{2}{-4}{cblue};
       \end{tikzpicture}
     \end{center}
     La tâche  $C$ s'éxecute alors  qu'elle a une priorité  inféreure à
@@ -494,9 +512,9 @@ lock();
       \fill[cblue]  (0,-4.5)  \lo 2 \lo 1 \lo 1 \lo 3 \hi 9 \lo 1;
       \pattern[pattern=north east lines] (1, -1.5) rectangle +(3, 1);
       \pattern[pattern=north east lines] (4, -3.0) rectangle +(1, 1);
-      \draw[cgreen] (0 + 0.5, -1) circle (3pt);
-      \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
-      \draw[cblue]  (2 + 0.5, -4) circle (3pt);
+      \pb{0}{-1}{cgreen};
+      \pb{2}{-2.5}{cred};
+      \pb{2}{-4}{cblue};
     \end{tikzpicture}
   \end{center}
 \end{frame} 
@@ -518,9 +536,9 @@ lock();
       \pattern[pattern=north east lines] (7, -3.0) rectangle +(3, 1);
       \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
       \pattern[pattern=north west lines] (8, -1.5) rectangle +(1, 1);
-      \draw[cgreen] (5 + 0.5, -1) circle (3pt);
-      \draw[cred]   (2 + 0.5, -2.5) circle (3pt);
-      \draw[cblue]  (0 + 0.5, -4) circle (3pt);
+      \pb{5}{-1}{cgreen};
+      \pb{2}{-2.5}{cred};
+      \pb{0}{-4}{cblue};
     \end{tikzpicture}
   \end{center}
 \end{frame} 
@@ -535,7 +553,7 @@ lock();
     très complexe
   \item Condition nécessaire d'ordonnançabilité par un algorithme Rate
     Monotonic :
-    $$\forall i \in tasks \left( \sum_{j = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} \le i(2^{1/i} - 1)$$
+    $$\forall i \in tasks \left( \sum_{k = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i(2^{1/i} - 1)$$
   \end{itemize}
 \end{frame}
 
@@ -571,14 +589,14 @@ lock();
   \item  On attribue  à chaque  sémaphore $S_k$  une  priorité plafond
     $C(S_k)$ égale à la plus haute priorité des tâches susceptibles de
     l'acquérir
-  \item Soit $T_i$  la tâche prête de plus  haute priorité : l'accès
-    au processeur est donné à $T_i$
+  \item Soit $i$  la tâche prête de plus  haute priorité : l'accès
+    au processeur est donné à $i$
   \item soit $S*$ le sémaphore dont la priorité plafond $C(S*)$ est la
     plus grande parmi  tous les sémaphores déjà acquis  par des tâches
-    autres que $T_i$
+    autres que $i$
   \item Pour entrer dans une  section critique gardée par un sémaphore
-    $S_k$, $T_i$ doit avoir une  priorité supérieure à $C(S*)$. Si $Pi
-    \le C(S*)$, l'accès  à $S_k$ est interdit et on  dit que $T_i$ est
+    $S_k$, $i$ doit avoir une  priorité supérieure à $C(S*)$. Si $P_i
+    ≤ C(S*)$,  l'accès à $S_k$  est interdit et  on dit que  $i$ est
     bloquée sur $S*$ par la tâche qui possède $S*$
   \end{itemize} 
 \end{frame} 
@@ -672,13 +690,9 @@ lock();
       \fill[cgreen]  (0,-1.5) \lo 2 \lo 2 \hi 1 \lo 2 \hi 2 \lo 1 \hi 2 \lo 1 \lo 1;
       \fill[cred]    (0,-3.0) \lo 2 \hi 2 \lo 1 \lo 2 \lo 2 \hi 1 \lo 2 \hi 1 \lo 1;
       \fill[cblue]   (0,-4.5) \hi 2 \lo 2 \lo 1 \hi 2 \lo 2 \lo 1 \lo 2 \lo 1 \hi 1;
-      % Adapt to your needs:
-      \foreach \i in {0}
-        \draw[cgreen]  (\i + 0.5, -1.0) circle (3pt);
-      \foreach \i in {2}
-        \draw[cred]    (\i + 0.5, -2.5) circle (3pt);
-      \foreach \i in {4}
-        \draw[cblue]   (\i + 0.5, -4.0) circle (3pt);
+      \pb{0}{-1}{cgreen};
+      \pb{2}{-2.5}{cred};
+      \pb{4}{-4}{cblue};
       \pattern[pattern=north east lines] (1, -4.5) rectangle +(1, 1);
       \pattern[pattern=north east lines] (7, -1.5) rectangle +(1, 1);
       \pattern[pattern=north east lines] (4, -4.5) rectangle +(2, 1);
@@ -698,13 +712,9 @@ lock();
       \fill[cgreen]  (0,-1.5) \lo 2 \lo 1 \lo 1 \hi 1 \lo 1 \hi 4 \lo 3 \lo 1;
       \fill[cred]    (0,-3.0) \lo 2 \hi 1 \lo 1 \lo 1 \lo 1 \lo 4 \hi 3 \lo 1;
       \fill[cblue]   (0,-4.5) \hi 2 \lo 1 \hi 1 \lo 1 \hi 1 \lo 4 \lo 3 \hi 1;
-      % Adapt to your needs:
-      \foreach \i in {0}
-        \draw[cgreen]  (\i + 0.5, -1.0) circle (3pt);
-      \foreach \i in {2}
-        \draw[cred]    (\i + 0.5, -2.5) circle (3pt);
-      \foreach \i in {4}
-        \draw[cblue]   (\i + 0.5, -4.0) circle (3pt);
+      \pb{0}{-1}{cgreen};
+      \pb{2}{-2.5}{cred};
+      \pb{4}{-4}{cblue};
       \pattern[pattern=north east lines] (1, -4.5) rectangle +(1, 1);
       \pattern[pattern=north east lines] (3, -4.5) rectangle +(1, 1);
       \pattern[pattern=north east lines] (5, -4.5) rectangle +(1, 1);
@@ -718,16 +728,16 @@ lock();
 \begin{frame}{Priorité plafonnée} 
   On a  le même critère d'ordonnançabilité  par RM que dans  le cas du
   protocole d'héritage de priorité:
-  $$\forall i \in tasks \left( \sum_{j = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} \le i(2^{1/i} - 1)$$
-  mais le  calcul du  temps de blocage  maximum de chaque  tâche est
-  plus simple :
+  $$\forall i \in tasks \left( \sum_{k = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i(2^{1/i} - 1)$$
+  mais le calcul du temps de  blocage maximum de chaque tâche est plus
+  simple :
     \begin{itemize}
     \item on  peut démontrer  que le temps  de bloquage  maximum $B_i$
-      d'une tâche  $T_i$ est la durée  de la plus  longue des sections
+      d'une tâche  $i$ est la durée  de la plus  longue des sections
       critiques ($\max D_{j,k}$) parmi celles appartenant à des tâches
       de  priorité inférieure à  $P_i$ et  gardées par  des sémaphores
       dont la priorité plafond est supérieure ou égale à $P_i$
-      $$B_i = \max D_{j,k} | P_j < P_i, C(S_k) \ge P_i$$ 
+      $$B_i = \max D_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$ 
     \end{itemize}
 \end{frame}
 
@@ -735,7 +745,9 @@ lock();
 
 \subsection{Désactivation de l'ordonnanceur}
 
-\note{Pour chacun des mécanisme, donner les fonction dasn plusieurs API, faire un exemple ou mieux, donner le code: Posix, Java, Xenomai, ucosII, vxWorks}
+\note{Pour chacun  des mécanisme,  donner les fonction  dasn plusieurs
+  API,  faire  un exemple  ou  mieux,  donner  le code:  Posix,  Java,
+  Xenomai, ucosII, vxWorks}
 
 \subsection{Sémaphore}
 
@@ -896,29 +908,37 @@ void broadcast()  {
 
 
 \subsection{Buffer circulaire}
-\begin{frame}[fragile]{Buffer circulaire}
-\begin{lstlisting} 
-init
-  w = r = 0;
 
-write(c);
-  if ((w + 1) % size == r )
+\begin{frame}[fragile]{Buffer circulaire}
+\note{A déplacer dans les interruptions, faire une réference ici}
+\begin{lstlisting}
+char buf[SIZE]; 
+void init() {
+  w = r = 0;
+}
+
+void write(char c) {
+  if ((w + 1) % SIZE == r )
     ; //buffer is full
   buf[w] = c;
-  w = (w + 1) % size;
+  w = (w + 1) % SIZE;
+}
 
-read():
+void read() {
   if (w == r)
     ; //buffer is empty
   ret = buf[r];
-  r = (r + 1) % size;
+  r = (r + 1) % SIZE;
+}
 \end{lstlisting} 
 
 Pas de mutex: peut-être utilisé dans une interruption
 \end{frame} 
 
 \subsection{Queue}
+
 \begin{frame}{Queue}
+\note{A déplacer dans les interruptions, faire une réference ici}
 Idem  Buffer circulaire,  mais avec  un tableau  de structure.  Il est
 aussi possible de faire des Queue d'objets de tailles différente. Dans
 ce cas,  faire très attention à l'allocation  des objets. L'allocation
@@ -927,14 +947,17 @@ dynamique est rarement une opération très bornée dans le temps.
 
 \subsection{Spin Lock}
 \begin{frame}[fragile]{Spin Lock}
+\note{A déplacer dans les interruptions, faire une réference ici}
 Attente active
 \begin{lstlisting} 
-lock(m)
+void lock(int m) {
   while(atomic_test_and_set(m))
      ;
+}
 
-unlock(m)
+void unlock(int m) {
   m = 0;
+}
 \end{lstlisting} 
 
 Uniquement dans le  cas d'architecture multicoeur. Cas ou  le spin est
@@ -961,9 +984,7 @@ Souvent utilisé dans les base de données
 Type d'algorithme non bloquant
 Particulièrement utile pour les manipulation de listes:
 
-
 \begin{lstlisting} 
-
 struct rcu_t {
    struct a_t a;
    int count_usage = 0;

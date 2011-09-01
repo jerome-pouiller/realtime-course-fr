@@ -15,29 +15,6 @@
 
 \part{Ordonnancement}
 
-% \tikzstyle{cgreen}  = [fill=green!20!white,  draw=green!50!black,  line width=1pt, rounded corners=1pt]
-% \tikzstyle{cred}    = [fill=red!20!white,    draw=red!50!black,    line width=1pt, rounded corners=1pt]
-% \tikzstyle{cblue}   = [fill=blue!20!white,   draw=blue!50!black,   line width=1pt, rounded corners=1pt]
-% \tikzstyle{cpurple} = [fill=purple!20!white, draw=purple!50!black, line width=1pt, rounded corners=1pt]
-% \tikzstyle{corange} = [fill=orange!20!white, draw=orange!50!black, line width=1pt, rounded corners=1pt]
-% \tikzstyle{ccyan}   = [fill=cyan!20!white,   draw=cyan!50!black,   line width=1pt, rounded corners=1pt]
-% \tikzstyle{cbrown}  = [fill=brown!20!white,  draw=brown!50!black,  line width=1pt, rounded corners=1pt]
-% \tikzstyle{cyellow} = [fill=yellow!20!white, draw=yellow!50!black, line width=1pt, rounded corners=1pt]
-
-% \def\lo#1{ -- ++(#1,0) }
-% \def\hi#1{ |- ++(#1,1) -- ++(0,-1) }
-% \def\hop#1#2{\lo{#1}\hi{#2}}
-
-% \def\timeline#1#2#3{
-%   \draw[xstep=1,ystep=1.5,gray,very thin] (0,0) grid (#1.5,#2);
-%   \draw[->, line width=1pt] (0,#2) -- (#1.5,#2) coordinate (x axis);
-%   \draw[line width=1pt] (0,#2) -- (0,0) coordinate (x axis);
-%   \foreach \x in {0,1,...,#1}
-%     \draw (\x.5,#2) node[anchor=north] {\tiny\x};
-%   \foreach \y/\ytext in {#3}
-%     \draw (0,\y) node[anchor=east] {\ytext};
-% }
-
 \section{Quelques notions théoriques}
 
 \subsection{Modèle de tâches}
@@ -47,21 +24,57 @@
   \begin{itemize}
     \item Date d'arrivée de la tâche dans le système : $S_i$
     \item Première date d'activation : $R_i$
-    \item Période d'activation : $P_i$
+    \item Période d'activation : $T_i$
     \item Délai critique (délai maximum acceptable pour son exécution)
       : $D_i$
     \item Capacité (Temps CPU nécessaire à l'éxecution de la tâche) :
       $C_i$
-    \item Date de réveil sur une période $k$ : $r_{ik}$
-    \item Echéance sur une période $k$ : $d_{ik} = r_{ik} + D_i$
   \end{itemize}
   \note{Ajouter le schéma de Touchard}
 \end{frame}
 
 \begin{frame}{Modèle de tâches}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.75]
+   %\draw[xstep=1,ystep=0.1,gray,very thin] (0,0) grid (#1.5,#2);
+   \draw[->, line width=1pt] (0,-2) -- (14.5,-2) coordinate (x axis);
+   \draw[line width=1pt] (0,-2) -- (0,0) coordinate (x axis);
+   \foreach \x in {0,1,...,14}
+      \draw (\x.5,-2) node[anchor=north] {\tiny\x};
+   \fill[cgreen]  (0,-1.5) \lo 3 \hi 2 \lo 3 \hi 1 \lo 1 \hi 1 \lo 2;
+   \foreach \i in {2, 8}
+      \pb{\i}{-1}{cgreen};
+   \foreach \i in {7, 13}
+      \pe{\i}{-1}{cgreen};
+   \draw (-0.5,-1) node {$i$};
+   \draw (1,-2.1) -- (1,1.2) node[above] {$S_i$};
+   \draw (2,-2.1) -- (2,1.2) node[above] {$R_i$};
+   \draw (7,-2.1) -- (7,0.6);
+   \draw (8,-2.1) -- (8,1.2);
+   \draw (13,-2.1) -- (13,0.6);
+   \draw (14,-2.1) -- (14,1.2);
+   \draw[<->] (2,-.3) -- (5,-.3) node[above=-0.1,pos=0.5] {$TR_{1i}$};
+   \draw[<->] (2,0.3) -- (7,0.3) node[above=-0.1,pos=0.5] {$D_i$};
+   \draw[<->] (2,0.9) -- (8,0.9) node[above=-0.1,pos=0.5] {$T_i$}; 
+   \draw[<->] (8,-0.3) -- (12,-0.3) node[above=-0.1,pos=0.5] {$TR_{2i}$};
+   \draw[<->] (8,0.3) -- (13,0.3) node[above=-0.1,pos=0.5] {$D_i$};
+   \draw[<->] (8,0.9) -- (14,0.9) node[above=-0.1,pos=0.5] {$T_i$};
+ \end{tikzpicture}
+
+    \begin{tabular}{ccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Echéance \\
+      \hline
+      $i$ & 2 & 6 & 2 & 5\\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Modèle de tâches}
   Par conséquent: 
   \begin{itemize} 
-  \item Tâche périodique définie par : $(S_i, R_i, P_i ,D_i, C_i)$
+  \item Tâche périodique définie par : $(S_i, R_i, T_i ,D_i, C_i)$
   \item Tâche apériodique définie par : $(S_i, R_i, 0, D_i, C_i)$
   \end{itemize} 
   Très souvent:
@@ -70,38 +83,44 @@
     \item Les tâches périodique sont actives dès le début de
       l'ordonnancement : $R_i = 0$
     \item L'échéance des  tâches périodique est leur période  : $D_i =
-      P_i$
+      T_i$
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Modèle de tâches}
   Paramètres statiques:
   \begin{itemize} 
-  \item Facteur d'utilisation du processeur: $U_i =  C_i /P_i$
+  \item Date de réveil sur une période $k$ : $r_{ik}$
+  \item Echéance sur une période $k$ : $d_{ik} = r_{ik} + D_i$
+  \item Facteur d'utilisation du processeur: $U_i =  C_i / T_i$
   \item Facteur de charge du processeur : $CH_i = C_i / D_i $ ($CH_i =
     U_i$ si échéance sur périodes)
   \item Laxité de la tâche (retard maximum acceptable pour l'exécution
     de la tâche) : $L_i = D_i - C_i$
   \end{itemize} 
+\end{frame}
+
+\begin{frame}{Modèle de tâches}
   Paramètres dynamiques (dépendant de l'ordonnancement):
   \begin{itemize} 
+  \item Priorité (peut être dynamique ou statique) : $P_i$
   \item Date du début de l'exécution d'une période $k$ : $s_{ik}$
   \item Date de la fin de l'exécution d'une période $k$ :$e_{ik}$
   \item Temps de réponse de la tâche $TR_{ik} = e_{ik} - r_{ik}$ (Nous
     verrons comment le calculer)
     % = C_i + \sum_{prio(j) > prio(i)} \left\lceil\frac{TR_i}{P_j}\right\rceil C_j$
-  \item Durée d'exécution résiduelle à la date $t$ : $C_i(t)$ ($0 \leq
-    C_i(t) \leq C_i$)
+  \item Durée d'exécution résiduelle à la date $t$ : $C_i(t)$ ($0 ≤
+    C_i(t) ≤ C_i$)
   \item Délai  critique résiduel à la  date $t$ :  $D_i(t) = d_{ik}-t$
-    ($0 \leq D_i(t) \leq D_i$)
+    ($0 ≤ D_i(t) ≤ D_i$)
   \item Charge résiduelle à la date $t$ :
-    $CH_i(t) = C_i(t) / D_i(t)$  ($0 \leq CH_i(t) \leq CH_i$)
+    $CH_i(t) = C_i(t) / D_i(t)$  ($0 ≤ CH_i(t) ≤ CH_i$)
   \item Laxité  résiduelle à la  date $t$ :
-    $L_i(t) = D_i(t) - C_i(t)$  ($0  \leq L_i(t) \leq  L_i$)
+    $L_i(t) = D_i(t) - C_i(t)$  ($0  ≤ L_i(t) ≤  L_i$)
   \item  Laxité conditionnelle  à la  date $t$  (somme sur  les tâches
     déclenchées à la  date $t$ et qui sont devant $i$  du point de vue
-    de  l'ordonnancement)  :  $LC_i(t)  =  D_i(t)  -  \sum_{prio(j)  >
-      prio(i)} C_j(t)$ ($0 \leq LC_i(t) \leq L_i$)
+    de  l'ordonnancement)  :  $LC_i(t)  =  D_i(t)  -  \sum_{P_j  >
+      P_i} C_j(t)$ ($0 ≤ LC_i(t) ≤ L_i$)
   \end{itemize} 
 \end{frame}
 
@@ -116,7 +135,7 @@
   \item Taux de charge du processeur : $CH = \sum_i CH_i$
   \item Intervalle d'étude :  intervalle de temps minimum pour prouver
     l'ordonnançabilité  d'une  configuration. Dans  le  cas de  tâches
-    périodiques: $ppcm_i(P_i)$
+    périodiques: $ppcm_i(T_i)$
   \item Laxité du  processeur : intervalle de temps  pendant lequel le
     processeur peut rester inactif  tout en respectant les échéances :
     $ LP(t) = \min(LC_i(t))$
@@ -126,17 +145,22 @@
 \begin{frame}{Etats des tâches}
   \begin{center}
     \begin{tikzpicture}[scale=2]
-      \node (Wa)  at (2,1) {Waiting};
-      \node (In)  at (0,0) {};
-      \node (Re)  at (1,0) {Ready};
-      \node (Ru)  at (2,0) {Running};
-      \node (Out) at (3,0) {};
-      \node (Int) at (2,-1) {Interrupt};
+      \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+        text width=5em, text centered, rounded corners, minimum height=4em]
+      \tikzstyle{io} = [ellipse, draw, fill=red!20]
+
+      \node[block]             (Ru)  {Running};
+      \node[block,above=of Ru] (Wa)  {Waiting};
+      \node[io,   right=of Ru] (Out) {};
+      \node[block,below=of Ru] (Int) {Interrupted};
+      \node[block,left=of Ru]  (Re)  {Ready};
+      \node[io,   left=of Re]  (In)  {};
       \draw[->] (Re)  -- (Ru);
       \draw[->] (Ru)  -- (Wa);
       \draw[->] (Ru)  -- (Int);
       \draw[->] (Int) -- (Ru);
-      \draw[->] (Wa)  -- (Re);
+      \draw[->] (Int.north west) -- (Re.south);
+      \draw[->] (Wa.south west)  -- (Re.north);
       \draw[->] (Ru)  -- (Out);
       \draw[->] (In)  -- (Re);
     \end{tikzpicture}
@@ -157,10 +181,10 @@
   \item Dans le cas contraire, c'est une condition suffisante
   \end{itemize}
 
-  Si $D_i = P_i$, le test de terminaison est :
-  $$\forall i, 1 \leq i \leq n \;\;\;\min_{0 \leq t \leq D_i}
+  Si $D_i = T_i$, le test de terminaison est :
+  $$\forall i, 1 ≤ i ≤ n \;\;\;\min_{0 ≤ t ≤ D_i}
   \sum_{j=1}^i\frac{C_j}{t}
-  \left\lfloor\frac{t}{P_j}\right\rfloor \leq 1$$
+  \left\lfloor\frac{t}{T_j}\right\rfloor ≤ 1$$
 \end{frame}
 
 \subsection{Temps de réponse}
@@ -168,46 +192,54 @@
 \begin{frame}{Temps de réponse}
   Délai entre l'activation d'une tâche et sa terminaison. 
 
-  $$TR_i = C_i + \sum_{prio(j) > prio(i)} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
+  $$TR_i = C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
 
 \end{frame}
 
 \begin{frame}{Calcul du temps de réponse}
   Technique de calcul : on évalue de façon itérative
-  $$w_i^{n+1}=C_i+\sum_{prio(j) > prio(i)} \left\lceil\frac{w_i^n}{P_j}\right\rceil C_j$$
+  $$w_i^{n+1}=C_i+\sum_{P_j > P_i} \left\lceil\frac{w_i^n}{T_j}\right\rceil C_j$$
 
   \begin{itemize}
     \item On démarre avec $w_i^0 = C_i$
-    \item Echec si $w_i^n > P_i$
+    \item Echec si $w_i^n > T_i$
     \item Réussite si $w_i^{n+1} = w_i^n$
   \end{itemize}
 \end{frame} 
 
 \begin{frame}{Calcul du temps de réponse}
   \textbf{Exemple :}
-    \begin{center}
-      \begin{tabular}{ccccc}
-        \hline
-        Tâche & Arrivée & Période & Capacité & Echéance \\
-        \hline
-        A & 0 &  7 & 3 & Fin de période\\
-        B & 0 & 12 & 2 & Fin de période\\
-        C & 0 & 20 & 5 & Fin de période\\
-        \hline
-      \end{tabular}
-    \end{center}
-    \begin{itemize} 
-      \item $w_1^0 = C_1 = 3$
-      \item $w_2^0 = C_2 = 2$
-      \item $w_2^1 = 2 + 3 \left\lceil\frac{2}{7}\right\rceil = 5$
-      \item $w_2^2 = 2 + 3 \left\lceil\frac{5}{7}\right\rceil = 5$
-      \item $w_3^0 = C_3 = 5$
-      \item $w_3^1 = 5 + 3 \left\lceil\frac{5}{7}\right\rceil + 2 \left\lceil\frac{5}{12}\right\rceil = 10$
-      \item $w_3^2 = 5 + 3 \left\lceil\frac{10}{7}\right\rceil + 2 \left\lceil\frac{10}{12}\right\rceil = 13$
-      \item $w_3^3 = 5 + 3 \left\lceil\frac{13}{7}\right\rceil + 2 \left\lceil\frac{13}{12}\right\rceil = 15$
-      \item $w_3^4 = 5 + 3 \left\lceil\frac{15}{7}\right\rceil + 2 \left\lceil\frac{15}{12}\right\rceil = 18$
-      \item $w_3^5 = 5 + 3 \left\lceil\frac{18}{7}\right\rceil + 2 \left\lceil\frac{18}{12}\right\rceil = 18$
-      \end{itemize} 
+  \begin{center}
+    \begin{tabular}{cccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Echéance & Priorité \\
+      \hline
+      A & 0 &  7 & 3 & Fin de période & 1\\
+      B & 0 & 12 & 2 & Fin de période & 2\\
+      C & 0 & 20 & 5 & Fin de période & 3\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{align*}
+        w_1^0 &= C_1 = 3\\
+        w_2^0 &= C_2 = 2\\
+        w_2^1 &= 2 + 3 \left\lceil\frac{2}{7}\right\rceil = 5\\
+        w_2^2 &= 2 + 3 \left\lceil\frac{5}{7}\right\rceil = 5\\
+        w_3^0 &= C_3 = 5\\
+        w_3^1 &= 5 + 3 \left\lceil\frac{5}{7}\right\rceil + 2 \left\lceil\frac{5}{12}\right\rceil = 10\\
+      \end{align*} 
+    \end{column}
+    \begin{column}{5cm}
+      \begin{align*}
+        w_3^2 &= 5 + 3 \left\lceil\frac{10}{7}\right\rceil + 2 \left\lceil\frac{10}{12}\right\rceil = 13\\
+        w_3^3 &= 5 + 3 \left\lceil\frac{13}{7}\right\rceil + 2 \left\lceil\frac{13}{12}\right\rceil = 15\\
+        w_3^4 &= 5 + 3 \left\lceil\frac{15}{7}\right\rceil + 2 \left\lceil\frac{15}{12}\right\rceil = 18\\
+        w_3^5 &= 5 + 3 \left\lceil\frac{18}{7}\right\rceil + 2 \left\lceil\frac{18}{12}\right\rceil = 18\\
+      \end{align*} 
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \section{Algorithmes à priorité statique}
@@ -234,13 +266,13 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Round-Robin}
-TODO
-\end{frame} 
+% \begin{frame}{Round-Robin}
+% TODO
+% \end{frame} 
 
 \subsection{Rate Monotonique (RM)}
 
-\begin{frame}{Algorithme}
+\begin{frame}{Rate Monotonique}
   Ordonnancement à priorité statique où les priorité sont inversement
   proportionnelles aux périodes des tâches. 
 
@@ -250,23 +282,29 @@ TODO
   Liu et Layland ont démontré qu'un système est ordonnançable si le
   taux d'occupation du processeur $U$ vérifie la condition suffisante
   (non nécessaire) suivante :
-  $$U = \sum_i^n \frac{C_i}{T_i} \leq n \left(2^{\frac{1}{n}}-1\right)$$
 
-  \begin{center}
-    \begin{tabular}{cc}
-      \hline
-      $n$ & limite d'occupation \\
-      \hline
-      1 & 100.0\% \\
-      2 & 82.8\% \\
-      3 & 78.0\% \\
-      4 & 75.7\% \\
-      5 & 74.3\% \\
-      10 & 71.9\% \\
-      $\infty$ & 69.3\%\\
-      \hline
-    \end{tabular}
-  \end{center}
+  \begin{columns}
+    \begin{column}{5cm}
+      $$U = \sum_i^n \frac{C_i}{T_i} ≤ n \left(2^{\frac{1}{n}}-1\right)$$
+    \end{column}
+    \begin{column}{5cm}
+      \begin{center}
+        \begin{tabular}{cc}
+          \hline
+          $n$ & limite d'occupation \\
+          \hline
+          1 & 100.0\% \\
+          2 & 82.8\% \\
+          3 & 78.0\% \\
+          4 & 75.7\% \\
+          5 & 74.3\% \\
+          10 & 71.9\% \\
+          $\infty$ & 69.3\%\\
+          \hline
+        \end{tabular}
+      \end{center}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Exemple 1}
@@ -293,12 +331,18 @@ TODO
     \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi 2 \lo 1 \hi 3 \lo 1 \hi 1 \lo 1 \hi 1 \lo 1 \hi 3 \lo 1 \lo 3 \lo 1;
     \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo 2 \lo 1 \lo 3 \lo 1 \lo 1 \hi 1 \lo 1 \lo 1 \lo 3 \lo 1 \lo 3 \lo 1;
     \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo 2 \hi 1 \lo 3 \hi 1 \lo 1 \lo 1 \lo 1 \hi 1 \lo 3 \hi 1 \lo 3 \hi 1;
-    \foreach \i in {0, 20}
-      \draw[cgreen] (\i + 0.5, -1) circle (3pt);
-    \foreach \i in {0, 10, 20}
-      \draw[cred]   (\i + 0.5, -2.5) circle (3pt);
-    \foreach \i in {0, 4, ..., 20}
-      \draw[cblue]  (\i + 0.5, -4) circle (3pt);
+
+    \pb{0}{-1}{cgreen};
+    \p{20}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \p{10}{-2.5}{cred};
+    \p{20}{-2.5}{cred};
+    \pb{0}{-4}{cblue};
+    \p {4}{-4}{cblue};
+    \p {8}{-4}{cblue};
+    \p{12}{-4}{cblue};
+    \p{16}{-4}{cblue};
+    \p{20}{-4}{cblue};
     \end{tikzpicture}
     \\
     Mode non-préemptif :\\ 
@@ -308,14 +352,20 @@ TODO
       \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi{10} \lo 3 \lo 1 \lo 1 \lo 1 \lo 2 \lo 1;
       \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo{10} \lo 3 \hi 1 \lo 1 \lo 1 \lo 2 \lo 1;
       \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo{10} \hi 3 \lo 1 \lo 1 \hi 1 \lo 2 \hi 1;
-      \foreach \i in {0, 20}
-        \draw[cgreen] (\i + 0.5, -1) circle (3pt);
-      \foreach \i in {0, 10, 20}
-        \draw[cred]   (\i + 0.5, -2.5) circle (3pt);
-      \foreach \i in {0, 4, ..., 20}
-        \draw[cblue]  (\i + 0.5, -4) circle (3pt);
-      \draw[cred] (8, -4) node {!};
-      \draw[cred] (13, -4) node {!};
+
+    \pb{0}{-1}{cgreen};
+    \p{20}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \p{10}{-2.5}{cred};
+    \p{20}{-2.5}{cred};
+    \pb{0}{-4}{cblue};
+    \p {4}{-4}{cblue};
+    \p {8}{-4}{cblue};
+    \p{12}{-4}{cblue};
+    \p{16}{-4}{cblue};
+    \p{20}{-4}{cblue};
+    \draw (8, -4) node {\textcolor{red!80}{\huge{$\times$}}};
+    \draw (12, -4) node {\textcolor{red!80}{\huge{$\times$}}};
     \end{tikzpicture}
 \end{frame}
 
@@ -346,7 +396,7 @@ TODO
     \item La tâche de plus petit délai critique est la plus prioritaire
     \end{itemize}
 \item Test d'acceptabilité:
-  $$U = \sum_i^n \frac{C_i}{D_i} \leq n \left(2^{\frac{1}{n}}-1\right)$$
+  $$U = \sum_i^n \frac{C_i}{D_i} ≤ n \left(2^{\frac{1}{n}}-1\right)$$
   \item Equivalent à Rate Monotonic  dans le cas des tâches à échéance
     sur requête, meilleur dans les autres cas
   \end{itemize}
@@ -375,15 +425,23 @@ TODO
     \fill[cgreen] (0,-1.5) \lo 2 \lo 2 \hi 1 \lo 2 \hi 2 \lo 1 \lo 2 \lo 2;
     \fill[cred]   (0,-3.0) \hi 2 \lo 2 \lo 1 \hi 2 \lo 2 \lo 1 \hi 2 \lo 2;
     \fill[cblue]  (0,-4.5) \lo 2 \hi 2 \lo 1 \lo 2 \lo 2 \lo 1 \lo 2 \hi 2;
-    \foreach \i in {0}
-      \draw[cgreen] (\i + 0.5, -1)   circle (3pt);
-    \foreach \i in {0, 5, 10, 15}
-      \draw[cred]   (\i + 0.5, -2.5) circle (3pt);
-    \foreach \i in {0, 10}
-      \draw[cblue]  (\i + 0.5, -4)   circle (3pt);
-    \draw[cred] (4, -4) node {!};
-  \end{tikzpicture}
+    \pb{0}{-1}{cgreen};
+    \pe{7}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \pe{4}{-2.5}{cred};
+    \pb{5}{-2.5}{cred};
+    \pe{9}{-2.5}{cred};
+    \pb{10}{-2.5}{cred};
+    \pe{14}{-2.5}{cred};
+    \pb{0}{-4}{cblue};
+    \pe{9}{-4}{cblue};
+    \pb{10}{-4}{cblue};
 
+    \draw (7, -1) node {\textcolor{red!80}{\huge{$\times$}}};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Exemple}
   Par DM:
   $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15$$
   % BBAAABBCCXBBCC
@@ -392,12 +450,17 @@ TODO
     \fill[cgreen] (0,-1.5) \lo 2 \hi 3 \lo 2 \lo 2 \lo 1 \lo 2 \lo 2;
     \fill[cred]   (0,-3.0) \hi 2 \lo 3 \hi 2 \lo 2 \lo 1 \hi 2 \lo 2;
     \fill[cblue]  (0,-4.5) \lo 2 \lo 3 \lo 2 \hi 2 \lo 1 \lo 2 \hi 2;
-    \foreach \i in {0}
-      \draw[cgreen] (\i + 0.5, -1) circle (3pt);
-    \foreach \i in {0, 5, 10, 15}
-      \draw[cred]   (\i + 0.5, -2.5) circle (3pt);
-    \foreach \i in {0, 10}
-      \draw[cblue]  (\i + 0.5, -4) circle (3pt);
+    \pb{0}{-1}{cgreen};
+    \pe{7}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \pe{4}{-2.5}{cred};
+    \pb{5}{-2.5}{cred};
+    \pe{9}{-2.5}{cred};
+    \pb{10}{-2.5}{cred};
+    \pe{14}{-2.5}{cred};
+    \pb{0}{-4}{cblue};
+    \pe{9}{-4}{cblue};
+    \pb{10}{-4}{cblue};
   \end{tikzpicture}
 \end{frame} 
 
@@ -417,9 +480,9 @@ TODO
   \item Test d'acceptabilité:
     \begin{itemize}
     \item Condition nécessaire:
-      $$U = \sum_i^n \frac{C_i}{P_i} \leq 1$$
+      $$U = \sum_i^n \frac{C_i}{T_i} ≤ 1$$
     \item Condition suffisante:
-      $$U = \sum_i^n \frac{C_i}{D_i} \leq 1$$
+      $$U = \sum_i^n \frac{C_i}{D_i} ≤ 1$$
     \item  Dans le  cas  de tâche  à  échéance sur  requête, les  deux
       conditions sont égales
     \end{itemize}
@@ -438,7 +501,7 @@ TODO
       \hline
     \end{tabular}
   \end{center}
-    $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75 \leq 1$$
+    $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75 ≤ 1$$
     $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15 > 1$$
     % BBAAACCBBXBBCCXBBXXX
     \begin{tikzpicture}[scale=0.5]
@@ -446,16 +509,23 @@ TODO
       \fill[cgreen] (0,-1.5) \lo 2 \hi 3 \lo 2 \lo 2 \lo 1 \lo 2 \lo 2 \lo 1 \lo 2 \lo 3;
       \fill[cred]   (0,-3.0) \hi 2 \lo 3 \lo 2 \hi 2 \lo 1 \hi 2 \lo 2 \lo 1 \hi 2 \lo 3;
       \fill[cblue]  (0,-4.5) \lo 2 \lo 3 \hi 2 \lo 2 \lo 1 \lo 2 \hi 2 \lo 1 \lo 2 \lo 3;
-      \foreach \i in {0}
-        \draw[cgreen] (\i + 0.5, -1.0) circle (3pt);
-      \foreach \i in {0, 5, 10, 15}
-        \draw[cred]   (\i + 0.5, -2.5) circle (3pt);
-      \foreach \i in {0, 10}
-        \draw[cblue]  (\i + 0.5, -4.0) circle (3pt);
+    \pb{0}{-1}{cgreen};
+    \pe{7}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \pe{4}{-2.5}{cred};
+    \pb{5}{-2.5}{cred};
+    \pe{9}{-2.5}{cred};
+    \pb{10}{-2.5}{cred};
+    \pe{14}{-2.5}{cred};
+    \pb{15}{-2.5}{cred};
+    \pe{19}{-2.5}{cred};
+    \pb{0}{-4}{cblue};
+    \pe{8}{-4}{cblue};
+    \pb{10}{-4}{cblue};
     \end{tikzpicture}
 \end{frame} 
   
-\subsection{LST}
+\subsection{Least Slack Time (LST)}
 
 \begin{frame}{Least Slack Time (LST)} 
   \begin{itemize}

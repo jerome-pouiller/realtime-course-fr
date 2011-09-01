@@ -18,6 +18,8 @@
   \item \textbf{Temps de réponse} : temps entre un évènement et la fin
     du traitement de l'évènement.
   \end{itemize} 
+  \note{Nous verrons une formule plus formelle plus tard}
+  \note{Exo: Avertir l'utilisateur des qu'un fichier passer en parametre existe: 1: Par polling 2: Par fg/bg}
 \end{frame}
 
 \section{Scrutation des évènements}
@@ -46,12 +48,18 @@ int main() {
   \begin{itemize} 
   \item Temps de réponse au  évènements en pire cas facile à calculer:
     Pire temps pour parcourir la boucle
+  \item Simple à programmer lorsqu'il  y a peu de périphériques (ayant
+    des temps  de réaction  similaires). On peut  les scruter  en même
+    temps
   \item Utilisation du CPU sous optimal. Beaucoup de temps est utilisé
     pour lire la valeur des  entrée. Ceci est particulièrement vrai si
     les évènements sont peu fréquents
   \item Si certains évènements entrainent des temps de traitement long
     ou si il y a beaucoup  d'entrées à scruter, le temps de réponse en
     pire cas peut rapidement devenir très grand
+  \item Tous les évènements sont traité avec la même priorité
+  \item  Mauvaise modularité  du code.  Ajouter des  des périphériques
+    revient à repenser tout le système
   \end{itemize} 
 \end{frame} 
 
@@ -97,6 +105,9 @@ int main() {
     \end{itemize} 
   \item[$\rightarrow$] Dans  un système simple, ca peut  se calculer à
     la louche
+  \item Le  temps de réponse en pire  cas des calcul en  tâche de fond
+    est quasiement  identique au traitement  par scrutation (attention
+    tout de même à la fréquence maximum des interruptions)
   \end{itemize} 
 \end{frame} 
 
@@ -128,11 +139,11 @@ int main() {
   \item le CPU sauve en  partie ou en totalité le contexte d'execution
     (principalement le pointeur d'instruction) sur la pile
   \item Le CPU passe en mode superviseur (nous y reviendrons)
-  \item il recherche dans  l'IVT (Interrupt Vector Table aussi appellé
-    IDT,  Interrupt  Description  Table) l'ISR  (Interruption  Service
-    Routine) associée
+  \item  Le CPU  recherche dans  l'IVT (\emph{Interrupt  Vector Table}
+    aussi  appellé  IDT,  \emph{Interrupt  Description  Table})  l'ISR
+    (\emph{Interruption Service Routine}) associée
   \item Le CPU place le pointeur d'instruction sur l'ISR
-  \item  L'ISR traitement  l'évènement (fin  de traitement  d'une E/S,
+  \item  L'ISR traite  l'évènement (fin  de traitement  d'une E/S,
     etc...)
   \item L'ISR acquite la  réception de l'interruption indiquant qu'une
     nouvelle  donnée peut-être  traitée.
@@ -159,7 +170,7 @@ int main() {
   Il arrive fréquement  qu'un PIC soit multiplexé sur  une seule ligne
   d'IRQ. Dans  ce cas, le premier  étage d'ISR lit un  registre du PIC
   pour connaitre  le numéro de l'IRQ.   (Cas notoire du  8259A sur les
-  architecture x86)
+  architectures x86)
 
   \note {Il existe aussi des APIC (Advanced PIC). Sur PC notament}
 \end{frame} 
@@ -177,7 +188,7 @@ int main() {
   \item Le PIC recoit l'interruption et lève une IRQ du processeur
   \item  Le processeur  complète  l'instruction courante  et sauve  le
     registre d'instruction (PC) et le registre d'état (PSW)
-  \item La tâche courante devient interrompue
+  \item La tâche courante devient interrompue (Nous y reviendrons)
   \item Le premier étage d'ISR est appellé
   \item  Le  gestionnaire d'interruption  complète  la sauvegarde  des
     registres
@@ -202,6 +213,8 @@ int main() {
   \end{enumerate}
 \end{frame} 
 
+\subsection{Utilisation des interruptions}
+
 \begin{frame}{Exemple}
   Exemple de différence d'approche entre la gestion par scrutation et 
   la gestion par interruption:\\
@@ -220,22 +233,25 @@ int main() {
 
 \begin{frame}{Latence des interruptions}
   \begin{itemize} 
-  \item Un périphérique  en doit pas regénérer d'IRQ  si la précédante
-    n'est pas acquitée
-  \item  Vu les que  les interruptions  sont souvent  multiplexée, les
-    sont souvent  désactivées lors de la première  phase de traitement
-    des interruptions
-  \item Il est parfois nécessaire de désactiver les interruptions 
+  \item Un périphérique ne génère pas d'IRQ si la précédante n'est pas
+    acquitée (en principe)
+  \item Vu  les que les  interruptions sont souvent  multiplexées, les
+    interruptions sont  souvent désactivées lors de  la première phase
+    de traitement
+  \item  Pour des  raisons techniques,  il est  parfois  nécessaire de
+    désactiver les interruptions
   \item  Le partage  de l'information  entre les  interruptions  et le
     reste   du   programme  nécessite   parfois   de  désactiver   les
     interruptions (Nous y reviendrons)
   \end{itemize} 
   Les conséquences:
   \begin{itemize} 
-  \item Augmente le temps de réponse
+  \item Augmente les temps de réponses
+  \item Temps réponse plus difficile à calculer
   \item  Risque   de  perdre  des  interruption  (Dans   ce  cas,  une
     interruption \emph{overrun} est (devrait être) déclenchée)
   \end{itemize} 
+  \note{Reprendre ici le cours de l'université de Montréal}
 \end{frame} 
 
 \begin{frame}{Precautions avec les interruption}
@@ -257,6 +273,9 @@ int main() {
     \emph{bottom half}
   \item On délègue le maximum de traitement au \emph{bottom half}
   \item Permet de décharger les interruptions
+  \item Permet  de plus facilement prendre en  compte des intéractions
+    entre  les   évènements  (exemple,  possibilité   d'attendre  deux
+    évènements avant d'effectuer une action)
   \end{itemize}
 \end{frame}
 
@@ -283,7 +302,7 @@ int main() {
   \end{lstlisting} 
   \note{Il y a un bug à cause  du partage de gotit, mais on en parlera
     plus tard}
-  \note{Je suis embêté. Est-ce que je triate ca ici moi?}
+  \note{Je suis embêté. Est-ce que je triate ca ici moi? Oui, voir le cours de Montreal}
 \end{frame} 
 
 \begin{frame}{Partage de l'information}
@@ -324,6 +343,15 @@ int main() {
     principale
   \item Interaction entre les évènements complexe
   \end{itemize} 
+  \note{Parler du mot clef volatile} 
+  \note{Montrer ici  le code du HC08  de la Cobalt.  Commencer par une
+    description du but,  du hard: 3 ADC pour  Joystick, deux encodeur,
+    clavier matricé,  bus can, prise coaxiale, 20ms,  sytème pour deux
+    Cobalt   sur   un  même   réseau   montrer  doc/cobalt/schema   de
+    principe.pdf.   Montrer MC68HC908GZ16.h  (montrer  les registres),
+    MC68HC908GZ16.c   (montrer   volatile),   link.prm  (montrer   les
+    vecteurs),   start.c  (copie  ROM   vers  RAM),   interrupt.c  (en
+    particulier intGenlock), main.c (fonction loop)}
 \end{frame} 
 
 
