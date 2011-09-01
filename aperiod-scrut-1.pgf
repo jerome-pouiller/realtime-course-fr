@@ -1,0 +1,23 @@
+% BBAAA11XXX23BB3XXXXX
+\begin{tikzpicture}
+     \timeline{20}{-9.5}{-1.0/A, -2.5/B, -4/S, -5.5/1, -7/2, -8.5/3}
+     \fill[cgreen]  (0,-1.5) \lo 2 \lo 2 \hi 3 \lo 2 \lo 1 \lo 1 \lo 2 \lo 1 \lo 2 \lo 4;
+     \fill[cred]    (0,-3.0) \hi 2 \lo 2 \lo 3 \lo 2 \lo 1 \lo 1 \hi 2 \lo 1 \lo 2 \lo 4;
+     %\fill[cbrown]  (0,-4.5) \lo 2 \lo 3 \hi 2 \lo 2 \lo 1 \hi 2       \lo 2 \lo 1 \lo 1 \lo 2 \lo 3;
+     \fill[cbrown]  (0,-4.5) |- ++(0,+1) -- ++(2,0) -- ++(2,-1) -- ++(3,0) |- ++(1,0.5) |- ++(1,0.5) -- ++(2,-1) -- ++(3,0) |- ++(0,0.5) -- ++(1,-0.5) |- ++(0,0.5) -- ++(4,0)-- ++(1,0.5) |- ++(0,-1);
+     \fill[cpurple] (0,-6.0) \lo 2 \hi 2 \lo 3 \lo 2 \lo 1 \lo 1 \lo 2 \lo 2 \lo 4;
+     \fill[corange] (0,-7.5) \lo 2 \lo 2 \lo 3 \lo 2 \hi 1 \lo 1 \lo 2 \lo 2 \lo 4;
+     \fill[ccyan]   (0,-9.0) \lo 2 \lo 2 \lo 3 \lo 2 \lo 1 \hi 1 \lo 2 \hi 2 \lo 4;
+    \pb{0}{-1}{cgreen};
+    \p{20}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \p{10}{-2.5}{cred};
+    \p{20}{-2.5}{cred};
+%    \pb{0}{-4.0}{cbrown};
+ %   \p {5}{-4.0}{cbrown};
+  %  \p{10}{-4.0}{cbrown};
+   % \p{15}{-4.0}{cbrown};
+    \pb{2}{-5.5}{cpurple};
+    \pb{9}{-7.0}{corange};
+    \pb{10}{-8.5}{ccyan};
+\end{tikzpicture}

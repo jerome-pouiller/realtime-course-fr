@@ -1,0 +1,22 @@
+% LST
+% C D P
+% 1 7 20
+% 2 3 5
+% 3 8 10
+\begin{tikzpicture}
+     \timeline{14}{-5}{-1.0/A, -2.5/B, -4.0/C}
+     \fill[cgreen] (0,-1.5) \lo 2 \lo 2 \hi 1  \lo 2 \lo 1 \lo 2 \lo 2 \lo 1 \lo 1;
+     \fill[cred]   (0,-3.0) \hi 2 \lo 2 \lo 1  \hi 2 \lo 1 \lo 2 \hi 2 \lo 1 \lo 1;
+     \fill[cblue]  (0,-4.5) \lo 2 \hi 2 \lo 1  \lo 2 \hi 1 \lo 2 \lo 2 \hi 1 \lo 1;
+    \pb{0}{-1}{cgreen};
+    \pe{7}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \pe{3}{-2.5}{cred};
+    \pb{5}{-2.5}{cred};
+    \pe{8}{-2.5}{cred};
+    \pb{10}{-2.5}{cred};
+    \pe{13}{-2.5}{cred};
+    \pb{0}{-4}{cblue};
+    \pe{8}{-4}{cblue};
+    \pb{10}{-4}{cblue};
+\end{tikzpicture}
