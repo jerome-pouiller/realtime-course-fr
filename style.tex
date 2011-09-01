@@ -8,7 +8,6 @@
 %\documentclass[french,a4paper,10pt]{beamer}
 % Configurationde de Beamer
 \usetheme{Warsaw}
-\usecolortheme{lily}
 \usecolortheme[RGB={181,0,0}]{structure}
 % Headers et footers
 \useoutertheme[subsection=false]{smoothbars}
@@ -22,8 +21,11 @@
 %    \node[inner sep=0pt, opacity=0.2] at (0.5\paperwidth,-0.5\paperheight) {\includegraphics[height=27.2mm,width=65.1mm]{logo}};
 %  }
 %}
+\newcommand*\oldinsertshortitle{}%
+\let\oldinsertshorttitle\insertshorttitle%
+\renewcommand*\insertshorttitle{\oldinsertshorttitle\hfill\insertframenumber\,/\,\inserttotalframenumber}
 
-\usepackage{babel}            % Pour la sortie francaise
+\usepackage[french]{babel}            % Pour la sortie francaise
 %\usepackage{ucs}
 %\usepackage[utf8]{inputenc}
 \usepackage[utf8x]{inputenc}
@@ -31,11 +33,7 @@
 \usepackage{times}
 \usepackage{mathptmx}         % Font (don't forget to install latex-font-recommended)
 
-\usepackage{tikz} 
-\usepackage{tikz}
-\usepackage{pgfplots}
-\usepackage{tikz-timing}
-\usetikzlibrary{patterns}
+\input{style_tikz}
 
 \ifpdf
   \usepackage{embedfile} 
@@ -145,25 +143,4 @@
 \hypersetup{colorlinks=true,plainpages=false,urlcolor=blue}
 
 
-\tikzstyle{cgreen}  = [fill=green!20!white,  draw=green!50!black,  line width=1pt, rounded corners=1pt]
-\tikzstyle{cred}    = [fill=red!20!white,    draw=red!50!black,    line width=1pt, rounded corners=1pt]
-\tikzstyle{cblue}   = [fill=blue!20!white,   draw=blue!50!black,   line width=1pt, rounded corners=1pt]
-\tikzstyle{cpurple} = [fill=purple!20!white, draw=purple!50!black, line width=1pt, rounded corners=1pt]
-\tikzstyle{corange} = [fill=orange!20!white, draw=orange!50!black, line width=1pt, rounded corners=1pt]
-\tikzstyle{ccyan}   = [fill=cyan!20!white,   draw=cyan!50!black,   line width=1pt, rounded corners=1pt]
-\tikzstyle{cbrown}  = [fill=brown!20!white,  draw=brown!50!black,  line width=1pt, rounded corners=1pt]
-\tikzstyle{cyellow} = [fill=yellow!20!white, draw=yellow!50!black, line width=1pt, rounded corners=1pt]
 
-\def\lo#1{ -- ++(#1,0) }
-\def\hi#1{ |- ++(#1,1) -- ++(0,-1) }
-\def\hop#1#2{\lo{#1}\hi{#2}}
-
-\def\timeline#1#2#3{
-  \draw[xstep=1,ystep=1.5,gray,very thin] (0,0) grid (#1.5,#2);
-  \draw[->, line width=1pt] (0,#2) -- (#1.5,#2) coordinate (x axis);
-  \draw[line width=1pt] (0,#2) -- (0,0) coordinate (x axis);
-  \foreach \x in {0,1,...,#1}
-    \draw (\x.5,#2) node[anchor=north] {\tiny\x};
-  \foreach \y/\ytext in {#3}
-    \draw (0,\y) node[anchor=east] {\ytext};
-}

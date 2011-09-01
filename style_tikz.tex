@@ -1,0 +1,61 @@
+% This document is available under the Creative Commons Attribution-ShareAlike
+% License; additional terms may apply. See
+%   * http://creativecommons.org/licenses/by-sa/3.0/
+%   * http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+% Copyright 2010 Jérôme Pouiller <jezz@sysmic.org>
+%
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{tikz-timing}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes}
+\usetikzlibrary{snakes}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+
+\tikzstyle{cgreen}  = [fill=green!20!white,  draw=green!50!black,  line width=1pt, rounded corners=1pt]
+\tikzstyle{cred}    = [fill=red!20!white,    draw=red!50!black,    line width=1pt, rounded corners=1pt]
+\tikzstyle{cblue}   = [fill=blue!20!white,   draw=blue!50!black,   line width=1pt, rounded corners=1pt]
+\tikzstyle{cpurple} = [fill=purple!20!white, draw=purple!50!black, line width=1pt, rounded corners=1pt]
+\tikzstyle{corange} = [fill=orange!20!white, draw=orange!50!black, line width=1pt, rounded corners=1pt]
+\tikzstyle{ccyan}   = [fill=cyan!20!white,   draw=cyan!50!black,   line width=1pt, rounded corners=1pt]
+\tikzstyle{cbrown}  = [fill=brown!20!white,  draw=brown!50!black,  line width=1pt, rounded corners=1pt]
+\tikzstyle{cyellow} = [fill=yellow!20!white, draw=yellow!50!black, line width=1pt, rounded corners=1pt]
+
+\def\timeline#1#2#3{
+  \draw[xstep=1,ystep=1.5,gray,very thin] (0,0) grid (#1.5,#2);
+  \draw[->, line width=1pt] (0,#2) -- (#1.5,#2) coordinate (x axis);
+  \draw[line width=1pt] (0,#2) -- (0,0) coordinate (x axis);
+  \foreach \x in {0,1,...,#1}
+    \draw (\x.5,#2) node[anchor=north] {\tiny\x};
+  \foreach \y/\ytext in {#3}
+    \draw (0,\y) node[anchor=east] {\ytext};
+}
+
+\def\lo#1{ -- ++(#1,0) }
+\def\hi#1{ |- ++(#1,1) -- ++(0,-1) }
+\def\hop#1#2{\lo{#1}\hi{#2}}
+
+% Period End
+\def\pe#1#2#3{
+   \begin{scope}
+     \clip  (#1 - 0.2, #2 - 0.2) rectangle (#1, #2 + 0.2);
+     \draw[#3] (#1, #2) circle (3pt);
+   \end{scope}
+}
+
+% Period Begin
+\def\pb#1#2#3{
+   \begin{scope}
+     \clip  (#1 + 0.2, #2 - 0.2) rectangle (#1, #2 + 0.2);
+     \draw[#3] (#1, #2) circle (3pt);
+   \end{scope}
+}
+
+% Period Begin and End
+\def\p#1#2#3{
+   \draw[#3] (#1, #2) circle (3pt);
+}
+
