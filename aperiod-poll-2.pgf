@@ -1,5 +1,5 @@
 % BBAAA11XXX23BB3XXXXX
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.4]
      \timeline{20}{-9.5}{-1.0/A, -2.5/B, -4/S, -5.5/1, -7/2, -8.5/3}
      \fill[cgreen]  (0,-1.5) \lo 2 \hi 3 \lo 2 \lo 2 \lo 1 \lo 1 \lo 1 \lo 2 \lo 1 \lo 1 \lo 2 \lo 3;
      \fill[cred]    (0,-3.0) \hi 2 \lo 3 \lo 2 \lo 2 \lo 1 \lo 1 \lo 1 \hi 2 \lo 1 \lo 1 \lo 2 \lo 3;

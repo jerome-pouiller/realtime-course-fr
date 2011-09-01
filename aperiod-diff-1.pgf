@@ -1,0 +1,19 @@
+% BBAAA11XXX23BB3XXXXX
+\begin{tikzpicture}[scale=1]
+     \timeline{28}{-5.0}{-1.0/A, -2.5/S, -4/1}
+     \fill[cgreen]  (0,-1.5) \hi 2 \lo 5 \hi 2 \lo 5 \hi 2 \lo 5 \lo 6 \hi 2;
+     \fill[cbrown]  (0,-3.0) \lo 2 \lo 5 \lo 2 \lo 5 \lo 2 \lo 5 \hi 6 \lo 2;
+     \fill[cpurple] (0,-4.5) \lo 2 \lo 5 \lo 2 \lo 5 \lo 2 \lo 5 \hi 6 \lo 2;
+    \pb{0}{-1}{cgreen};
+    \p{7}{-1}{cgreen};
+    \p{14}{-1}{cgreen};
+    \p{21}{-1}{cgreen};
+    \p{28}{-1}{cgreen};
+    \pb{0}{-2.5}{cbrown};
+    \p {6}{-2.5}{cbrown};
+    \p{12}{-2.5}{cbrown};
+    \p{18}{-2.5}{cbrown};
+    \p{24}{-2.5}{cbrown};
+    \pb{21}{-4.0}{cpurple};
+    \draw (28, -1) node {\textcolor{red!80}{\huge{$\times$}}};
+\end{tikzpicture}

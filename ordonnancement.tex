@@ -40,7 +40,7 @@
    \draw[->, line width=1pt] (0,-2) -- (14.5,-2) coordinate (x axis);
    \draw[line width=1pt] (0,-2) -- (0,0) coordinate (x axis);
    \foreach \x in {0,1,...,14}
-      \draw (\x.5,-2) node[anchor=north] {\tiny\x};
+      \draw (\x,-2) node[anchor=north] {\tiny\x};
    \fill[cgreen]  (0,-1.5) \lo 3 \hi 2 \lo 3 \hi 1 \lo 1 \hi 1 \lo 2;
    \foreach \i in {2, 8}
       \pb{\i}{-1}{cgreen};
@@ -134,11 +134,15 @@
   \item Taux d'utilisation du processeur : $U = \sum_i U_i$
   \item Taux de charge du processeur : $CH = \sum_i CH_i$
   \item Intervalle d'étude :  intervalle de temps minimum pour prouver
-    l'ordonnançabilité  d'une  configuration. Dans  le  cas de  tâches
-    périodiques: $ppcm_i(T_i)$
+    l'ordonnançabilité  d'une  configuration
+    \begin{itemize} 
+    \item  Dans  le  cas de  tâches périodiques: $ppcm_i(T_i)$
+    \item  Dans le cas  de tâches  apériodiques: $\left[\min_i\{R_i\},
+        \max_i\{R_i + D_i\} + 2 \times ppcm_i(T_i)\right]$
+    \end{itemize} 
   \item Laxité du  processeur : intervalle de temps  pendant lequel le
     processeur peut rester inactif  tout en respectant les échéances :
-    $ LP(t) = \min(LC_i(t))$
+    $ LP(t) = \min_i\{LC_i(t)\}$
   \end{itemize} 
 \end{frame} 
 
@@ -382,6 +386,7 @@
       \end{tabular}
     \end{center}
     $$\frac{8}{16} + \frac{2}{8} + \frac{1}{4} = 1$$
+    \input{RM-2.pgf}
 \end{frame}
 
 \subsection{Deadline Monotonic}
@@ -503,6 +508,9 @@
   \end{center}
     $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75 ≤ 1$$
     $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15 > 1$$
+    Par DM:
+    \input{EDF-1.pgf}
+    Par EDF:
     % BBAAACCBBXBBCCXBBXXX
     \begin{tikzpicture}[scale=0.5]
       \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
@@ -522,6 +530,7 @@
     \pb{0}{-4}{cblue};
     \pe{8}{-4}{cblue};
     \pb{10}{-4}{cblue};
+    \pe{18}{-4}{cblue};
     \end{tikzpicture}
 \end{frame} 
   
@@ -556,18 +565,33 @@
       \hline
       Tâche & Arrivée & Période & Capacité & Echéance \\
       \hline
-      A & 0 & 20 & 4 & 12\\
-      B & 0 &  5 & 1 & 4\\
-      C & 0 & 10 & 6 & 8\\
+      A & 0 & 20 & 1 & 7\\
+      B & 0 &  5 & 2 & 3\\
+      C & 0 & 10 & 3 & 8\\
       \hline
     \end{tabular}
   \end{center}
-  Avec un quantum de temps de 1:
-  \note{Meme résultat que pour EDF. Trouver un autre exemple. Il faut une tache avec une forte capacité et une forte échéance.}
- %      3    B    2    B    3  
- % LST: CCBCCCCBAAAABCCCCCCXX
- % EDF: BCCCCCCBAAAABCCCCCCXX
- %                  
+  Par EDF:
+  \input{LST-1.pgf}
+  Par LST, en recalculant l'algorithme à chaque période:
+  \input{LST-2.pgf}
+\end{frame} 
+
+\begin{frame}{Exemple - 2}
+  \begin{center}
+    \begin{tabular}{ccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Echéance \\
+      \hline
+      A & 0 & 17 & 5 & Fin de période\\
+      B & 0 & 18 & 5 & Fin de période\\
+      \hline
+    \end{tabular}
+  \end{center}
+  Par EDF:
+  \input{LST-3.pgf}
+  Par LST, en recalculant l'algorithme à chaque période:
+  \input{LST-4.pgf}
 \end{frame} 
 
 \section{Serveurs de tâches apériodiques}
@@ -623,9 +647,10 @@
       \hline
     \end{tabular}
   \end{center}
+  \input{aperiod-bg.pgf}
   % AABB1AA1X2AABB1AA33
   % Temps de réponses:
-  % 1: 2: 3:
+  % 1: 4, 2: 5, 3: 9
 \end{frame} 
 
 \subsection{Traitement par serveur}
@@ -685,8 +710,9 @@
       S & 0 &  5 & 2 & Fin de période\\
       \hline
     \end{tabular}
-  \end{center}
+  \end{center} 
   % SSBBASSAAXSSBBXSS
+ \input{aperiod-poll-1.pgf}
 \end{frame} 
 
 \begin{frame}{Exemple}
@@ -699,17 +725,18 @@
       A & 0 & 20 & 3 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
       S & 0 &  5 & 2 & Fin de période\\
-      1 & 0 &  3 & 2 & Aucune\\
-      2 & 0 & 10 & 1 & Aucune\\
-      3 & 0 & 11 & 2 & Aucune\\
+      1 & 0 &  2 & 2 & Aucune\\
+      2 & 0 &  9 & 1 & Aucune\\
+      3 & 0 & 10 & 3 & Aucune\\
       \hline
     \end{tabular}
   \end{center}
   % SSBBA11AAX23BBX3S
+\input{aperiod-poll-2.pgf}
 \end{frame} 
 
 \begin{frame}{Exemple}
-  Idem, en libérant le temps CPU inutilisé par le serveur:
+  Idem, en utilisant les temps creux en plus:
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
@@ -718,13 +745,14 @@
       A & 0 & 20 & 3 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
       S & 0 &  5 & 2 & Fin de période\\
-      1 & 0 &  3 & 2 & Aucune\\
-      2 & 0 & 10 & 1 & Aucune\\
-      3 & 0 & 11 & 2 & Aucune\\
+      1 & 0 &  2 & 2 & Aucune\\
+      2 & 0 &  9 & 1 & Aucune\\
+      3 & 0 & 10 & 3 & Aucune\\
       \hline
     \end{tabular}
   \end{center}
   % BBAAA11XXX23BBX3XXXX
+\input{aperiod-poll-3.pgf}
 \end{frame} 
 
 \subsection{Serveur différé}
@@ -745,7 +773,25 @@
 \end{frame}
 
 \begin{frame}{Exemple}
- % Reprendre le cas du dos à dos
+  Avec ordonnancement RM:
+  \begin{center}
+    \begin{tabular}{ccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Echéance \\
+      \hline
+      A & 0 &  7 & 2 & Fin de période\\
+      S & 0 &  6 & 3 & Fin de période\\
+      1 & 21 & 0 & 6 & Aucune\\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{frame}
+\begin{frame}{Exemple}
+  % BBAA11AXXX23BBX3
+  \input{aperiod-diff-1.pgf}
+  % Changer d'exemple, il ne fait aucune différence avec le serveur par scrutation
+  % Hint: reprendre le cas d'execution dos à dos
+  \note{Le fameux cas dos à dos}
 \end{frame} 
 
 \subsection{Serveur sporadique}
@@ -778,12 +824,15 @@
       B & 0 & 10 & 2 & Fin de période\\
       S & 0 &  5 & 2 & Fin de période\\
       1 & 0 &  3 & 2 & Aucune\\
-      2 & 0 & 10 & 1 & Aucune\\
-      3 & 0 & 11 & 2 & Aucune\\
+      2 & 0 &  9 & 1 & Aucune\\
+      3 & 0 & 10 & 2 & Aucune\\
       \hline
     \end{tabular}
   \end{center}
+\end{frame}
+\begin{frame}{Exemple}
   % BBAA11AXXX23BBX3
+  \input{aperiod-scrut-1.pgf}
   % Changer d'exemple, il ne fait aucune différence avec le serveur par scrutation
   % Hint: reprendre le cas d'execution dos à dos
 \end{frame} 
