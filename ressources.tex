@@ -9,10 +9,6 @@
 %     - Jérôme Pouiller <jezz@sysmic.org>
 %
 
-% Protection des ressources, structure de donnée, ressource
-% matériel, mutex, dead lock, latente introduite, inversion de
-% priorité, priority ceilling, priority inhéritence,
-% semaphore, condition, queue, barrier, RCU,
 \part{Partage de ressources}
 
 \section{Ordonnancement avec contraintes de précédance}
@@ -607,79 +603,67 @@ lock();
       \hline
       Tâche & Arrivée & Priorité & Capacité & Ressources \\
       \hline
-      A & 5 & 1 & 4 & S0 après 1 et pendant 1, puis S1 après 3 et pendant 1\\
-      B & 2 & 2 & 3 & S2 après 1 et pendant 1 \\
-      C & 0 & 3 & 7 & S2 après 1 et pendant 5, et S1 après 2 et pendant 2 (de manière imbriquée)\\
+      A & 4 & 1 & 5 & S1 après 2 et pendant 1, puis S2 après 3 et pendant 1\\
+      B & 2 & 2 & 4 & S2 après 1 et pendant 2 \\
+      C & 2 & 3 & 2 & aucune\\
+      D & 0 & 4 & 6 & S1 après 1 et pendant 4\\
       \hline
     \end{tabular}
   \end{center}
-  \note{Est-ce que S0 est utile?}
   Les priorités plafond sont donc: 
   \begin{itemize}
-  \item $C(S_0) = P_A$ 
   \item $C(S_1) = P_A$ 
-  \item $C(S_2) = P_B$ 
+  \item $C(S_2) = P_A$ 
   \end{itemize}
 \end{frame} 
 
 \begin{frame}{Sans mécanisme de protection}
-%   %      AAAA
-%   %   B        BB
-%   % CC CC    CC  C
-% 0 %       A
-% 1 %    CC   A 
-% 2 %  CCCCCCCCCCB 
+  \input{pics/prio-inherit-1.tex}
 \end{frame} 
 
 \begin{frame}{Par héritage de priorité}
-%   %      AAAA
-%   %   B        BB
-%   % CC CC    CC  C
-% 0 %       A
-% 1 %    CC   A 
-% 2 %  CCCCCCCCCCB 
+  \input{pics/prio-inherit-2.tex}
 \end{frame} 
 
-\begin{frame}{Par priorité plafonnée}
-%   %      A AAA
-%   %   B        BB
-%   % CC CC C   C  C
-% 0 %        A
-% 1 %    CC    A 
-% 2 %  CCCCCCCCCCB 
+\begin{frame}{Par priorité plafonnée originale}
+  \input{pics/prio-inherit-3.tex}
 \end{frame} 
 
-\begin{frame}{Priorité plafonnée} 
-  \begin{itemize}
-  \item à t = 0, T2 est activée et démarre.
-  \item à t =  1, Le sémaphore S2 est demandé et  obtenu (il n'y a pas
-    d'autre ressource en cours d'utilisation)
-  \item à t = 2, T1 est activée et préempte T2
-  \item à t = 3, T1 demande  S2 et est bloquée par le protocole car la
-    priorité de T1 n'est pas supérieure à la priorité plafond $C(S2)=P1$
-    (S2 est le seul sémaphore acquis à t2) T2 hérite de la priorité de
-    T1 et redémarre
-  \item à t  = 4, T2 demande  et obtient le sémaphore S1  , car aucune
-    autre tâche ne détient de ressource
-  \item à t = 5 T0 est réveillée et préempte T2
-  \item  à t =  6, T0  demande le  sémaphore S0  qui n'est  détenu par
-    aucune autre tâche. Le protocole  bloque néanmoins T0 parce que sa
-    priorité n'est  pas supérieure à  la plus grande  priorité plafond
-    des sémaphores  déjà détenus  (S2 et  S1) : P0.   T2 hérite  de la
-    priorité de T0 et peut redémarrer
-  \item à t = 7 , T2 relâche S1. Sa priorité p2 est ramenée à P1, plus
-    haute priorité des tâches bloquées par T2. T0 peut alors préempter
-    T2 et acquérir S0
-  \item à t = 9 quand T0 demande S1, le seul sémaphore encore tenu est
-    S2 avec  une priorité plafond  $P1 \leftarrow T0$ (priorité  $P0 >
-    P1$) obtient S1
-  \item à  t =  10, T0  se termine. T2  peut reprendre  son exécution,
-    toujours avec la même priorité P1
-  \item à t =  11, T2 relâche S2. Sa priorité est  ramenée à sa valeur
-    nominale P2. T1 peut alors préempter T2 et redémarrer
-  \item à t = 12, T1 se termine, T2 peut redémarrer et se terminer
-  \end{itemize}
-\end{frame}
+\begin{frame}{Par priorité plafonnée immédiate}
+  \input{pics/prio-inherit-4.tex}
+\end{frame} 
+
+% \begin{frame}{Priorité plafonnée} 
+%   \begin{itemize}
+%   \item à t = 0, T2 est activée et démarre.
+%   \item à t =  1, Le sémaphore S2 est demandé et  obtenu (il n'y a pas
+%     d'autre ressource en cours d'utilisation)
+%   \item à t = 2, T1 est activée et préempte T2
+%   \item à t = 3, T1 demande  S2 et est bloquée par le protocole car la
+%     priorité de T1 n'est pas supérieure à la priorité plafond $C(S2)=P1$
+%     (S2 est le seul sémaphore acquis à t2) T2 hérite de la priorité de
+%     T1 et redémarre
+%   \item à t  = 4, T2 demande  et obtient le sémaphore S1  , car aucune
+%     autre tâche ne détient de ressource
+%   \item à t = 5 T0 est réveillée et préempte T2
+%   \item  à t =  6, T0  demande le  sémaphore S0  qui n'est  détenu par
+%     aucune autre tâche. Le protocole  bloque néanmoins T0 parce que sa
+%     priorité n'est  pas supérieure à  la plus grande  priorité plafond
+%     des sémaphores  déjà détenus  (S2 et  S1) : P0.   T2 hérite  de la
+%     priorité de T0 et peut redémarrer
+%   \item à t = 7 , T2 relâche S1. Sa priorité p2 est ramenée à P1, plus
+%     haute priorité des tâches bloquées par T2. T0 peut alors préempter
+%     T2 et acquérir S0
+%   \item à t = 9 quand T0 demande S1, le seul sémaphore encore tenu est
+%     S2 avec  une priorité plafond  $P1 \leftarrow T0$ (priorité  $P0 >
+%     P1$) obtient S1
+%   \item à  t =  10, T0  se termine. T2  peut reprendre  son exécution,
+%     toujours avec la même priorité P1
+%   \item à t =  11, T2 relâche S2. Sa priorité est  ramenée à sa valeur
+%     nominale P2. T1 peut alors préempter T2 et redémarrer
+%   \item à t = 12, T1 se termine, T2 peut redémarrer et se terminer
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}{Autre Exemple}
   Par héritage de priorité

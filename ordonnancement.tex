@@ -1,4 +1,4 @@
-%                                                                                                                       
+%                                                    
 % This document is available under the Creative Commons Attribution-ShareAlike
 % License; additional terms may apply. See
 %   * http://creativecommons.org/licenses/by-sa/3.0/
@@ -386,10 +386,10 @@
       \end{tabular}
     \end{center}
     $$\frac{8}{16} + \frac{2}{8} + \frac{1}{4} = 1$$
-    \input{RM-2.pgf}
+    \input{pics/RM-2.tex}
 \end{frame}
 
-\subsection{Deadline Monotonic}
+\subsection{Deadline Monotonic (DM)}
 \note{ajouter un exemple montrant la différence entre les deux}
 
 \begin{frame}{Deadline Monotonic (DM)} 
@@ -441,7 +441,6 @@
     \pb{0}{-4}{cblue};
     \pe{9}{-4}{cblue};
     \pb{10}{-4}{cblue};
-
     \draw (7, -1) node {\textcolor{red!80}{\huge{$\times$}}};
   \end{tikzpicture}
 \end{frame}
@@ -451,7 +450,7 @@
   $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15$$
   % BBAAABBCCXBBCC
   \begin{tikzpicture}[scale=0.5]
-    \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
+    \timeline{15}{-5}{-1.0/A, -2.5/B, -4.0/C}
     \fill[cgreen] (0,-1.5) \lo 2 \hi 3 \lo 2 \lo 2 \lo 1 \lo 2 \lo 2;
     \fill[cred]   (0,-3.0) \hi 2 \lo 3 \hi 2 \lo 2 \lo 1 \hi 2 \lo 2;
     \fill[cblue]  (0,-4.5) \lo 2 \lo 3 \lo 2 \hi 2 \lo 1 \lo 2 \hi 2;
@@ -509,7 +508,7 @@
     $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75 ≤ 1$$
     $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15 > 1$$
     Par DM:
-    \input{EDF-1.pgf}
+    \input{pics/EDF-1.tex}
     Par EDF:
     % BBAAACCBBXBBCCXBBXXX
     \begin{tikzpicture}[scale=0.5]
@@ -571,10 +570,11 @@
       \hline
     \end{tabular}
   \end{center}
-  Par EDF:
-  \input{LST-1.pgf}
-  Par LST, en recalculant l'algorithme à chaque période:
-  \input{LST-2.pgf}
+  Par EDF:\\
+  \input{pics/LST-1.tex}
+
+  Par LST, en recalculant l'algorithme à chaque période:\\
+  \input{pics/LST-2.tex}
 \end{frame} 
 
 \begin{frame}{Exemple - 2}
@@ -588,10 +588,11 @@
       \hline
     \end{tabular}
   \end{center}
-  Par EDF:
-  \input{LST-3.pgf}
-  Par LST, en recalculant l'algorithme à chaque période:
-  \input{LST-4.pgf}
+  Par EDF:\\
+  \input{pics/LST-3.tex}
+
+  Par LST, en recalculant l'algorithme à chaque période:\\
+  \input{pics/LST-4.tex}
 \end{frame} 
 
 \section{Serveurs de tâches apériodiques}
@@ -646,11 +647,11 @@
       3 & 0 & 11 & 2 & Aucune\\
       \hline
     \end{tabular}
+
+    % AABB1AA1X2AABB1AA33
+    \input{pics/aperiod-bg.tex}
+    \note{ Remarquons les temps de réponses: 1: 4, 2: 5, 3: 9}
   \end{center}
-  \input{aperiod-bg.pgf}
-  % AABB1AA1X2AABB1AA33
-  % Temps de réponses:
-  % 1: 4, 2: 5, 3: 9
 \end{frame} 
 
 \subsection{Traitement par serveur}
@@ -710,9 +711,10 @@
       S & 0 &  5 & 2 & Fin de période\\
       \hline
     \end{tabular}
+
+    % SSBBASSAAXSSBBXSS
+    \input{pics/aperiod-poll-1.tex}
   \end{center} 
-  % SSBBASSAAXSSBBXSS
- \input{aperiod-poll-1.pgf}
 \end{frame} 
 
 \begin{frame}{Exemple}
@@ -730,9 +732,10 @@
       3 & 0 & 10 & 3 & Aucune\\
       \hline
     \end{tabular}
+
+    % SSBBA11AAX23BBX3S
+    \input{pics/aperiod-poll-2.tex}
   \end{center}
-  % SSBBA11AAX23BBX3S
-\input{aperiod-poll-2.pgf}
 \end{frame} 
 
 \begin{frame}{Exemple}
@@ -750,9 +753,10 @@
       3 & 0 & 10 & 3 & Aucune\\
       \hline
     \end{tabular}
+
+    % BBAAA11XXX23BBX3XXXX
+    \input{pics/aperiod-poll-3.tex}
   \end{center}
-  % BBAAA11XXX23BBX3XXXX
-\input{aperiod-poll-3.pgf}
 \end{frame} 
 
 \subsection{Serveur différé}
@@ -784,13 +788,9 @@
       1 & 21 & 0 & 6 & Aucune\\
       \hline
     \end{tabular}
+
+    \input{pics/aperiod-diff-1.tex}
   \end{center}
-\end{frame}
-\begin{frame}{Exemple}
-  % BBAA11AXXX23BBX3
-  \input{aperiod-diff-1.pgf}
-  % Changer d'exemple, il ne fait aucune différence avec le serveur par scrutation
-  % Hint: reprendre le cas d'execution dos à dos
   \note{Le fameux cas dos à dos}
 \end{frame} 
 
@@ -832,9 +832,11 @@
 \end{frame}
 \begin{frame}{Exemple}
   % BBAA11AXXX23BBX3
-  \input{aperiod-scrut-1.pgf}
+  \input{pics/aperiod-scrut-1.tex}
   % Changer d'exemple, il ne fait aucune différence avec le serveur par scrutation
   % Hint: reprendre le cas d'execution dos à dos
 \end{frame} 
+
+% \subsection{Slack Stealer}
 
 

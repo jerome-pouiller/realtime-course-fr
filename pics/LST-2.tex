@@ -1,13 +1,13 @@
-% EDF
+% LST
 % C D P
 % 1 7 20
 % 2 3 5
 % 3 8 10
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.4]
      \timeline{14}{-5}{-1.0/A, -2.5/B, -4.0/C}
-     \fill[cgreen] (0,-1.5) \lo 2 \hi 1 \lo 3 \lo 2 \lo 2 \lo 2 \lo 1 \lo 1;
-     \fill[cred]   (0,-3.0) \hi 2 \lo 1 \lo 3 \hi 2 \lo 2 \hi 2 \lo 1 \lo 1;
-     \fill[cblue]  (0,-4.5) \lo 2 \lo 1 \hi 3 \lo 2 \lo 2 \lo 2 \hi 1 \lo 1;
+     \fill[cgreen] (0,-1.5) \lo 2 \lo 2 \hi 1  \lo 2 \lo 1 \lo 2 \lo 2 \lo 1 \lo 1;
+     \fill[cred]   (0,-3.0) \hi 2 \lo 2 \lo 1  \hi 2 \lo 1 \lo 2 \hi 2 \lo 1 \lo 1;
+     \fill[cblue]  (0,-4.5) \lo 2 \hi 2 \lo 1  \lo 2 \hi 1 \lo 2 \lo 2 \hi 1 \lo 1;
     \pb{0}{-1}{cgreen};
     \pe{7}{-1}{cgreen};
     \pb{0}{-2.5}{cred};
