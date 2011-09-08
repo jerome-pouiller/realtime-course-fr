@@ -29,7 +29,7 @@
    La programmation concurente N'EST  PAS de la programmation parallèle
   (même les système multicoeur sont souvent concurent et parallèle):
   \begin{center}
-    \pgfimage[width=10cm]{pics/concurentVsParallel.png}
+    \pgfimage[width=10cm]{pics/concurentVsParallel}
   \end{center}
 \end{frame}
 
@@ -37,7 +37,7 @@
   Migration d'un système avec gestion asynchrone des interruption vers
   un système multitâches:
   \begin{center}
-    \pgfimage[width=10cm]{pics/model_multitask.png}
+    \pgfimage[width=10cm]{pics/model_multitask}
   \end{center}
 \end{frame} 
 
@@ -55,21 +55,7 @@
 
 \begin{frame}{Etats des tâches}
   \begin{center}
-    \begin{tikzpicture}[scale=2]
-      \node (Wa)  at (2,1) {Waiting};
-      \node (In)  at (0,0) {};
-      \node (Re)  at (1,0) {Ready};
-      \node (Ru)  at (2,0) {Running};
-      \node (Out) at (3,0) {};
-      \node (Int) at (2,-1) {Interrupt};
-      \draw[->] (Re)  -- (Ru);
-      \draw[->] (Ru)  -- (Wa);
-      \draw[->] (Ru)  -- (Int);
-      \draw[->] (Int) -- (Ru);
-      \draw[->] (Wa)  -- (Re);
-      \draw[->] (Ru)  -- (Out);
-      \draw[->] (In)  -- (Re);
-    \end{tikzpicture}
+    \input{pics/task_states}
   \end{center}
 \end{frame} 
 
@@ -125,7 +111,7 @@ int main() {
   Ce type  de système implique une  latence difficilement quantifiable
   entre un évènement et sont traitement:
   \begin{center}
-    \pgfimage[width=7cm]{pics/preemptive-no.png}
+    \pgfimage[width=7cm]{pics/preemptive-no}
   \end{center}
 \end{frame}
 
@@ -149,7 +135,7 @@ int main() {
   Un  système  multitâche préemptif  va  être  capable  de changer  de
   contexte lors des interruptions:
   \begin{center}
-    \pgfimage[width=10cm]{pics/preemptive-yes.png}
+    \pgfimage[width=10cm]{pics/preemptive-yes}
   \end{center}
 \end{frame}
 
@@ -171,7 +157,7 @@ int main() {
 
 \begin{frame}{Le changement de contexte sur interruption}
   \begin{center}
-    \pgfimage[width=10cm]{pics/interuption-2.png}
+    \pgfimage[width=10cm]{pics/interuption-2}
   \end{center}
 \end{frame} 
 

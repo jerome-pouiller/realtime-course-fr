@@ -69,7 +69,7 @@ int main() {
   \item Gestion des évènements dans les interruptions
   \end{itemize} 
   \begin{center}
-    \pgfimage[width=6cm]{pics/model_bgfg.png}
+    \pgfimage[width=6cm]{pics/model_bgfg}
   \end{center}
 \end{frame}
 
@@ -151,7 +151,7 @@ int main() {
 
 \begin{frame}[fragile]{Fonctionnement d'une interruption} 
   \begin{center}
-    \pgfimage[width=10cm]{pics/interuption-1.png}
+    \pgfimage[width=10cm]{pics/interuption-1}
   \end{center}
 \end{frame}  
 
@@ -176,7 +176,7 @@ int main() {
 \begin{frame}{Exemple}
   Exemple classique d'intégration d'un PIC multiplexé sur une IRQ:
   \begin{center}
-    \pgfimage[width=10cm]{pics/interuption-3.png}
+    \pgfimage[width=10cm]{pics/interuption-3}
   \end{center}
 \end{frame} 
 
@@ -294,35 +294,142 @@ int main() {
        gotit--;
        action1();
      }
-// Optionnal background computing 
+  // Optionnal background computing 
   }
 }
   \end{lstlisting} 
   \note{Il y a un bug à cause  du partage de gotit, mais on en parlera
     plus tard}
-  \note{Je suis embêté. Est-ce que je triate ca ici moi? Oui, voir le cours de Montreal}
 \end{frame} 
 
-%%%% EDIT THERE %%%%%%%
+\section{Protection des structures de données}
 
-\begin{frame}{Partage de l'information}
-  Partage d'information avec des interruptions:
+\begin{frame}[fragile]{Exemple de partage de données}
+  Imaginons le code suivant:
+  \begin{lstlisting}
+int a = 0;
+char t[255];
+void isr() {
+  t[a] = *PTR_DATA;
+  a++;
+  *PTR_DEVICE_ACK = 1;
+}
+void f() {
+  char d;
+  --a;
+  d = t[a];
+}
+  \end{lstlisting}
+\end{frame} 
+
+\begin{frame}[fragile]{Exemple de partage de données}
+  Prenons le  cas où  \verb+f+ traite l'interruption  précédante (donc
+  \verb+a = 1+) et qu'une nouvelle interruption est déclenchée:
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{lstlisting}[showlines=true,emptylines=10]
+--a; // a = 0;
+
+
+
+
+
+d = t[a];
+// Lecture de t[1] au lieu de t[0]!
+       \end{lstlisting}
+     \end{column}
+     \begin{column}{5cm}
+      \begin{lstlisting}[showlines=true,emptylines=10,escapeinside=\{\}]
+
+t[a] = *PTR_DATA; 
+// t[0] est {é}cras{é}!
+a++;
+// a = 1 maintenant
+*PTR_DEVICE_ACK = 1;
+
+
+       \end{lstlisting}
+    \end{column}
+  \end{columns}
+  Au lieu de lire correctement  la première valeur retournée par l'ISR
+  puis la seconde, nous lirons  tout d'abord une valeur aléatoire puis
+  la valeur retournée par la seconde interruption.
+\end{frame} 
+
+\begin{frame}{Comment éviter le problème?}
+  Les problèmes d'accès concurrents se traduisent très souvent par des
+  \emph{races  conditions}.   C'est à  dire  des problèmes  aléatoires
+  produit par une séquence particulière d'évènements
   \begin{itemize} 
-  \item  operation atomique
-  \item  buffer ciculaires et queue
-  \item  désactivation des interruptions
+  \item   Les  \emph{race  conditions}   sont  souvent   difficiles  à
+    reproduire et à identifier
+  \item Les  \emph{race conditions} peuvent être latente  dans le code
+    et se déclarer suite à une modification de l'environnement externe
+  \item Une race condition coûte chère (difficulté de correction, peut
+    potentiellement atterrir en production)
   \end{itemize} 
+  Comment s'en protèger?
   \begin{itemize} 
-  \item Utilisation  de structures de  partage de données  sans mutex:
-    buffer circulaire et queue
-  \item Les sections critiques  doivent être faites en désactivant les
-    interruption (attention à la lattence induite, cf slide précédant)
+  \item  Ne  pas  partager de données avec les interruptions
+  \item Utiliser des accès atomiques
+  \item  Utiliser  des  structures  adaptées: buffers  circulaires  et
+    queues
+  \item  Désactiver  les  interruption  lors  d'accès  à  des  données
+    partagées
   \end{itemize} 
 \end{frame} 
+
+\subsection{Buffer circulaire}
+
+\begin{frame}[fragile]{Buffer circulaire}
+  \begin{lstlisting}
+char buf[SIZE]; 
+void init() {
+  w = r = 0;
+}
+void write(char c) {
+  if ((w + 1) % SIZE == r )
+    ; //buffer is full
+  buf[w] = c;
+  w = (w + 1) % SIZE;
+}
+void read() {
+  if (w == r)
+    ; //buffer is empty
+  ret = buf[r];
+  r = (r + 1) % SIZE;
+}
+  \end{lstlisting} 
+\end{frame} 
+
+\subsection{Queue}
+
+\begin{frame}{Queue}
+  Même fonctionnement  que le buffer circulaire, mais  avec un tableau
+  de structure.  
+
+  Il  est  aussi possible  de  faire  des  Queue d'objets  de  tailles
+  différente.  Dans  ce cas, faire  très attention à  l'allocation des
+  objets.   L'allocation  dynamique est  rarement  une opération  très
+  bornée  dans  le temps  et  doit  être  utilisée avec  précaution  à
+  l'intérieur des interruptions et des tâches temps réelles.
+\end{frame} 
+
+\subsection{Désactivation des interruptions}
+
+\begin{frame}{Désactivation des interruptions}
+  Si l'utilisation de Buffer circulaires ne résoud pas le problème, il
+  est possible de désactiver les interruptions.
+
+  La desactivation des interruption peut entrainer des latence dans la
+  gestion  des  interruption  et  des  perte  d'interruptions  le  cas
+  échéant.
+\end{frame}
 
 \begin{frame}{Cas des interruption en milieu multi coeur}
   \begin{itemize} 
-  \item On ne désactive que les interruption locale
+  \item  On ne  désactive que  les interruptions  locales (sur  le CPU
+    courant)
   \item Une interruption peut se produire sur un autre coeur
   \item Nécessité d'utiliser un mécanisme supplémentaire d'exclusion
   \item \emph{Spin lock} suvent utilisé pour ce cas.
@@ -330,6 +437,24 @@ int main() {
     critiques dans les interruptions doivent être très limitées
   \end{itemize} 
 \end{frame} 
+
+\subsection{Spin Lock}
+
+\begin{frame}[fragile]{Spin Lock}
+  Attente active
+  \begin{lstlisting} 
+void lock(int m) {
+  while(atomic_test_and_set(m))
+     ;
+}
+
+void unlock(int m) {
+  m = 0;
+}
+  \end{lstlisting} 
+\end{frame}
+
+\section{Les limites du monotache}
 
 \begin{frame}{Problèmes de la gestion des interruption asynchrone}
   Nous n'avons pas résolu notre problème récurent:

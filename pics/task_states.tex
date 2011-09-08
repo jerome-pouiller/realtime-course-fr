@@ -1,0 +1,22 @@
+\begin{tikzpicture}[scale=2]
+  \tikzstyle{block} = 
+    [rectangle, draw, fill=blue!20, 
+     text width=5em, text centered, 
+     rounded corners, minimum height=4em]
+  \tikzstyle{io} = [ellipse, draw, fill=red!20]
+
+  \node[block]             (Ru)  {Running};
+  \node[block,above=of Ru] (Wa)  {Waiting};
+  \node[io,   right=of Ru] (Out) {};
+  \node[block,below=of Ru] (Int) {Interrupted};
+  \node[block,left=of Ru]  (Re)  {Ready};
+  \node[io,   left=of Re]  (In)  {};
+  \draw[->] (Re)  -- (Ru);
+  \draw[->] (Ru)  -- (Wa);
+  \draw[->] (Ru)  -- (Int);
+  \draw[->] (Int) -- (Ru);
+  \draw[->] (Int.north west) -- (Re.south);
+  \draw[->] (Wa.south west)  -- (Re.north);
+  \draw[->] (Ru)  -- (Out);
+  \draw[->] (In)  -- (Re);
+\end{tikzpicture}

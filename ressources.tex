@@ -1,4 +1,4 @@
-%                                                                                                               
+%
 % This document is available under the Creative Commons Attribution-ShareAlike
 % License; additional terms may apply. See
 %   * http://creativecommons.org/licenses/by-sa/3.0/
@@ -59,24 +59,19 @@
 \end{frame} 
 
 \begin{frame}{Contraintes de précédence (2)} 
+  Les contraintes de précédence sur l'ordre d'exécution des tâches les
+  unes par rapport aux autres sont généralement décrites par un graphe
+  orienté:
   \begin{itemize}
-  \item Contraintes de précédence 
-    \begin{itemize}
-    \item sur l'ordre d'exécution des  tâches les unes par rapport aux
-      autres
-    \item généralement décrites par un graphe orienté $G$
-      \begin{itemize}
-      \item $J_a < J_b$ indique que la tâche $J_a$ est un prédécesseur
-        de $J_b$
-      \item $J_a → J_b$ indique que la tâche $J_a$ est un prédécesseur
-        immédiat de $J_b$
-      \end{itemize}
-    \end{itemize}
+  \item $J_a < J_b$ indique que  la tâche $J_a$ est un prédécesseur de
+    $J_b$
+  \item $J_a  → J_b$  indique que la  tâche $J_a$ est  un prédécesseur
+    immédiat de $J_b$
   \end{itemize}
-\end{frame}
+ \end{frame}
 
 \begin{frame}{Contraintes de précédence (3)} 
-  contraintes de précédence et EDF
+  Contraintes de précédence et EDF
   \begin{itemize}
   \item  modification des  échéances de  façon à  ce qu'une  tâche ait
     toujours un di inférieur à celui de ses successeurs (algorithme de
@@ -100,67 +95,57 @@
 
 \section{Problèmatique des accès concurents}
 
-\note{Il faut replacer tout ca au niveau de la présentation des interruptions}
 \subsection{Protection des structures de données}
 
 \begin{frame}[fragile]{Exemple de partage de données}
-  \begin{columns}
-    \begin{column}{5cm}
-      Soient \c{f1} et \c{f2}:
-      \begin{lstlisting}
-int a = 1;
+  Le partage de données entre les tâches posent les mêmes problème que
+  le partage de données avec les interruptions
+
+  Prennons deux tâches \c{f1} et \c{f2}:
+  \begin{lstlisting}
+int a = 0;
+char t[255];
 void f1() {
+  t[a] = data1;
   a++;
 }
 void f2() {
+  t[a] = data2;
   a++;
 }
        \end{lstlisting}
-     \end{column}
-     \begin{column}{5cm}
-       \c{f1} en assembleur:
-       \begin{lstlisting}
-mov r1, $123456
-inc r1
-mov $123456, r1
-       \end{lstlisting}
-       \c{f2} en assembleur:
-       \begin{lstlisting} 
-mov r2, $123456
-inc r2
-mov $123456, r2
-      \end{lstlisting}
-    \end{column}
-  \end{columns}
 \end{frame} 
 
 \begin{frame}[fragile]{Exemple de partage de données}
-  Prennons le  cas où  les fonctions \c{f1}  et \c{f2}  sont éxecutées
-  dans deux tâches différentes.  \c{f1} commence par s'éxecuter:
-\begin{lstlisting} 
-mov r1, $123456
-inc r1
-  \end{lstlisting} 
-  A  ce  moment \c{r1}  vaut  donc 2,  alors  que  la cellule  mémoire
-  \c{\$123456}  vaut encore 1.   L'ordonnanceur préempte  alors \c{f1}
-  afin de donner la main à \c{f2}.  L'ordonnanceur sauve les registres
-  sur la pile et change le contexte:
-\begin{lstlisting} 
-mov r1, $123456
-inc r2
-mov $123456, r2
-[...]
-  \end{lstlisting} 
-\end{frame}
+Prennons le cas ou \verb+f1+ est préemptée par \verb+f2+:
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{lstlisting}[showlines=true,emptylines=10]
+t[a] = data1; // t[0];
 
-\begin{frame}[fragile]{Exemple de partage de données}
-  \c{\$123456}  contient  maintenant 2.   La  tâche  2  se termine  et
-  l'ordonanceur rend la main à la tâche 1:
-  \begin{lstlisting} 
-mov $123456, r1
-  \end{lstlisting} 
-  En  toute  logique,  après  l'éxécution  de  \c{f1}  et  de  \c{f2},
-  \c{\$123456} devrait contenir 3. Or il ne contient que 2.
+
+
+
+a++;
+// a = 2 maintenant
+       \end{lstlisting}
+     \end{column}
+     \begin{column}{5cm}
+      \begin{lstlisting}[showlines=true,emptylines=10,escapeinside=\{\}]
+
+t[a] = data2; 
+// t[0] est {é}cras{é}!
+a++;
+// a = 1 maintenant
+
+
+       \end{lstlisting}
+    \end{column}
+  \end{columns}
+
+  Au lieu d'écrire  les deux donnée l'une après  l'autre, la valeur de
+  \verb+data1+ est perdue alors  que \verb+t[1]+ contiendra une valeur
+  aléatoire.
 \end{frame} 
 
 \subsection{Protection des ressources matériel}
@@ -196,14 +181,18 @@ void send(int data) {
 \end{lstlisting} 
   \c{10} (au lieu de \c{42}) est de nouveau envoyé.\\[3mm]
 
-  Ces cas sont aussi valable dans le cas d'une interruption.
+  Ce cas  est aussi valable dans  le cas d'une  interruption (bien que
+  plus rare dans la pratique).
 \end{frame} 
 
 \subsection{Réentrance}
 
 \begin{frame}{Comment éviter le problème?}
-  Les problèmes  d'accès concurrents se  traduisent très souvent  par des
-  \emph{races  conditions}.  C'est  à  dire des  problèmes  aléatoires
+  Nous devons élargir ce que nous avons précédement vu pour le partage
+  d'informations avec les interruptions.
+
+  Les problèmes d'accès concurrents se traduisent très souvent par des
+  \emph{races  conditions}.   C'est à  dire  des problèmes  aléatoires
   produit par une séquence particulière d'évènements
   \begin{itemize} 
   \item   Les  \emph{race  conditions}   sont  souvent   difficiles  à
@@ -213,12 +202,16 @@ void send(int data) {
   \item Une race condition coûte chère (diffuculté de correction, peut
     potentiellement atterrir en production)
   \end{itemize} 
+\end{frame}
+
+\begin{frame}{Comment s'en protèger?}
   Comment s'en protèger?
   \begin{itemize} 
-  \item Ne pas utiliser de variables globales ou de ressources partagées
+  \item  Ne  pas  utiliser  de  variables globales  ou  de  ressources
+    partagées
   \item Utiliser des accès atomiques
-  \item  Placer des  accès aux  ressources partagée  dans  des \emph{sections
-    critiques}
+  \item   Placer  des   accès   aux  ressources   partagée  dans   des
+    \emph{sections critiques}
   \end{itemize} 
   Une  fonction  pouvant  être  appellée simultanénement  depuis  deux
   contextes de tâches différentes est dite \emph{réentrante}
@@ -236,10 +229,8 @@ void send(int data) {
     ressource critique \note{hein?}
   \item sans  problème dans le cas d'un  ordonnancement non préemptif,
     mais  c'est rarement  le cas  dans un  environnement temps  réel ⇒
-    évaluation du temps de réponse très difficile, sinon impossible
-    \begin{itemize}
-    \item abondante littérature ! 
-    \end{itemize}
+    évaluation du  temps de  réponse très difficile,  sinon impossible
+    (abondante littérature !)
   \end{itemize}
 \end{frame}
 
@@ -249,7 +240,7 @@ void send(int data) {
   Nécessite une instruction assembleur  premettant un accès en lecture
   et une écriture  en une instruction: \texttt{test\_and\_set} affecte
   le registre d'état  en fonction de la valeur  du registre et affecte
-  la valeur  1 au  registre. On peut  délopper la fonction  \c{lock} à
+  la valeur 1  au registre. On peut développer  la fonction \c{lock} à
   partir de là:
 \begin{lstlisting} 
 void lock(mutex_t *m) {
@@ -285,29 +276,6 @@ void unlock(mutex_t *m) {
   \end{lstlisting}
 \end{frame} 
 
-\subsection{Partage de ressource entre interruptions}
-\begin{frame}{ressource et interruptions}
-\note{A réécrire, trop dense}
-\note{Pour l'instant, on passe}
-Une interruption s'execute dans le contexte de la tâche courante.
-Par conséquent, l'utilisation d'un mutex dans une interruption pourrait entrainer un double lock. 
-il ne faut pas utiliser de mutex dans une interruption.
-Le partage de ressource avec une interruption nécessite de désactiver temporairement les interruptions.
-Ceci entraine de la latence dans les interruptions
-\end{frame} 
-
-\subsection{Partage de ressource dans le cadre d'un multicoeur}
-\begin{frame}{Dans un multicoeur}
-\note{A réécrire, trop dense}
-Dans le cas d'un multicoeur, on ne désactive que les interruptions ``locale'' (sur le CPU courant).
-Les interruptions peuvent donc s'ecuter sur les autres CPU.
-Il faut tout de même protèger la ressource. 
-
-
-utilisation de Spin lock à la place du mutex ou en plus de la désactivation des interruptions. 
-
-\end{frame} 
-
 \section{Problème liés aux partage de ressources}
 
 \subsection{Dead Lock}
@@ -318,38 +286,42 @@ utilisation de Spin lock à la place du mutex ou en plus de la désactivation de
   \item Deux tâches utilisent  deux ressources imbriquées dans l'ordre
     inverses
   \end{itemize} 
-  \textbf{Exemple:}
   \begin{columns}
-    \begin{column}{6.5cm}
+    \begin{column}{5cm}
       Tache 1:
-      \begin{lstlisting}
+      \begin{lstlisting}[showlines=true,emptylines=10]
 lock(m1);
-// Preemption par la tache 2 ici
-lock(m2);
-      \end{lstlisting} 
 
-      Tache 2:
-      \begin{lstlisting} 
+
+
 lock(m2);
-// Deadlock ici
-lock(m1);
       \end{lstlisting} 
     \end{column}
-    \begin{column}{4cm}
-      % AABBAXXX
-      \begin{tikzpicture}[scale=0.35]
-        \timeline{10}{-3.5}{-1.0/A, -2.5/B}
-        \fill[color=black!25] (5, -1.5) rectangle +(4, 1);
-        \fill[color=black!25] (4, -3.0) rectangle +(5, 1);
-        \fill[cgreen] (0,-1.5)  \hi 2 \lo 2 \hi 1 \lo 4;
-        \fill[cred]   (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 4;
-        \pattern[pattern=north east lines] (1, -1.5) rectangle +(7, 1);
-        \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
-        \pb{0}{-1}{cgreen};
-        \pb{2}{-2.5}{cred};
-      \end{tikzpicture}
+    \begin{column}{5cm}
+      Tache 2:
+      \begin{lstlisting}[showlines=true,emptylines=10]
+
+lock(m2);
+// Deadlock ici:
+lock(m1);
+
+      \end{lstlisting} 
     \end{column}
   \end{columns}
+\begin{center}
+  % AABBAXXX
+  \begin{tikzpicture}[scale=0.35]
+    \timeline{10}{-3.5}{-1.0/A, -2.5/B}
+    \fill[color=black!25] (5, -1.5) rectangle +(4, 1);
+    \fill[color=black!25] (4, -3.0) rectangle +(5, 1);
+    \fill[cgreen] (0,-1.5)  \hi 2 \lo 2 \hi 1 \lo 4;
+    \fill[cred]   (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 4;
+    \pattern[pattern=north east lines] (1, -1.5) rectangle +(7, 1);
+    \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
+    \pb{0}{-1}{cgreen};
+    \pb{2}{-2.5}{cred};
+  \end{tikzpicture}
+\end{center}
 \end{frame} 
 
 \begin{frame}[fragile]{Dead lock}
@@ -387,6 +359,8 @@ lock();
   Exemple avec deux tâches $P(A) < P(B)$:
   \begin{itemize} 
   \item Cas sans partage de ressource:
+  \begin{columns}
+    \begin{column}{6cm}
     % AABBBAAAA
     \begin{center}
     \begin{tikzpicture}[scale=0.35]
@@ -396,9 +370,15 @@ lock();
          \pb{0}{-1}{cgreen};
          \pb{2}{-2.5}{cred};
      \end{tikzpicture}
-      $$TR_B = 3$$
-    \end{center}
+   \end{center}
+ \end{column}
+   \begin{column}{4cm}
+ $$TR_B = 3$$
+\end{column}
+\end{columns}
   \item Cas avec une ressource partagée:
+  \begin{columns}
+    \begin{column}{6cm}
      % AABAAABBA
     \begin{center}
      \begin{tikzpicture}[scale=0.35]
@@ -411,10 +391,13 @@ lock();
         \pb{0}{-1}{cgreen};
         \pb{2}{-2.5}{cred};
       \end{tikzpicture}
+   \end{center}
+ \end{column}
+   \begin{column}{4cm}
       $$TR_B = 6$$
-    \end{center}
-  \end{itemize} 
-    
+    \end{column}
+  \end{columns}
+\end{itemize}     
 \end{frame} 
 
 \subsection{Inversion de priorité}
@@ -603,10 +586,10 @@ lock();
       \hline
       Tâche & Arrivée & Priorité & Capacité & Ressources \\
       \hline
-      A & 4 & 1 & 5 & S1 après 2 et pendant 1, puis S2 après 3 et pendant 1\\
-      B & 2 & 2 & 4 & S2 après 1 et pendant 2 \\
-      C & 2 & 3 & 2 & aucune\\
-      D & 0 & 4 & 6 & S1 après 1 et pendant 4\\
+      A & 4 & 1 & 5 & \texttt{\_\_12\_}\\
+      B & 2 & 2 & 4 & \texttt{\_22\_}\\
+      C & 2 & 3 & 2 & \texttt{\_\_}\\
+      D & 0 & 4 & 6 & \texttt{\_1111\_}\\
       \hline
     \end{tabular}
   \end{center}
@@ -665,49 +648,49 @@ lock();
 %   \end{itemize}
 % \end{frame}
 
-\begin{frame}{Autre Exemple}
-  Par héritage de priorité
-  % CCBBACCAABAABC
-  \begin{center}
-    \begin{tikzpicture}[scale=0.5]
-      \timeline{14}{-5}{-1./A, -2.5/B, -4./C, }
-      \fill[cgreen]  (0,-1.5) \lo 2 \lo 2 \hi 1 \lo 2 \hi 2 \lo 1 \hi 2 \lo 1 \lo 1;
-      \fill[cred]    (0,-3.0) \lo 2 \hi 2 \lo 1 \lo 2 \lo 2 \hi 1 \lo 2 \hi 1 \lo 1;
-      \fill[cblue]   (0,-4.5) \hi 2 \lo 2 \lo 1 \hi 2 \lo 2 \lo 1 \lo 2 \lo 1 \hi 1;
-      \pb{0}{-1}{cgreen};
-      \pb{2}{-2.5}{cred};
-      \pb{4}{-4}{cblue};
-      \pattern[pattern=north east lines] (1, -4.5) rectangle +(1, 1);
-      \pattern[pattern=north east lines] (7, -1.5) rectangle +(1, 1);
-      \pattern[pattern=north east lines] (4, -4.5) rectangle +(2, 1);
-      \pattern[pattern=north west lines] (3, -3.0) rectangle +(1, 1);
-      \pattern[pattern=north west lines] (9, -3.0) rectangle +(1, 1);
-      \pattern[pattern=north west lines] (10, -1.5) rectangle +(1, 1);
-    \end{tikzpicture}
-  \end{center}
-\end{frame} 
+% \begin{frame}{Autre Exemple}
+%   Par héritage de priorité
+%   % CCBBACCAABAABC
+%   \begin{center}
+%     \begin{tikzpicture}[scale=0.5]
+%       \timeline{14}{-5}{-1./A, -2.5/B, -4./C, }
+%       \fill[cgreen]  (0,-1.5) \lo 2 \lo 2 \hi 1 \lo 2 \hi 2 \lo 1 \hi 2 \lo 1 \lo 1;
+%       \fill[cred]    (0,-3.0) \lo 2 \hi 2 \lo 1 \lo 2 \lo 2 \hi 1 \lo 2 \hi 1 \lo 1;
+%       \fill[cblue]   (0,-4.5) \hi 2 \lo 2 \lo 1 \hi 2 \lo 2 \lo 1 \lo 2 \lo 1 \hi 1;
+%       \pb{0}{-1}{cgreen};
+%       \pb{2}{-2.5}{cred};
+%       \pb{4}{-4}{cblue};
+%       \pattern[pattern=north east lines] (1, -4.5) rectangle +(1, 1);
+%       \pattern[pattern=north east lines] (7, -1.5) rectangle +(1, 1);
+%       \pattern[pattern=north east lines] (4, -4.5) rectangle +(2, 1);
+%       \pattern[pattern=north west lines] (3, -3.0) rectangle +(1, 1);
+%       \pattern[pattern=north west lines] (9, -3.0) rectangle +(1, 1);
+%       \pattern[pattern=north west lines] (10, -1.5) rectangle +(1, 1);
+%     \end{tikzpicture}
+%   \end{center}
+% \end{frame} 
 
-\begin{frame}{Autre Exemple}
-  Par priorité plafonnée:
-  % CCBCACAAAABBBC
-  \begin{center}
-    \begin{tikzpicture}[scale=0.5]
-      \timeline{14}{-5}{-1./A, -2.5/B, -4./C, }
-      \fill[cgreen]  (0,-1.5) \lo 2 \lo 1 \lo 1 \hi 1 \lo 1 \hi 4 \lo 3 \lo 1;
-      \fill[cred]    (0,-3.0) \lo 2 \hi 1 \lo 1 \lo 1 \lo 1 \lo 4 \hi 3 \lo 1;
-      \fill[cblue]   (0,-4.5) \hi 2 \lo 1 \hi 1 \lo 1 \hi 1 \lo 4 \lo 3 \hi 1;
-      \pb{0}{-1}{cgreen};
-      \pb{2}{-2.5}{cred};
-      \pb{4}{-4}{cblue};
-      \pattern[pattern=north east lines] (1, -4.5) rectangle +(1, 1);
-      \pattern[pattern=north east lines] (3, -4.5) rectangle +(1, 1);
-      \pattern[pattern=north east lines] (5, -4.5) rectangle +(1, 1);
-      \pattern[pattern=north east lines] (6, -1.5) rectangle +(1, 1);
-      \pattern[pattern=north west lines] (8, -1.5) rectangle +(1, 1);
-      \pattern[pattern=north west lines] (10, -3.0) rectangle +(2, 1);
-    \end{tikzpicture}
-  \end{center}
-\end{frame} 
+% \begin{frame}{Autre Exemple}
+%   Par priorité plafonnée:
+%   % CCBCACAAAABBBC
+%   \begin{center}
+%     \begin{tikzpicture}[scale=0.5]
+%       \timeline{14}{-5}{-1./A, -2.5/B, -4./C, }
+%       \fill[cgreen]  (0,-1.5) \lo 2 \lo 1 \lo 1 \hi 1 \lo 1 \hi 4 \lo 3 \lo 1;
+%       \fill[cred]    (0,-3.0) \lo 2 \hi 1 \lo 1 \lo 1 \lo 1 \lo 4 \hi 3 \lo 1;
+%       \fill[cblue]   (0,-4.5) \hi 2 \lo 1 \hi 1 \lo 1 \hi 1 \lo 4 \lo 3 \hi 1;
+%       \pb{0}{-1}{cgreen};
+%       \pb{2}{-2.5}{cred};
+%       \pb{4}{-4}{cblue};
+%       \pattern[pattern=north east lines] (1, -4.5) rectangle +(1, 1);
+%       \pattern[pattern=north east lines] (3, -4.5) rectangle +(1, 1);
+%       \pattern[pattern=north east lines] (5, -4.5) rectangle +(1, 1);
+%       \pattern[pattern=north east lines] (6, -1.5) rectangle +(1, 1);
+%       \pattern[pattern=north west lines] (8, -1.5) rectangle +(1, 1);
+%       \pattern[pattern=north west lines] (10, -3.0) rectangle +(2, 1);
+%     \end{tikzpicture}
+%   \end{center}
+% \end{frame} 
 
 \begin{frame}{Priorité plafonnée} 
   On a  le même critère d'ordonnançabilité  par RM que dans  le cas du
@@ -768,7 +751,8 @@ lock();
 \begin{frame}[fragile]{Read/Write Lock}
 \note{\url{http://en.wikipedia.org/wiki/Readers-writers\_problem}}
 
-Permet de limiter le phénomène de latence en dimiminuant le nombre de sections critiques.
+Permet de limiter le phénomène  de latence en dimiminuant le nombre de
+sections critiques.
 
 Solution 1 (\emph{reader preference}):
 \begin{columns}
@@ -846,7 +830,8 @@ void write_unlock() {
 
 \subsection{Rendez-vous ou barrier}
 \begin{frame}[fragile]{Rendez-vous}
-Permet de synchroniser deux tâches. La première tâche arrivée à la barrière attend la seconde.
+  Permet de synchroniser  deux tâches. La première tâche  arrivée à la
+  barrière attend la seconde.
 \begin{lstlisting} 
 void init() {
   lock(m1);
@@ -868,8 +853,12 @@ Tâche 2:
 \subsection{Condition}
 
 \begin{frame}[fragile]{Conditions}
-Peut être considéré comme des \emph{rendez-vous} à sens unique. Si une tâche attend, elle est débloquée, sinon, aucun effet. Très utilisée pour le pattern des \cmd{work-thread}
-\begin{lstlisting} 
+  Peut être  considéré comme des \emph{rendez-vous} à  sens unique. Si
+  une  tâche attend,  elle  est débloquée,  sinon,  aucun effet.  Très
+  utilisée pour le pattern des \cmd{work-thread}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{lstlisting} 
 void init() {
   lock(m);
 }
@@ -882,128 +871,121 @@ void signal() {
   unlock(m);
   try_lock(m);
 }
-
-// broadcast debloque tous les waiters que signal en deloque un uniquement
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{lstlisting} 
+// broadcast debloque tous les 
+// waiters que alors signal en 
+// debloque uniquement un
 void broadcast()  {
-  // Plus complexe, il faut un mutex par waiters. 
+  // Plus complexe, il faut 
+  // un mutex par waiters. 
 }
-\end{lstlisting} 
+      \end{lstlisting} 
+    \end{column}
+  \end{columns}
 \end{frame} 
 
+\subsection{Buffer circulaire et Queue}
 
-\subsection{Buffer circulaire}
-
-\begin{frame}[fragile]{Buffer circulaire}
-\note{A déplacer dans les interruptions, faire une réference ici}
-\begin{lstlisting}
-char buf[SIZE]; 
-void init() {
-  w = r = 0;
-}
-
-void write(char c) {
-  if ((w + 1) % SIZE == r )
-    ; //buffer is full
-  buf[w] = c;
-  w = (w + 1) % SIZE;
-}
-
-void read() {
-  if (w == r)
-    ; //buffer is empty
-  ret = buf[r];
-  r = (r + 1) % SIZE;
-}
-\end{lstlisting} 
-
-Pas de mutex: peut-être utilisé dans une interruption
+\begin{frame}[fragile]{Buffer circulaire et Queue}
+  \begin{itemize} 
+  \item  Précédement décrit dans  la section  ``Partage d'informtaiton
+    avec les interruptions''
+  \item Fonctionne aussi très bien entre les tâches
+  \item Une  des rare structure  permettant d'être paratgée à  la fois
+    avec une interruption et des tâches
+  \item Faire attention à l'allocation dynamique des objets
+  \end{itemize}
 \end{frame} 
 
-\subsection{Queue}
+\subsection{Spin Lock, Mutex et désactivation des interruptions}
 
-\begin{frame}{Queue}
-\note{A déplacer dans les interruptions, faire une réference ici}
-Idem  Buffer circulaire,  mais avec  un tableau  de structure.  Il est
-aussi possible de faire des Queue d'objets de tailles différente. Dans
-ce cas,  faire très attention à l'allocation  des objets. L'allocation
-dynamique est rarement une opération très bornée dans le temps.
-\end{frame} 
+\begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
+  Lorsque:
+  \begin{itemize} 
+  \item  Vos  sections critique  font  intervenir  des  tâches et  des
+    interruptions
+  \item Votre problème ne concerne  pas un échange de données (et donc
+    le buffer circulaire n'est pas une solution)
+  \item Vous ne pouvez pas faire autrement
+  \end{itemize} 
+  alors,   vous  devez   combiner  les   trois   mécanismes  suivants:
+  Désactivation des interruptions, Mutex et Spin Lock.
 
-\subsection{Spin Lock}
-\begin{frame}[fragile]{Spin Lock}
-\note{A déplacer dans les interruptions, faire une réference ici}
-Attente active
-\begin{lstlisting} 
-void lock(int m) {
-  while(atomic_test_and_set(m))
-     ;
-}
+  Le point sur ces trois mécanismes:
+  \begin{itemize} 
+  \item  Si  une  ressource  est   partagé  entre  une  tâche  et  une
+    interruption sur  le même coeur,  il est nécessaire  de désactiver
+    les interruptions
+  \item  Si une ressource  est partagé  entre deux  tâche sur  un même
+    coeur, il est nécessaire d'utiliser un mutex
+  \item Si  la ressource est  partagée avec un  autre coeur et  que le
+    temps d'utilisation est court, utilisez un Spin Lock.
+  \end{itemize}
+\end{frame}
 
-void unlock(int m) {
-  m = 0;
-}
-\end{lstlisting} 
-
-Uniquement dans le  cas d'architecture multicoeur. Cas ou  le spin est
-locké par un autre processeur pour  une courte période. Dans ce cas le
-réordonnacement à un cout plus important que l'attente.
-
-Dans le cas  ou un spin lock  serait bloqué par une tâche  sur le même
-processeur, il  faut théoriquement attendre la préemption  pour que la
-tâche soit reschedulée.  Si la tâche est de  haute priorité, cela peut
-conduire à un  dead lock. (Il y a très souvent  un garde-fou contre ce
-problème).
+\begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
+  On pourrait imaginer un cas cimmulant les trois contraintes:
+  \begin{lstlisting} 
+disable_interrupts()
+mutex_lock(m)
+spin_lock(s)
+a++
+spin_unlock(s)
+mutex_unlock(m)
+enable_interrupts()
+  \end{lstlisting} 
+  Globalement, évitez!
 \end{frame} 
 
 \subsection{Algorithmes non-bloquants}
+
 \begin{frame}{Algorithmes non-bloquants}
-Algorithme thread-safe n'utilisant pas de sections ciritques. 
-Ces algorithmes utilisent souvant des instructions atomiques proposés par certains processeurs
-Par conséquant, ils sont peu portables
-Souvent utilisé dans les base de données
+  \begin{itemize} 
+  \item Algorithme thread-safe n'utilisant pas de sections ciritques. 
+  \item Ces  algorithmes utilisent souvant  des instructions atomiques
+    proposés par certains processeurs
+  \item Par conséquant, ils sont peu portables
+  \item Souvent utilisé dans les base de données
+  \end{itemize} 
 \end{frame} 
 
 \subsection{RCU}
 \begin{frame}[fragile]{Read-Copy-Update}
 Type d'algorithme non bloquant
-Particulièrement utile pour les manipulation de listes:
 
+Particulièrement utile pour les manipulation de listes:
 \begin{lstlisting} 
-struct rcu_t {
+typedef struct {
    struct a_t a;
    int count_usage = 0;
    bool obsolete = false;
-}
-rcu_t *a = ammloc(sizeof(rcu_t)); 
+} rcu_t;
+rcu_t *a = malloc(sizeof(rcu_t)); 
 
-struct a_t *a = malloc(sizeof(struct a_t));
-int *count_usage = malloc(sizeof(int));
-*count_usage = 0;
-mutex m;
+void read_a() {
+  // lock:
+  rcu_t *ptr = a;
+  ptr->count_usage++;
 
-read_a() {
-   readlock() {
-     rcu_t *ptr = a;
-     ptr->count_usage++;
-     return ptr;
-   }
-   Do_something with ptr;
+  // do something with ptr;
 
-   read_unlock(ptr) {
-     ptr->count_usage--;
-     if (ptr->obsolete && ! ptr->count_usage)
-        free(ptr);
-    }
+  // unlock:
+  ptr->count_usage--;
+  if (ptr->obsolete && ! ptr->count_usage)
+    free(ptr);
 }
 
-write_a() { 
+void write_a() { 
    struct rcu_t *a3 = a;
-   struct rcu_t *a2 = malloc(sizeof(struct rcu_t));
+   struct rcu_t *a2 = malloc(sizeof(rcu_t));
    memcpy(a2, a);
-   modify a2;   
+   // modify a2;   
    a = a2;  
-   a3.obsolete = true;
-   if (!a3.count_usage)
+   a3->obsolete = true;
+   if (!a3->count_usage)
       free(ptr);
 }
 \end{lstlisting} 
