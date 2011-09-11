@@ -9,10 +9,6 @@
 %     - Jérôme Pouiller <jezz@sysmic.org>
 %
 
-% Il faut commencer par la, c'est le plus simple: priorités
-% statiques, préemption, RR, RM, EDF, Background, Serveur
-% scrutation, Serveur différé, Serveur sporadique
-
 \part{Ordonnancement}
 
 \section{Quelques notions théoriques}
@@ -25,45 +21,19 @@
     \item Date d'arrivée de la tâche dans le système : $S_i$
     \item Première date d'activation : $R_i$
     \item Période d'activation : $T_i$
-    \item Délai critique (délai maximum acceptable pour son exécution)
-      : $D_i$
+    \item Délai critique  ou \emph{deadline} (Délai maximum acceptable
+      pour son exécution) : $D_i$
     \item Capacité (Temps CPU nécessaire à l'éxecution de la tâche) :
       $C_i$
   \end{itemize}
-  \note{Ajouter le schéma de Touchard}
 \end{frame}
 
 \begin{frame}{Modèle de tâches}
   \begin{center}
-  \begin{tikzpicture}[scale=0.75]
-   %\draw[xstep=1,ystep=0.1,gray,very thin] (0,0) grid (#1.5,#2);
-   \draw[->, line width=1pt] (0,-2) -- (14.5,-2) coordinate (x axis);
-   \draw[line width=1pt] (0,-2) -- (0,0) coordinate (x axis);
-   \foreach \x in {0,1,...,14}
-      \draw (\x,-2) node[anchor=north] {\tiny\x};
-   \fill[cgreen]  (0,-1.5) \lo 3 \hi 2 \lo 3 \hi 1 \lo 1 \hi 1 \lo 2;
-   \foreach \i in {2, 8}
-      \pb{\i}{-1}{cgreen};
-   \foreach \i in {7, 13}
-      \pe{\i}{-1}{cgreen};
-   \draw (-0.5,-1) node {$i$};
-   \draw (1,-2.1) -- (1,1.2) node[above] {$S_i$};
-   \draw (2,-2.1) -- (2,1.2) node[above] {$R_i$};
-   \draw (7,-2.1) -- (7,0.6);
-   \draw (8,-2.1) -- (8,1.2);
-   \draw (13,-2.1) -- (13,0.6);
-   \draw (14,-2.1) -- (14,1.2);
-   \draw[<->] (2,-.3) -- (5,-.3) node[above=-0.1,pos=0.5] {$TR_{1i}$};
-   \draw[<->] (2,0.3) -- (7,0.3) node[above=-0.1,pos=0.5] {$D_i$};
-   \draw[<->] (2,0.9) -- (8,0.9) node[above=-0.1,pos=0.5] {$T_i$}; 
-   \draw[<->] (8,-0.3) -- (12,-0.3) node[above=-0.1,pos=0.5] {$TR_{2i}$};
-   \draw[<->] (8,0.3) -- (13,0.3) node[above=-0.1,pos=0.5] {$D_i$};
-   \draw[<->] (8,0.9) -- (14,0.9) node[above=-0.1,pos=0.5] {$T_i$};
- \end{tikzpicture}
-
+    \input{pics/task_defs}\\
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       $i$ & 2 & 6 & 2 & 5\\
       \hline
@@ -82,25 +52,25 @@
     \item Les tâches sont connues début de l'ordonnacement : $S_i = 0$
     \item Les tâches périodique sont actives dès le début de
       l'ordonnancement : $R_i = 0$
-    \item L'échéance des  tâches périodique est leur période  : $D_i =
+    \item Le délai critique des  tâches périodiques est leur période  : $D_i =
       T_i$
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Modèle de tâches}
+\begin{frame}{Paramètres statiques}
   Paramètres statiques:
   \begin{itemize} 
   \item Date de réveil sur une période $k$ : $r_{ik}$
   \item Echéance sur une période $k$ : $d_{ik} = r_{ik} + D_i$
   \item Facteur d'utilisation du processeur: $U_i =  C_i / T_i$
   \item Facteur de charge du processeur : $CH_i = C_i / D_i $ ($CH_i =
-    U_i$ si échéance sur périodes)
+    U_i$ si délai critique sur périodes)
   \item Laxité de la tâche (retard maximum acceptable pour l'exécution
     de la tâche) : $L_i = D_i - C_i$
   \end{itemize} 
 \end{frame}
 
-\begin{frame}{Modèle de tâches}
+\begin{frame}{Paramètres dynamiques}
   Paramètres dynamiques (dépendant de l'ordonnancement):
   \begin{itemize} 
   \item Priorité (peut être dynamique ou statique) : $P_i$
@@ -108,7 +78,6 @@
   \item Date de la fin de l'exécution d'une période $k$ :$e_{ik}$
   \item Temps de réponse de la tâche $TR_{ik} = e_{ik} - r_{ik}$ (Nous
     verrons comment le calculer)
-    % = C_i + \sum_{prio(j) > prio(i)} \left\lceil\frac{TR_i}{P_j}\right\rceil C_j$
   \item Durée d'exécution résiduelle à la date $t$ : $C_i(t)$ ($0 ≤
     C_i(t) ≤ C_i$)
   \item Délai  critique résiduel à la  date $t$ :  $D_i(t) = d_{ik}-t$
@@ -125,7 +94,6 @@
 \end{frame}
 
 \note{Peut-etre ajouter slide 5 de Touchar}
-\note{J'ai placé le slide 7 avant le slide 6 de touchard}
 
 \begin{frame}{Paramètres du système}
   \begin{itemize} 
@@ -134,7 +102,7 @@
   \item Taux d'utilisation du processeur : $U = \sum_i U_i$
   \item Taux de charge du processeur : $CH = \sum_i CH_i$
   \item Intervalle d'étude :  intervalle de temps minimum pour prouver
-    l'ordonnançabilité  d'une  configuration
+    l'ordonnancabilité  d'une  configuration
     \begin{itemize} 
     \item  Dans  le  cas de  tâches périodiques: $ppcm_i(T_i)$
     \item  Dans le cas  de tâches  apériodiques: $\left[\min_i\{R_i\},
@@ -152,80 +120,6 @@
   \end{center}
 \end{frame} 
 
-\subsection{Théroème de l'instant critique}
-
-\begin{frame}{Théorème de l'instant critique}
-  Si toutes les  tâches arrivent initialement dans le  système en même
-  temps et  si elles respectent  leur première échéance,  alors toutes
-  les  échéances  seront  respectées  par  la  suite,  quel  que  soit
-  l'instant d'arrivée des tâches.
-
-  \begin{itemize}
-  \item  C'est une condition  nécessaire et  suffisante si  toutes les
-    tâches du système sont initialement prêtes au même instant.
-  \item Dans le cas contraire, c'est une condition suffisante
-  \end{itemize}
-
-  Si $D_i = T_i$, le test de terminaison est :
-  $$\forall i, 1 ≤ i ≤ n \;\;\;\min_{0 ≤ t ≤ D_i}
-  \sum_{j=1}^i\frac{C_j}{t}
-  \left\lfloor\frac{t}{T_j}\right\rfloor ≤ 1$$
-\end{frame}
-
-\subsection{Temps de réponse}
-
-\begin{frame}{Temps de réponse}
-  Délai entre l'activation d'une tâche et sa terminaison. 
-
-  $$TR_i = C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
-
-\end{frame}
-
-\begin{frame}{Calcul du temps de réponse}
-  Technique de calcul : on évalue de façon itérative
-  $$w_i^{n+1}=C_i+\sum_{P_j > P_i} \left\lceil\frac{w_i^n}{T_j}\right\rceil C_j$$
-
-  \begin{itemize}
-    \item On démarre avec $w_i^0 = C_i$
-    \item Echec si $w_i^n > T_i$
-    \item Réussite si $w_i^{n+1} = w_i^n$
-  \end{itemize}
-\end{frame} 
-
-\begin{frame}{Calcul du temps de réponse}
-  \textbf{Exemple :}
-  \begin{center}
-    \begin{tabular}{cccccc}
-      \hline
-      Tâche & Arrivée & Période & Capacité & Echéance & Priorité \\
-      \hline
-      A & 0 &  7 & 3 & Fin de période & 1\\
-      B & 0 & 12 & 2 & Fin de période & 2\\
-      C & 0 & 20 & 5 & Fin de période & 3\\
-      \hline
-    \end{tabular}
-  \end{center}
-  \begin{columns}
-    \begin{column}{5cm}
-      \begin{align*}
-        w_1^0 &= C_1 = 3\\
-        w_2^0 &= C_2 = 2\\
-        w_2^1 &= 2 + 3 \left\lceil\frac{2}{7}\right\rceil = 5\\
-        w_2^2 &= 2 + 3 \left\lceil\frac{5}{7}\right\rceil = 5\\
-        w_3^0 &= C_3 = 5\\
-        w_3^1 &= 5 + 3 \left\lceil\frac{5}{7}\right\rceil + 2 \left\lceil\frac{5}{12}\right\rceil = 10\\
-      \end{align*} 
-    \end{column}
-    \begin{column}{5cm}
-      \begin{align*}
-        w_3^2 &= 5 + 3 \left\lceil\frac{10}{7}\right\rceil + 2 \left\lceil\frac{10}{12}\right\rceil = 13\\
-        w_3^3 &= 5 + 3 \left\lceil\frac{13}{7}\right\rceil + 2 \left\lceil\frac{13}{12}\right\rceil = 15\\
-        w_3^4 &= 5 + 3 \left\lceil\frac{15}{7}\right\rceil + 2 \left\lceil\frac{15}{12}\right\rceil = 18\\
-        w_3^5 &= 5 + 3 \left\lceil\frac{18}{7}\right\rceil + 2 \left\lceil\frac{18}{12}\right\rceil = 18\\
-      \end{align*} 
-    \end{column}
-  \end{columns}
-\end{frame}
 
 \section{Algorithmes à priorité statique}
 
@@ -251,9 +145,78 @@
   \end{itemize}
 \end{frame}
 
-% \begin{frame}{Round-Robin}
-% TODO
-% \end{frame} 
+\subsection{Théroème de l'instant critique}
+
+\begin{frame}{Théorème de l'instant critique}
+  Si toutes les  tâches arrivent initialement dans le  système en même
+  temps et  si elles respectent  leur première échéance,  alors toutes
+  les  échéances  seront  respectées  par  la  suite,  quel  que  soit
+  l'instant d'arrivée des tâches.
+
+  \begin{itemize}
+  \item  C'est une condition  nécessaire et  suffisante si  toutes les
+    tâches du système sont initialement prêtes au même instant.
+  \item Dans le cas contraire, c'est une condition suffisante
+  \end{itemize}
+
+  % Si $\forall i, D_i = T_i$, le test de terminaison est :
+  % $$\forall i, min_{0 ≤ t ≤ D_i}
+  % \sum_{j=1}^i\frac{C_j}{t}
+  % \left\lfloor\frac{t}{T_j}\right\rfloor ≤ 1$$
+\end{frame}
+
+\subsection{Temps de réponse}
+
+\begin{frame}{Temps de réponse}
+  Délai entre l'activation d'une tâche et sa terminaison. 
+  $$TR_i = C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
+\end{frame}
+
+\begin{frame}{Calcul du temps de réponse}
+  Technique de calcul : on évalue de façon itérative
+  $$w_i^{n+1}=C_i+\sum_{P_j > P_i} \left\lceil\frac{w_i^n}{T_j}\right\rceil C_j$$
+
+  \begin{itemize}
+    \item On démarre avec $w_i^0 = C_i$
+    \item Echec si $w_i^n > T_i$
+    \item Réussite si $w_i^{n+1} = w_i^n$
+  \end{itemize}
+\end{frame} 
+
+\begin{frame}{Calcul du temps de réponse}
+  \textbf{Exemple :}
+  \begin{center}
+    \begin{tabular}{cccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Délai & Priorité \\
+      \hline
+      A & 0 &  7 & 3 & Fin de période & 1\\
+      B & 0 & 12 & 2 & Fin de période & 2\\
+      C & 0 & 20 & 5 & Fin de période & 3\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \pause  
+  \begin{columns}
+    \column{.5\textwidth}
+    \begin{align*}
+      w_1^0 &= C_1 = 3\\
+      w_2^0 &= C_2 = 2\\
+      w_2^1 &= 2 + 3 \left\lceil\frac{2}{7}\right\rceil = 5\\
+      w_2^2 &= 2 + 3 \left\lceil\frac{5}{7}\right\rceil = 5\\
+      w_3^0 &= C_3 = 5\\
+      w_3^1 &= 5 + 3 \left\lceil\frac{5}{7}\right\rceil + 2 \left\lceil\frac{5}{12}\right\rceil = 10\\
+    \end{align*} 
+    
+    \column{.5\textwidth}
+    \begin{align*}
+      w_3^2 &= 5 + 3 \left\lceil\frac{10}{7}\right\rceil + 2 \left\lceil\frac{10}{12}\right\rceil = 13\\
+      w_3^3 &= 5 + 3 \left\lceil\frac{13}{7}\right\rceil + 2 \left\lceil\frac{13}{12}\right\rceil = 15\\
+      w_3^4 &= 5 + 3 \left\lceil\frac{15}{7}\right\rceil + 2 \left\lceil\frac{15}{12}\right\rceil = 18\\
+      w_3^5 &= 5 + 3 \left\lceil\frac{18}{7}\right\rceil + 2 \left\lceil\frac{18}{12}\right\rceil = 18\\
+    \end{align*} 
+  \end{columns}
+\end{frame}
 
 \subsection{Rate Monotonique (RM)}
 
@@ -264,15 +227,15 @@
   Fonctionne  en version préemptive.  La version  non-préemptive n'est
   pas garantie.
 
-  Liu et Layland ont démontré qu'un système est ordonnançable si le
+  Liu et Layland ont démontré qu'un système est ordonnancable si le
   taux d'occupation du processeur $U$ vérifie la condition suffisante
   (non nécessaire) suivante :
 
   \begin{columns}
-    \begin{column}{5cm}
+    \column{.5\textwidth}
       $$U = \sum_i^n \frac{C_i}{T_i} ≤ n \left(2^{\frac{1}{n}}-1\right)$$
-    \end{column}
-    \begin{column}{5cm}
+
+    \column{.5\textwidth}
       \begin{center}
         \begin{tabular}{cc}
           \hline
@@ -288,7 +251,6 @@
           \hline
         \end{tabular}
       \end{center}
-    \end{column}
   \end{columns}
 \end{frame}
 
@@ -296,7 +258,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 8 & Fin de période\\
       B & 0 & 10 & 1 & Fin de période\\
@@ -304,61 +266,67 @@
       \hline
     \end{tabular}
   \end{center}
-  Charge du CPU:
-  $$\frac{8}{40} + \frac{1}{10} + \frac{1}{4} = 0.75$$
-\end{frame} 
+  \begin{overprint}
+    \onslide<1>
+    \onslide<2>
+    Charge du CPU:
+    $$\frac{8}{40} + \frac{1}{10} + \frac{1}{4} = 0.75$$
 
-\begin{frame}{Exemple 1}
-  Mode préemptif ($ppcm(4, 10, 20) = 20$):\\ 
-  % CBAACAAACABACAAACXXX
-  \begin{tikzpicture}[scale=0.5]
-    \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
-    \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi 2 \lo 1 \hi 3 \lo 1 \hi 1 \lo 1 \hi 1 \lo 1 \hi 3 \lo 1 \lo 3 \lo 1;
-    \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo 2 \lo 1 \lo 3 \lo 1 \lo 1 \hi 1 \lo 1 \lo 1 \lo 3 \lo 1 \lo 3 \lo 1;
-    \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo 2 \hi 1 \lo 3 \hi 1 \lo 1 \lo 1 \lo 1 \hi 1 \lo 3 \hi 1 \lo 3 \hi 1;
-
-    \pb{0}{-1}{cgreen};
-    \p{20}{-1}{cgreen};
-    \pb{0}{-2.5}{cred};
-    \p{10}{-2.5}{cred};
-    \p{20}{-2.5}{cred};
-    \pb{0}{-4}{cblue};
-    \p {4}{-4}{cblue};
-    \p {8}{-4}{cblue};
-    \p{12}{-4}{cblue};
-    \p{16}{-4}{cblue};
-    \p{20}{-4}{cblue};
-    \end{tikzpicture}
-    \\
-    Mode non-préemptif :\\ 
-    % CBAAAAAAAAAACCCBXCXXX
-    \begin{tikzpicture}[scale=0.5]
+    \onslide<3>
+    Mode préemptif ($ppcm(4, 10, 20) = 20$) :
+    \begin{center}
+      \begin{tikzpicture}[scale=0.5]
+        % CBAACAAACABACAAACXXX
       \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
-      \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi{10} \lo 3 \lo 1 \lo 1 \lo 1 \lo 2 \lo 1;
-      \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo{10} \lo 3 \hi 1 \lo 1 \lo 1 \lo 2 \lo 1;
-      \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo{10} \hi 3 \lo 1 \lo 1 \hi 1 \lo 2 \hi 1;
-
-    \pb{0}{-1}{cgreen};
-    \p{20}{-1}{cgreen};
-    \pb{0}{-2.5}{cred};
-    \p{10}{-2.5}{cred};
-    \p{20}{-2.5}{cred};
-    \pb{0}{-4}{cblue};
-    \p {4}{-4}{cblue};
-    \p {8}{-4}{cblue};
-    \p{12}{-4}{cblue};
-    \p{16}{-4}{cblue};
-    \p{20}{-4}{cblue};
-    \draw (8, -4) node {\textcolor{red!80}{\huge{$\times$}}};
-    \draw (12, -4) node {\textcolor{red!80}{\huge{$\times$}}};
+      \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi 2 \lo 1 \hi 3 \lo 1 \hi 1 \lo 1 \hi 1 \lo 1 \hi 3 \lo 1 \lo 3;
+      \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo 2 \lo 1 \lo 3 \lo 1 \lo 1 \hi 1 \lo 1 \lo 1 \lo 3 \lo 1 \lo 3;
+      \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo 2 \hi 1 \lo 3 \hi 1 \lo 1 \lo 1 \lo 1 \hi 1 \lo 3 \hi 1 \lo 3;
+      \pb{0}{-1}{cgreen};
+      \p{20}{-1}{cgreen};
+      \pb{0}{-2.5}{cred};
+      \p{10}{-2.5}{cred};
+      \p{20}{-2.5}{cred};
+      \pb{0}{-4}{cblue};
+      \p {4}{-4}{cblue};
+      \p {8}{-4}{cblue};
+      \p{12}{-4}{cblue};
+      \p{16}{-4}{cblue};
+      \p{20}{-4}{cblue};
     \end{tikzpicture}
+  \end{center}
+
+  \onslide<4>
+  Mode non-préemptif :
+  \begin{center}
+    \begin{tikzpicture}[scale=0.5]
+      % CBAAAAAAAAAACCCBXCXXX
+      \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
+      \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi{10} \lo 3 \lo 1 \lo 1 \lo 1 \lo 2;
+      \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo{10} \lo 3 \hi 1 \lo 1 \lo 1 \lo 2;
+      \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo{10} \hi 3 \lo 1 \lo 1 \hi 1 \lo 2;
+      \pb{0}{-1}{cgreen};
+      \p{20}{-1}{cgreen};
+      \pb{0}{-2.5}{cred};
+      \p{10}{-2.5}{cred};
+      \p{20}{-2.5}{cred};
+      \pb{0}{-4}{cblue};
+      \p {4}{-4}{cblue};
+      \p {8}{-4}{cblue};
+      \p{12}{-4}{cblue};
+      \p{16}{-4}{cblue};
+      \p{20}{-4}{cblue};
+      \draw (8, -4) node {\textcolor{red!80}{\huge{$\times$}}};
+      \draw (12, -4) node {\textcolor{red!80}{\huge{$\times$}}};
+    \end{tikzpicture}
+  \end{center}
+\end{overprint}
 \end{frame}
 
 \begin{frame}{Exemple 2}
     \begin{center}
       \begin{tabular}{ccccc}
         \hline
-        Tâche & Arrivée & Période & Capacité & Echéance \\
+        Tâche & Arrivée & Période & Capacité & Délai \\
         \hline
         A & 0 & 16 & 8 & Fin de période\\
         B & 0 &  8 & 2 & Fin de période\\
@@ -366,23 +334,27 @@
         \hline
       \end{tabular}
     \end{center}
+    \pause
+    Charge du CPU:
     $$\frac{8}{16} + \frac{2}{8} + \frac{1}{4} = 1$$
-    \input{pics/RM-2.tex}
+    \pause
+    \begin{center}
+      \input{pics/RM-2.tex}
+    \end{center}
 \end{frame}
 
 \subsection{Deadline Monotonic (DM)}
-\note{ajouter un exemple montrant la différence entre les deux}
 
 \begin{frame}{Deadline Monotonic (DM)} 
   \begin{itemize}
   \item Algorithme à priorité statique
-\item Généralisation de Rate Monotonic aux tâches à échéance sur requête
+  \item Généralisation de Rate Monotonic pour les tâche avec $D_i < T_i$
   \item Basé sur le délai critique :
     \begin{itemize}
     \item La tâche de plus petit délai critique est la plus prioritaire
     \end{itemize}
-\item Test d'acceptabilité:
-  $$U = \sum_i^n \frac{C_i}{D_i} ≤ n \left(2^{\frac{1}{n}}-1\right)$$
+  \item Test d'acceptabilité (suffisant mais pas nécessaire):
+    $$U = \sum_i^n \frac{C_i}{D_i} ≤ n \left(2^{\frac{1}{n}}-1\right)$$
   \item Equivalent à Rate Monotonic  dans le cas des tâches à échéance
     sur requête, meilleur dans les autres cas
   \end{itemize}
@@ -392,7 +364,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 3 & 7\\
       B & 0 &  5 & 2 & 4\\
@@ -400,53 +372,27 @@
       \hline
     \end{tabular}
   \end{center}
-\end{frame} 
-
-\begin{frame}{Exemple}
-  Par RM:
-  $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75$$
-  % BBCCABBAAXBBCC
-  \begin{tikzpicture}[scale=0.5]
-    \timeline{15}{-5}{-1.0/A, -2.5/B, -4.0/C}
-    \fill[cgreen] (0,-1.5) \lo 2 \lo 2 \hi 1 \lo 2 \hi 2 \lo 1 \lo 2 \lo 2;
-    \fill[cred]   (0,-3.0) \hi 2 \lo 2 \lo 1 \hi 2 \lo 2 \lo 1 \hi 2 \lo 2;
-    \fill[cblue]  (0,-4.5) \lo 2 \hi 2 \lo 1 \lo 2 \lo 2 \lo 1 \lo 2 \hi 2;
-    \pb{0}{-1}{cgreen};
-    \pe{7}{-1}{cgreen};
-    \pb{0}{-2.5}{cred};
-    \pe{4}{-2.5}{cred};
-    \pb{5}{-2.5}{cred};
-    \pe{9}{-2.5}{cred};
-    \pb{10}{-2.5}{cred};
-    \pe{14}{-2.5}{cred};
-    \pb{0}{-4}{cblue};
-    \pe{9}{-4}{cblue};
-    \pb{10}{-4}{cblue};
-    \draw (7, -1) node {\textcolor{red!80}{\huge{$\times$}}};
-  \end{tikzpicture}
-\end{frame}
-
-\begin{frame}{Exemple}
-  Par DM:
-  $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15$$
-  % BBAAABBCCXBBCC
-  \begin{tikzpicture}[scale=0.5]
-    \timeline{15}{-5}{-1.0/A, -2.5/B, -4.0/C}
-    \fill[cgreen] (0,-1.5) \lo 2 \hi 3 \lo 2 \lo 2 \lo 1 \lo 2 \lo 2;
-    \fill[cred]   (0,-3.0) \hi 2 \lo 3 \hi 2 \lo 2 \lo 1 \hi 2 \lo 2;
-    \fill[cblue]  (0,-4.5) \lo 2 \lo 3 \lo 2 \hi 2 \lo 1 \lo 2 \hi 2;
-    \pb{0}{-1}{cgreen};
-    \pe{7}{-1}{cgreen};
-    \pb{0}{-2.5}{cred};
-    \pe{4}{-2.5}{cred};
-    \pb{5}{-2.5}{cred};
-    \pe{9}{-2.5}{cred};
-    \pb{10}{-2.5}{cred};
-    \pe{14}{-2.5}{cred};
-    \pb{0}{-4}{cblue};
-    \pe{9}{-4}{cblue};
-    \pb{10}{-4}{cblue};
-  \end{tikzpicture}
+  \begin{overprint}
+    \onslide<1>
+    \onslide<2>
+    Charge CPU:
+    $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75$$
+    \onslide<3>  
+    Par RM:
+    \begin{center}
+      % BBCCABBAAXBBCC
+      \input{pics/DM-1}
+    \end{center}
+    \onslide<4>  
+    Test d'acceptabilité:
+    $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15$$
+    \onslide<5>  
+    Par DM:
+    \begin{center}
+      % BBAAABBCCXBBCC
+      \input{pics/DM-2}
+    \end{center}
+  \end{overprint}
 \end{frame} 
 
 \section{Algorithmes à priorité dynamique}
@@ -478,7 +424,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 3 & 7\\
       B & 0 &  5 & 2 & 4\\
@@ -486,32 +432,27 @@
       \hline
     \end{tabular}
   \end{center}
+  \begin{overprint}
+    \onslide<1>
+
+    \onslide<2>
+    Condition nécessaire:
     $$\frac{3}{20} + \frac{2}{5} + \frac{2}{10} = 0.75 ≤ 1$$
+    Condition suffisante:
     $$\frac{3}{7} + \frac{2}{4} + \frac{2}{9} = 1.15 > 1$$
+
+    \onslide<3>
     Par DM:
-    \input{pics/EDF-1.tex}
+    \begin{center}
+      \input{pics/EDF-1}
+    \end{center}
+
+    \onslide<4>
     Par EDF:
-    % BBAAACCBBXBBCCXBBXXX
-    \begin{tikzpicture}[scale=0.5]
-      \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
-      \fill[cgreen] (0,-1.5) \lo 2 \hi 3 \lo 2 \lo 2 \lo 1 \lo 2 \lo 2 \lo 1 \lo 2 \lo 3;
-      \fill[cred]   (0,-3.0) \hi 2 \lo 3 \lo 2 \hi 2 \lo 1 \hi 2 \lo 2 \lo 1 \hi 2 \lo 3;
-      \fill[cblue]  (0,-4.5) \lo 2 \lo 3 \hi 2 \lo 2 \lo 1 \lo 2 \hi 2 \lo 1 \lo 2 \lo 3;
-    \pb{0}{-1}{cgreen};
-    \pe{7}{-1}{cgreen};
-    \pb{0}{-2.5}{cred};
-    \pe{4}{-2.5}{cred};
-    \pb{5}{-2.5}{cred};
-    \pe{9}{-2.5}{cred};
-    \pb{10}{-2.5}{cred};
-    \pe{14}{-2.5}{cred};
-    \pb{15}{-2.5}{cred};
-    \pe{19}{-2.5}{cred};
-    \pb{0}{-4}{cblue};
-    \pe{8}{-4}{cblue};
-    \pb{10}{-4}{cblue};
-    \pe{18}{-4}{cblue};
-    \end{tikzpicture}
+    \begin{center}
+      \input{pics/EDF-2}
+    \end{center}
+  \end{overprint}
 \end{frame} 
   
 \subsection{Least Slack Time (LST)}
@@ -520,8 +461,6 @@
   \begin{itemize}
   \item Algorithme à priorité dynamique
   \item Aussi appelé \emph{Least Laxity First (LLF)}
-  \item   Amélioration   de  EDF.   Mêmes   propriétée,  mais   permet
-    d'ordonnancer des problèmes non-ordonnancable par EDF.
   \item Basé sur la laxité résiduelle: 
     \begin{itemize}
     \item La  priorité maximale est  donnée à la  tâche qui a  la plus
@@ -536,6 +475,10 @@
       de SLEEP  à RUN =sur evenement  = rare).  Ici il  faut choisr un
       quantum pour le  calcul de la laxité.  Néanmoins,  c'est deja ce
       qu'on fait des que l'on souhaite faire du round robin.}
+  \item Permet d'être parfois plus résistant aux erreurs
+  \item Demande une connaissance de la capacité des tâches
+  \item Gain discutable
+  \item Peu utilisé dans la pratique
   \end{itemize}
 \end{frame}
 
@@ -543,7 +486,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 1 & 7\\
       B & 0 &  5 & 2 & 3\\
@@ -551,35 +494,50 @@
       \hline
     \end{tabular}
   \end{center}
-  Par EDF:\\
-  \input{pics/LST-1.tex}
+  \begin{overprint}
+    \onslide<1>
 
-  Par LST, en recalculant l'algorithme à chaque période:\\
-  \input{pics/LST-2.tex}
+    \onslide<2>
+    Par EDF:
+    \begin{center}  
+      \input{pics/LST-1.tex}
+    \end{center}
+
+    \onslide<3>
+    Par LST, en recalculant l'algorithme à chaque période:
+    \begin{center}  
+      \input{pics/LST-2.tex}
+    \end{center}
+  \end{overprint}
 \end{frame} 
 
 \begin{frame}{Exemple - 2}
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
-      A & 0 & 17 & 5 & Fin de période\\
-      B & 0 & 18 & 5 & Fin de période\\
+      A & 0 & 17 & 7 & Fin de période\\
+      B & 0 & 18 & 7 & Fin de période\\
       \hline
     \end{tabular}
   \end{center}
-  Par EDF:\\
-  \input{pics/LST-3.tex}
-
-  Par LST, en recalculant l'algorithme à chaque période:\\
-  \input{pics/LST-4.tex}
+  Par EDF:
+  \pause
+  \begin{center}  
+    \input{pics/LST-3.tex}
+  \end{center}
+  Par LST, en recalculant l'algorithme à chaque période:
+  \pause
+  \begin{center}  
+    \input{pics/LST-4.tex}
+  \end{center}
 \end{frame} 
 
 \section{Serveurs de tâches apériodiques}
 
 
-\begin{frame}{Introduction} 
+\begin{frame}{Tâches apériodiques} 
   \begin{itemize}
   \item Tâches prises en compte dans une configuration comprenant déjà
     des tâches périodiques
@@ -602,12 +560,12 @@
 \begin{frame}{Traitement en arrière-plan} 
   \begin{itemize}
   \item Aussi appellé \emph{backgound} ou sur \emph{temps creux}
-  \item tâches apériodiques ordonnancées quand le processeur est oisif 
+  \item Tâches apériodiques ordonnancées quand le processeur est oisif 
     \begin{itemize}
-    \item les tâches périodiques restent les plus prioritaires 
+    \item Les tâches périodiques restent les plus prioritaires 
     \end{itemize}
-  \item ordonnancement relatif des tâches apériodiques en mode FIFO 
-  \item traitement le plus simple, mais le moins performant 
+  \item Ordonnancement relatif des tâches apériodiques en mode FIFO 
+  \item Traitement le plus simple, mais le moins performant 
   \item Pas de  marge de manoeuvre pour améliorer  le temps de réponse
     des  tâches apériodique.  Potentiellement, les  tâches apériodique
     peuvent avoir des temps de réponse long.
@@ -619,7 +577,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 &  5 & 2 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
@@ -628,10 +586,22 @@
       3 & 0 & 11 & 2 & Aucune\\
       \hline
     \end{tabular}
-
+    \pause
     % AABB1AA1X2AABB1AA33
     \input{pics/aperiod-bg.tex}
-    \note{ Remarquons les temps de réponses: 1: 4, 2: 5, 3: 9}
+  \end{center}
+\end{frame} 
+
+\begin{frame}{Traitement en arrière-plan} 
+  Avec ordonnancement RM des tâches périodiques:
+  \begin{center}
+    % AABB1AA1X2AABB1AA33
+    \input{pics/aperiod-bg.tex}
+    \begin{align*}
+      TR_1 &= 4\\
+      TR_2 &= 5\\
+      TR_3 &= 9\\
+    \end{align*}
   \end{center}
 \end{frame} 
 
@@ -639,19 +609,22 @@
 
 \begin{frame}{Traitement par serveur} 
   \begin{itemize}
-  \item un  serveur est une  tâche périodique créée  spécialement pour
+  \item Un  serveur est une  tâche périodique créée  spécialement pour
     prendre en compte les tâches apériodiques
-  \item serveur caractérisé par :
+  \item Un serveur caractérisé par :
     \begin{itemize}
-    \item sa période 
-    \item son temps d'exécution : capacité du serveur  
-    \item serveur  généralement ordonnancé suivant  le même algorithme
-      que les autres tâches périodiques
-    \item une fois actif, le serveur sert les tâches apériodiques dans
-      la limite de sa capacité.
-    \item l'ordre de traitement  des tâches apériodiques ne dépend pas
-      de l'algorithme général
+    \item Sa période 
+    \item Son temps d'exécution : capacité du serveur  
     \end{itemize}
+  \item Un serveur est généralement ordonnancé suivant  le même algorithme
+    que les autres tâches périodiques
+  \item Très  souvent, afin  de diminuer le  temps de  répondes tâches
+    apériodique,  la  priorité  du   serveur  est  haute  (sinon,  ses
+    performances sont identique au traitement sur temps creux)
+  \item Une fois actif, le serveur sert les tâches apériodiques dans
+    la limite de sa capacité.
+  \item l'ordre de traitement  des tâches apériodiques ne dépend pas
+    de l'algorithme général
   \item Il est  possible de le combiner le  traitement avec un serveur
     avec   un   traitement   en   background   (Temps   de   réponse+,
     prédictabilité-)
@@ -685,14 +658,14 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 3 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
       S & 0 &  5 & 2 & Fin de période\\
       \hline
     \end{tabular}
-
+    \pause
     % SSBBASSAAXSSBBXSS
     \input{pics/aperiod-poll-1.tex}
   \end{center} 
@@ -703,7 +676,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 3 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
@@ -713,9 +686,22 @@
       3 & 0 & 10 & 3 & Aucune\\
       \hline
     \end{tabular}
-
+    \pause
     % SSBBA11AAX23BBX3S
     \input{pics/aperiod-poll-2.tex}
+  \end{center}
+\end{frame} 
+
+\begin{frame}{Exemple}
+  Idem avec les 3 tâches apériodiques:
+  \begin{center}
+    % SSBBA11AAX23BBX3S
+    \input{pics/aperiod-poll-2.tex}
+    \begin{align*}
+      TR_1 &= 5\\
+      TR_2 &= 2\\
+      TR_3 &= 7\\
+    \end{align*}
   \end{center}
 \end{frame} 
 
@@ -724,7 +710,7 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 3 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
@@ -734,9 +720,22 @@
       3 & 0 & 10 & 3 & Aucune\\
       \hline
     \end{tabular}
-
+    \pause
     % BBAAA11XXX23BBX3XXXX
     \input{pics/aperiod-poll-3.tex}
+  \end{center}
+\end{frame} 
+
+\begin{frame}{Exemple}
+  Idem, en utilisant les temps creux en plus:
+  \begin{center}
+    % BBAAA11XXX23BBX3XXXX
+    \input{pics/aperiod-poll-3.tex}
+    \begin{align*}
+      TR_1 &= 5\\
+      TR_2 &= 1\\
+      TR_3 &= 5\\
+    \end{align*}
   \end{center}
 \end{frame} 
 
@@ -752,9 +751,12 @@
 \end{frame} 
 
 \begin{frame}{Serveur différé}
-  Aussi appellé serveur ajournable
-  La fausse bonne idée
-  Provoque des erreur d'ordonnancement
+  \begin{itemize} 
+  \item Aussi appellé serveur ajournable
+  \item La fausse bonne idée
+  \item Mal géré, il provoque des erreur d'ordonnancement
+  \item Cas d'éxecution \emph{dos à dos} du serveur
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Exemple}
@@ -762,34 +764,49 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 &  7 & 2 & Fin de période\\
       S & 0 &  6 & 3 & Fin de période\\
       1 & 21 & 0 & 6 & Aucune\\
       \hline
     \end{tabular}
-
-    \input{pics/aperiod-diff-1.tex}
+    \pause
+    \input{pics/aperiod-diff-1}
   \end{center}
-  \note{Le fameux cas dos à dos}
 \end{frame} 
+
+\begin{frame}{Serveur différé}
+  Tout de même possible de l'utiliser si:
+  $$\sum_{i \in TP} \frac{C_i}{T_i} ≤ \ln \frac{U_S + 2}{2U_S + 1}$$
+  Grosso modo,  on exige  que le système  soit ordonnancable  avec une
+  capacité du serveur deux fois plus importante.\\
+  \pause
+  Dans le cas précédant:
+  \begin{align*}
+    \frac{2}{7} &≈ 0.286\\
+    \ln \frac{0.5 + 2}{2 \times 0.5 + 1} &=  \ln 1.25 \\
+         &≈ 0.223\\
+    \frac{2}{7} &\nleq \ln \frac{0.5 + 2}{2 \times 0.5 + 1}
+  \end{align*}
+  \note{Demander de faire le cas précédant en serveur ajournable}
+\end{frame}
 
 \subsection{Serveur sporadique}
 
 \begin{frame}{Serveur sporadique}
   \begin{itemize}
-  \item  améliore le  temps de  réponse des  tâches  apériodiques sans
+  \item  Améliore le  temps de  réponse des  tâches  apériodiques sans
     diminuer  le  taux d'utilisation  du  processeur  pour les  tâches
     périodiques
   \item Très utilisé pour les  IHM car permet une meilleure expérience
     utilisateur
-  \item comme le serveur différé mais 
+  \item Comme le serveur différé mais 
     \begin{itemize}
-    \item  ne retrouve  pas  sa capacité  à  période fixe,  mais à  un
+    \item  Ne retrouve  pas  sa capacité  à  période fixe,  mais à  un
       instant de réinitialisation égal  à la date courante additionnée
       de la période de réinitialisation
-      \item la capacité retrouvée est égale à la capacité consommée 
+      \item La capacité retrouvée est égale à la capacité consommée 
       \end{itemize}
     \end{itemize}
 \end{frame} 
@@ -799,7 +816,49 @@
   \begin{center}
     \begin{tabular}{ccccc}
       \hline
-      Tâche & Arrivée & Période & Capacité & Echéance \\
+      Tâche & Arrivée & Période & Capacité & Délai \\
+      \hline
+      A & 0 & 20 & 3 & Fin de période\\
+      B & 0 & 10 & 2 & Fin de période\\
+      S & 0 &  5 & 2 & Fin de période\\
+      1 & 0 &  3 & 2 & Aucune\\
+      2 & 0 &  9 & 1 & Aucune\\
+      3 & 0 & 10 & 2 & Aucune\\
+      \hline
+    \end{tabular}
+    \pause
+  \input{pics/aperiod-scrut-1.tex}
+  \end{center}
+\end{frame} 
+
+\begin{frame}{Exemple}
+  Avec ordonnancement RM:
+  \begin{center}
+    \input{pics/aperiod-scrut-1.tex}
+    \begin{align*}
+      TR_1 &= 2\\
+      TR_2 &= 1\\
+      TR_3 &= 5\\
+    \end{align*}
+  \end{center}
+\end{frame} 
+
+\subsection{Slack Stealer}
+
+\begin{frame}{Slack Stealer}
+  \begin{itemize} 
+  \item On  alloue $min_i L_i(t)$  périodes pour l'éxéction  des tâche
+    apériodiques
+  \item  On recalcule  l'algorithme  à chaque  activation d'une  tâche
+    (périodique ou apériodique) dans le système
+  \end{itemize}
+\end{frame} 
+
+\begin{frame}{Exemple}
+  \begin{center}
+    \begin{tabular}{ccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Délai \\
       \hline
       A & 0 & 20 & 3 & Fin de période\\
       B & 0 & 10 & 2 & Fin de période\\
@@ -811,13 +870,73 @@
     \end{tabular}
   \end{center}
 \end{frame}
+
 \begin{frame}{Exemple}
-  % BBAA11AXXX23BBX3
-  \input{pics/aperiod-scrut-1.tex}
-  % Changer d'exemple, il ne fait aucune différence avec le serveur par scrutation
-  % Hint: reprendre le cas d'execution dos à dos
+  Avec ordonnancement RM:
+  \begin{center}
+    \input{pics/aperiod-slackstealer}
+    \begin{columns}
+      \column{.33\textwidth}
+      $$L_A(2) = 18 - 3 =  15$$
+      $$L_B(2) = 8 - 0 =  8$$
+
+      \column{.33\textwidth}
+      $$L_A(9) = 11 - 0 = 11$$
+      $$L_B(9) = 1 - 0 = 1$$
+
+      \column{.33\textwidth}
+      $$L_A(10) = 10 - 0 =  10$$
+      $$L_B(10) = 10 - 2 =  8$$
+    \end{columns}
+  \end{center}
 \end{frame} 
 
-% \subsection{Slack Stealer}
+\begin{frame}{Exemple}
+  Avec ordonnancement RM:
+  \begin{center}
+    \input{pics/aperiod-slackstealer}
+    \begin{align*}
+      TR_1 &= 2\\
+      TR_2 &= 1\\
+      TR_3 &= 3\\
+    \end{align*}
+  \end{center}
+\end{frame} 
 
+\subsection{Ordonnancement conjoint}
+
+\begin{frame}{Ordonnancemnet conjoint}
+  \begin{itemize} 
+  \item Algorithme fonctionnant avec EDF et des tâche apériodique avec
+    des délais critiques
+  \item On  ordonnance les tâches  apériodique de la même  manière que
+    les tâche périodiques
+  \item  Avant  d'accepter  la  tâche,  il faut  vérifier  le  critère
+    d'acceptabilité (ce qui correspond à évaluer l'algorithme hors ligne)
+  \end{itemize} 
+  \note{Afin de faire un exemple il faudrait reprendre le cas precedant, mais avec $C_A=3$}
+\end{frame} 
+
+% \begin{frame}{Exemple}
+%   \begin{center}
+%     \begin{tabular}{ccccc}
+%       \hline
+%       Tâche & Arrivée & Période & Capacité & Délai \\
+%       \hline
+%       A & 0 & 20 & 3 & Fin de période\\
+%       B & 0 & 10 & 2 & Fin de période\\
+%       S & 0 &  5 & 2 & Fin de période\\
+%       1 & 0 &  3 & 2 & \\
+%       2 & 0 &  9 & 1 & Aucune\\
+%       3 & 0 & 10 & 2 & Aucune\\
+%       \hline
+%     \end{tabular}
+%   \end{center}
+% \end{frame}
+
+%\begin{frame}{Bibliographie}
+%
+%\end{frame}
+
+\note{Montrer l'arborescence du kernel: kernel/sched\_*}
 

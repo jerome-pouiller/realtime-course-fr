@@ -1,0 +1,16 @@
+\begin{tikzpicture}[scale=0.4]
+     \timeline{20}{-8.0}{-1.0/A, -2.5/B, -4.0/1, -5.5/2, -7.0/3}
+     \fill[cgreen]  (0,-1.5) \lo 2 \lo 2 \hi 3 \lo 2 \lo 1 \lo 3 \lo 2 \lo 1 \lo 4;
+     \fill[cred]    (0,-3.0) \hi 2 \lo 2 \lo 3 \lo 2 \lo 1 \lo 3 \hi 2 \lo 1 \lo 4;
+     \fill[cpurple] (0,-4.5) \lo 2 \hi 2 \lo 3 \lo 2 \lo 1 \lo 3 \lo 2 \lo 1 \lo 4;
+     \fill[corange] (0,-6.0) \lo 2 \lo 2 \lo 3 \lo 2 \hi 1 \lo 3 \lo 2 \lo 1 \lo 4;
+     \fill[ccyan]   (0,-7.5) \lo 2 \lo 2 \lo 3 \lo 2 \lo 1 \hi 3 \lo 2 \lo 1 \lo 4;
+    \pb{0}{-1}{cgreen};
+    \p{20}{-1}{cgreen};
+    \pb{0}{-2.5}{cred};
+    \p{10}{-2.5}{cred};
+    \p{20}{-2.5}{cred};
+    \pb{2}{-4.0}{cpurple};
+    \pb{9}{-5.5}{corange};
+    \pb{10}{-7.0}{ccyan};
+\end{tikzpicture}

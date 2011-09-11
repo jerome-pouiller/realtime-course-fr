@@ -1,0 +1,16 @@
+\begin{tikzpicture}[scale=0.30]
+  \tikzstyle{task} = 
+  [rectangle, draw, fill=blue!20, 
+  text width=1em, text centered, 
+  rounded corners, minimum height=1em]
+  \node[task] (A) {A};
+  \node[task,below=of A] (B) {B};
+  \node[task,right=of A] (C) {C};
+  \node[task,below=of C] (D) {D};
+  \node[task,right=of D] (E) {E};
+  \draw[->] (A) -- (C);
+  \draw[->] (A) -- (D);
+  \draw[->] (B) -- (D);
+  \draw[->] (C) -- (E);
+  \draw[->] (D) -- (E);
+\end{tikzpicture}

@@ -15,9 +15,9 @@
   \begin{itemize}
   \item \textbf{Temps de réponse} : temps entre un évènement et la fin
     du traitement de l'évènement.
+  \item Il est  possible de formaliser cette définition  comme nous le
+    verrons plus tard
   \end{itemize} 
-  \note{Nous verrons une formule plus formelle plus tard}
-  \note{Exo: Avertir l'utilisateur des qu'un fichier passer en parametre existe: 1: Par polling 2: Par fg/bg}
 \end{frame}
 
 \section{Scrutation des évènements}
@@ -76,16 +76,17 @@ int main() {
 \begin{frame}[fragile]{Interruptions synchrones}
   Concrètement:
   \begin{lstlisting}
-#define sensor1 *((char *) 0x1234)
+#define PTR_DATA ((char *) 0x1234)
 
-void interrupt() {
-  action1();
+void isr() {
+  action1(*PTR_DATA);
+  *PTR_DEVICE_ACK = 1;
 }
 
 int main() {
-  enable_interrupt(interrupt, 0x1);
+  enable_interrupt(isr, 0x1);
   while(1) {
-// Optionnal background computing 
+    ; // Optionnal background computing 
   }
 }
   \end{lstlisting} 
@@ -114,22 +115,27 @@ int main() {
   \begin{itemize} 
   \item Les interrruption matérielles:
     \begin{itemize} 
-    \item        IRQ         (aussi        appellé        Interruption
-      externe).  Asynchrone.  Exemples:  clavier, horloge,  bus,  DMA,
-      second processeur, etc...
-    \item Exception.  Asynchrone ou Synchrone.  Exemples: Division par
-      zéro,   Erreur   arithmétique,   Erreur  d'instruction,   Erreur
-      d'alignement, Erreur de page, Breakpoint matériel, Double faute,
-      etc...
-      \note{Une overflow  arithmétique ne produit  pas d'exception, il
-        lève le flags ``retenue''}
-      \note{Un  breakpoint  logiciel change  une  instruction par  une
-        interruption  logicielle. Un  break point  software  n'est pas
-        possible en ROM alors que le breakpoint hardware oui}
+    \item   \textbf{IRQ}   (aussi   appellé   Interruption   externe).
+      Asynchrone.   Exemples:  clavier,   horloge,  bus,  DMA,  second
+      processeur, etc...
+    \item  \textbf{Exception}.   Asynchrone  ou Synchrone.   Exemples:
+      Division  par zéro,  Erreur arithmétique,  Erreur d'instruction,
+      Erreur d'alignement, Erreur de page, Breakpoint matériel, Double
+      faute,  etc...  \note{Une overflow  arithmétique ne  produit pas
+        d'exception, il lève le flags ``retenue''} \note{Un breakpoint
+        logiciel   change  une   instruction   par  une   interruption
+        logicielle. Un break point  software n'est pas possible en ROM
+        alors que le breakpoint hardware oui}
     \end{itemize} 
-  \item Logicielle. Déclenché par une instruction. Synchrone.
+  \item \textbf{Logicielle}. Déclenché par une instruction. Synchrone.
   \end{itemize}
 \end{frame} 
+
+\begin{frame}{Fonctionnement d'une interruption} 
+  \begin{center}
+    \pgfimage[width=10cm]{pics/interuption-1}
+  \end{center}
+\end{frame}  
 
 \begin{frame}{Fonctionnement d'une interruption}
   Quand une  interruption est levée:
@@ -148,12 +154,6 @@ int main() {
   \item L'ISR restore le (un) contexte
   \end{itemize}
 \end{frame}
-
-\begin{frame}[fragile]{Fonctionnement d'une interruption} 
-  \begin{center}
-    \pgfimage[width=10cm]{pics/interuption-1}
-  \end{center}
-\end{frame}  
 
 \begin{frame}{Fonctionnement d'un PIC}
   Le PIC (Programmable Interrupt Controller) est un composant matériel
@@ -198,6 +198,7 @@ int main() {
 
 \begin{frame}{Exemple}
   \begin{enumerate}
+    \setcounter{enumi}{8}
   \item Le  gestionnaire d'interruption se branche  sur l'ISR associée
     (ici, ISR1)
   \item L'IRQ du processeur est  acquitée. Les autre IRQ peuvent ainsi
@@ -249,7 +250,6 @@ int main() {
   \item  Risque   de  perdre  des  interruption  (Dans   ce  cas,  une
     interruption \emph{overrun} est (devrait être) déclenchée)
   \end{itemize} 
-  \note{Reprendre ici le cours de l'université de Montréal}
 \end{frame} 
 
 \begin{frame}{Precautions avec les interruption}
@@ -279,16 +279,16 @@ int main() {
 
 \begin{frame}[fragile]{Interruptions asynchrones}
   \begin{lstlisting} 
-#define sensor1 *((char *) 0x1234)
+#define PTR_DATA ((char *) 0x1234)
 
 int gotit = 0;
-void interrupt() {
+void isr() {
     gotit++;
     *PTR_DEVICE_ACK = 1;
 }
 
 int main() {
-  enable_interrupt(interrupt, 0x1);
+  enable_interrupt(isr, 0x1);
   while(1) {
      if (gotit) {
        gotit--;
@@ -307,17 +307,20 @@ int main() {
 \begin{frame}[fragile]{Exemple de partage de données}
   Imaginons le code suivant:
   \begin{lstlisting}
+#define PTR_DATA ((char *) 0x1234)
 int a = 0;
 char t[255];
 void isr() {
-  t[a] = *PTR_DATA;
-  a++;
+  t[a++] = *PTR_DATA;
   *PTR_DEVICE_ACK = 1;
 }
-void f() {
-  char d;
-  --a;
-  d = t[a];
+void main() {
+  enable_interrupt(isr, 0x1);
+  while(1) {
+    if (a)
+      action1(t[--a]);
+    // Optionnal background computing 
+  }
 }
   \end{lstlisting}
 \end{frame} 
@@ -334,7 +337,7 @@ void f() {
 
 
 
-d = t[a];
+action1(t[a]);
 // Lecture de t[1] au lieu de t[0]!
        \end{lstlisting}
      \end{column}
@@ -408,8 +411,8 @@ void read() {
   Même fonctionnement  que le buffer circulaire, mais  avec un tableau
   de structure.  
 
-  Il  est  aussi possible  de  faire  des  Queue d'objets  de  tailles
-  différente.  Dans  ce cas, faire  très attention à  l'allocation des
+  Il est aussi possible de  faire des \emph{queue} d'objets de tailles
+  différentes.  Dans  ce cas, faire très attention  à l'allocation des
   objets.   L'allocation  dynamique est  rarement  une opération  très
   bornée  dans  le temps  et  doit  être  utilisée avec  précaution  à
   l'intérieur des interruptions et des tâches temps réelles.
@@ -478,5 +481,16 @@ void unlock(int m) {
     vecteurs),   start.c  (copie  ROM   vers  RAM),   interrupt.c  (en
     particulier intGenlock), main.c (fonction loop)}
 \end{frame} 
+
+% \section{Biographie}
+
+% \begin{frame}{Biographie}
+%   \begin{itemize} 
+%   \item G. Bois, M. De Nanclas, L. Filion, \emph{Real time systems concepts}, Ecole Polytechnique de Montréal
+%   \item VxWorks, \emph{VxWorks Programers Guide V5.5}
+%   \item Wikipedia: PIC, APIC, Interrupts
+%   \end{itemize} 
+% \end{frame}
+
 
 

@@ -33,6 +33,25 @@
   \end{center}
 \end{frame}
 
+\begin{frame}[fragile]{Programmation multitâche}
+\begin{lstlisting}
+#include <unistd.h>
+
+int main() {
+  int r;
+
+  r = fork();
+  if (r < 0) {
+     // Error
+  } else if (r > 0) {
+    // Parent
+  } else /* r == 0 */ {
+    // Child
+  }
+}
+\end{lstlisting} 
+\end{frame} 
+
 \begin{frame}{Concurence}
   Migration d'un système avec gestion asynchrone des interruption vers
   un système multitâches:
@@ -59,24 +78,6 @@
   \end{center}
 \end{frame} 
 
-\begin{frame}[fragile]{Programmation multitâche}
-\begin{lstlisting}
-#include <unistd.h>
-
-int main() {
-  int r;
-
-  r = fork();
-  if (r < 0) {
-     // Error
-  } else if (r > 0) {
-    // Parent
-  } else /* r == 0 */ {
-    // Child
-  }
-}
-\end{lstlisting} 
-\end{frame} 
 
 \subsection{Changement de contexte}
 
@@ -98,6 +99,12 @@ int main() {
   Dans  la pratique, il  y a  des petites  subtilités dependant  de la
   manière dont le changement de contexte à été amené.
 \end{frame} 
+
+\begin{frame}{Le changement de contexte}
+  \begin{center}
+    \pgfimage{pics/context_switch}
+  \end{center}
+\end{frame}
 
 \begin{frame}{Multitâche non-préemptif}
   Le changement de contexte  peut-être volontaire par les tâches. Dans
@@ -172,7 +179,9 @@ task2() {
   for(;;) ;
 }
   \end{lstlisting} 
+\end{frame} 
 
+\begin{frame}[fragile]{Round robin}
   Dans ce cas, si aucune interruption ne se produit, la premiere tâche
   à avoir pris la main ne la rendra jamais. Afin de reprendre la main,
   on  utilise une  interruption  d'horloge.  Celle-ci  garanti que  le
@@ -183,7 +192,10 @@ task2() {
   Dans   ce  cas-ci,   l'ordonnanceur  devra   donner  un   période  à
   \emph{task1} puis une période à  \emph{task2} et ainsi de suite.  Ce
   comportement s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
-\end{frame} 
+  \begin{center}
+    \input{pics/round_robin}
+  \end{center}
+\end{frame}
 
 \section{Pagination de la mémoire}
 
@@ -202,21 +214,26 @@ task2() {
 \end{frame}
 
 \begin{frame}{La MMU}  
-  Les  CPU  modernes  intègrent   un  composant  appellé  MMU  (Memory
-  Management Unit):
+  Les  CPU  modernes  intègrent   un  composant  appellé  MMU  (\emph{Memory
+  Management Unit}):
   \begin{itemize}
-  \item  Unite de translation d'addresse mémoire
+  \item  Unite de translation d'addresses mémoire
   \item  On parle d'addresses physiques et virtuelles
-  \item Lorsque le MMU est  actif (normalement, tout le temps), toutes
-    les addresses du code assembleur sont des addresse virtuelles
+  \item Lorsque le  MMU est actif (cas nominal),  toutes les addresses
+    du code assembleur sont des addresses virtuelles
   \item  Il est  possible de  configurer le  MMU avec  une instruction
     spéciale et  en lui  donnant un pointeur  sur un tableau  (dans la
     pratique,  il s'agit  plutot d'un  arbre) associant  les addresses
-    physique et les addresse virtuelle
-  \item  Il est  possible  de changer  les  association simplement  en
+    physiques et les addresses virtuelles
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{La MMU (2)}  
+  \begin{itemize} 
+  \item  Il est  possible  de changer  les  associations simplement  en
     chargeant une pointeur sur une autre table
   \item On  défini alors une table  par tâche.  Lors  du changement de
-    contexte, on change aussi de tâche
+    contexte, on change aussi de table
   \item Le CPU possède alors deux modes:
     \begin{itemize}
     \item  Utilisateur
@@ -226,34 +243,37 @@ task2() {
     associations de la MMU
   \end{itemize}
   \note{Nous verrons  par la suite comment passer  du mode superviseur
-    au mode utilisateur et vice versa}
+    au  mode utilisateur  et vice  versa}
+  \note{Vérifier  sur wikipedia  ``addresse  virtuelle'' et  ``mémoire
+    paginée''}
 \end{frame} 
 
 \begin{frame}{La MMU - gestion des exceptions}
-  Toutes les  addreses physiques ne  sont pas mappée sur  des addresse
-  virtuelle
+  Toutes les addresses physiques ne sont pas associées à des addresses
+  virtuelles
   \begin{itemize} 
   \item Une tâche A ne peut pas accèder à la mémoire d'une tâche B
   \item Protection contre les erreur de programmation
-  \item Permet d'assurer la sécurité des système multi-utilisateur
+  \item Permet d'assurer la sécurité des systèmes multi-utilisateurs
   \item Une tâche à l'impression d'avoir toute la mémoire pour elle
   \end{itemize} 
 \end{frame} 
 
 \begin{frame}{La MMU - gestion des exceptions}
-  Toutes les addresse  virtuelle ne sont pas mappées  sur des addresse
-  physique
+  Toutes les addresses  virtuelles ne sont pas associées  à des addresses
+  physiques
   \begin{itemize}
-  \item  Lorsqu'une  tâche accède  à  une  addresse  non mappée.   Une
+  \item  Lorsqu'une  tâche accède  à  une  addresse  non associée.   Une
     exception est déclenché.  Cela permet  à l'OS de reprendre la main
     et de traiter l'erreur (souvent en tuant la tâche fautive)
   \item Lorsqu'une tâche souhaite allouer de la mémoire
     \begin{itemize}
     \item  La tâche demande à l'OS
-    \item L'OS choisi un (ou plusieur) blocs de mémoire physique libre
-    \item l'OS marque le bloc comme appartenant à la tâche
-    \item L'OS choisi  un espace d'adresse virtuelle ou  mappé le bloc
-      de mémoire
+    \item  L'OS choisi  un (ou  plusieurs) blocs  de  mémoire physique
+      libres
+    \item L'OS marque le bloc comme appartenant à la tâche
+    \item  L'OS choisi un  espace d'adresse  virtuelle où  associer le
+      bloc de mémoire
     \item L'OS met à jour la MMU
     \item L'OS retourne l'addresse virtuelle
     \end{itemize} 
@@ -265,16 +285,16 @@ task2() {
 \begin{frame}{La MMU - gestion des exceptions}
   Le MMU permet à l'OS de mieux utiliser la mémoire:
   \begin{itemize} 
-  \item  L'OS peut  donner  des esapce  d'addressage virtuel  contigue
+  \item  L'OS peut  donner  des espace  d'adressage virtuel  contigu
     alors que la mémoire physique est fractionnée
-  \item Le système n'alloue jamais la plage < 1024
+  \item Le système n'alloue jamais la plage $[0, 1024]$
     \begin{itemize}
-    \item Cela donne une plage de valeur spéciale (ex: NULL)
-    \item Ainsi,  lors du debug,  vous êtes certains qu'un  pointeur <
-      1024 est non valide
-    \item En  dehors des pointeur,  les nombre que l'on  manipule sont
+    \item Cela donne une plage de valeurs spéciales (ex: NULL)
+    \item Ainsi, lors du debug, vous êtes certains qu'un pointeur $\in
+      [0, 1024]$ est non valide
+    \item En dehors des pointeurs,  les nombres que l'on manipule sont
       très  souvent <  1024.   Ce système  nous  permet de  rapidement
-      repérer des cast abusif entre des integer et des pointeurs
+      repérer des casts abusifs entre des integers et des pointeurs
     \end{itemize} 
   \item ``Sun a inventé le SegFault''
   \end{itemize} 
@@ -287,13 +307,13 @@ task2() {
   \item Le système  enregistre la demande dans le  Memory Manager mais
     ne modifie pas le MMU
   \item  Le  système  indique   à  la  tâche  que  l'allocation  s'est
-    correctemenr déroulée
+    correctement déroulée
   \item Lorsque la tâche accède à cette page, une exception est levée
   \item Le système reprend la main
   \item Il remarque qu'il avait promis cette page
   \item Il alloue un bloc physique et met à jour la MMU
   \item Il rend la main à la tâche
-  \item Tout est transparent pour elle
+  \item Tout est transparent pour la tâche
   \end{itemize}
 \end{frame}
 
@@ -304,11 +324,12 @@ task2() {
   \item Il choisit une page physique qu'il copie sur le disque dur
   \item  Il  supprime  la  page   de  la  MMU  de  la  (les)  tache(s)
     concernée(s)
-  \item Lorsque la tâche accèdera à la page, une exception sera levée
+  \item Lorsque la tâche accède à la page supprimée, une exception est
+    levée
   \item Le système recupère alors la page sur le disque
-  \item Le système reécrit la page dans la mémoire phyqsique
-  \item  Il  fait  repointer  l'addresse  virtuelle  demandée  sur  la
-    nouvelle page physique
+  \item Le système reécrit la page dans la mémoire physique
+  \item Il associe l'addresse virtuelle demandée avec la nouvelle page
+    physique
   \item L'OS rend la main à la tâche
   \item Tout est transparent pour la tâche
   \end{itemize}
@@ -318,23 +339,27 @@ task2() {
   Gestion des droits sur les pages
   \begin{itemize}
   \item    Il    est     possible    d'affecter    des    droits    en
-    lecture/écriture/éxécution sur les pages gérée apr la MMU
+    lecture/écriture/éxécution sur les pages gérées par la MMU
+  \item Si la tâche essaye d'écrire sur une page contenant des données
+    constantes, il s'agit d'un bug et une exception est levée
+  \item  On garantie  que  les pages  \emph{read-only}  ne seront  pas
+    modifiées
   \item Une page contenant des  données constante (donné ou code) peut
-    être mappée dans plusieurs tâche différente
-  \item En retirant les droits en execution sur les page de donnée, on
-    améliore la  sécurité du  système (impossible d'éxecuter  une page
+    être mappée dans plusieurs tâches différentes
+  \item En retirant les droits  en éxecution sur les pages de données,
+    on améliore la sécurité du système (impossible d'éxecuter une page
     contenant des données)
   \item Une  page accessible  en écriture peut  être mappée  dans deux
-    tâche afin de leur permettre de partager des données
-    \end{itemize} 
+    tâches afin de leur permettre de partager des données
+  \end{itemize} 
 \end{frame}
 
 \begin{frame}{Gestion de la mémoire}
   Simplification des accès au IO
   \begin{itemize} 
   \item La tâche demande de mapper un fichier en mémoire
-  \item Le système  alloue un espace d'addressage égal  à la taille du
-    fichier
+  \item  Le système  alloue un  espace d'adressage  virtuel égal  à la
+    taille du fichier
   \item Le fichier en lui même n'est pas chargé en mémoire
   \item Lorsque la  tâche accès à un espace  du fichier, une exception
     est levée et la page demandée est chargée de manière tranparente
@@ -355,7 +380,7 @@ task2() {
 \begin{frame}{Gestion de la mémoire}
   Sécurisation des accès aux periphériques
   \begin{itemize}
-  \item Lorsque  ls registres des périfériques sont  mappé en mémoire,
+  \item Lorsque  ls registres des périphériques sont  mappés en mémoire,
     on utilise la MMU pour y accèder
   \item Il  est possible d'autoriser  l'accès à un périphérique  à une
     tâche sans lui donner d'accès au reste du système
@@ -402,18 +427,19 @@ task2() {
     appelle la fonction correspondante (\texttt{asm-generic/unistd.h})
   \end{itemize}
   Il  existe maintenant  des instruction  spéciales sur  les  CPU pour
-  optimiser les \emph{syscall}
+  optimiser   les    \emph{syscall}   (instructions   \emph{sysenter},
+  \emph{sysexit})
 \end{frame}
 
 \begin{frame}{Threads}
   Thread versus Processus
   \begin{itemize}
   \item On  appelle les tâche  ayant des contexte  mémoires différents
-    des \emph{Processus}
+    des \emph{Processus} (cf. \emph{fork(2)})
   \item  Il est  possible  d'éxécuter plusieurs  tâches  dans un  même
     contexte mémoire
   \item  Ces  tâche sont  appellée  \emph{threads} ou  \emph{processus
-      lègers}
+      lègers} (cf. \emph{clone(2)})
   \item Le fonctionnement  est alors identique au mode  sans MMU, avec
     les même défauts et avantage:
     \begin{itemize}
@@ -426,30 +452,42 @@ task2() {
   \note{Attention au latence lors de l'allocation, et du swap}
 \end{frame} 
 
-% \begin{frame}{Programmation multitâche, avec des processus}
-% \begin{lstlisting}
-% // Tache initiale
-% int main() {
+\begin{frame}[fragile]{Utilisation de processus}
+\begin{lstlisting}
+#include <unistd.h>
 
-% }
-% \end{lstlisting} 
-% \end{frame} 
+int main() {
+  int r;
 
-% \begin{frame}{Programmation multitâche, avec des threads}
-% \begin{lstlisting}
-% void *task(void *arg) {
-%   int val = (int) arg;
-%   // Computing
-% }
+  r = fork();
+  if (r < 0) {
+     // Error
+  } else if (r > 0) {
+    // Parent
+  } else /* r == 0 */ {
+    // Child
+  }
+}
+\end{lstlisting} 
+\end{frame} 
 
-% // Tache initiale
-% int main() {
-%   int arg = 42
-%   pthread_create(&id, NULL, task, (void *) arg)
-% }
-% \end{lstlisting} 
-% \end{frame} 
+\begin{frame}[fragile]{Utilisation de threads}
+\begin{lstlisting}
+#include <pthread.h>
 
+void *task(void *arg) {
+  int val = (int) arg;
+  // Child
+}
+
+int main() {
+  int arg = 42
+  pthread_t id;
+  pthread_create(&id, NULL, task, (void *) arg);
+  // Parent
+}
+\end{lstlisting} 
+\end{frame} 
 
 % \begin{frame}{Résumé sur le multiptâche. Commandes ps et pmap, et /proc}
 % Memoire
@@ -622,18 +660,19 @@ task2() {
 \begin{frame}{Multitâche, MMU et Temps réel} 
   \begin{itemize}
   \item Le multitâche permet une meilleure gestion de la concurence
-  \item MMU à de multiple avantages (sécurité, optimisation)
+  \item MMU a de multiple avantages (sécurité, optimisation)
   \item En revanche le fonctionnement  de la MMU entraine de multiples
-    exceptions.
-  \item Une allocation mémoire peut d'un seul changer tout le mapping
+    exceptions
+  \item Une  allocation mémoire  peut d'un seul  coup changer  tout le
+    mapping
   \item Un accès en mémoire  peut être immédiat 100 fois mais demander
     un accès aux disque la 101eme fois
   \item  Il devient  difficile de  garantir le  temps de  calcul d'une
     fonction
-  \item Les fonctions systèmes mlock et \texttt{mlock\_all} permettent
-    de  demander  à Linux  de  garder des  page  (ou  la totatlité  en
-    mémoire)
-  \item  Il ne  faut pas  oublié d'allouer  uen pile  suffisante avant
+  \item Les  fonctions systèmes \texttt{mlock}  et \texttt{mlock\_all}
+    permettent  de  demander  à  Linux  de garder  des  pages  (ou  la
+    totatlité en mémoire)
+  \item  Il ne  faut pas  oublier d'allouer  une pile  suffisante avant
     d'appeller \texttt{mlock\_all}
     \note{Ajouter du code à ce sujet} 
   \item Néanmoins, cela ne change pas que l'allocation dynamique ne se
@@ -641,5 +680,27 @@ task2() {
   \end{itemize} 
 \end{frame} 
 
+\begin{frame}[fragile]{Utilisation de \texttt{mlock}}
+\begin{lstlisting}
+#include <sys/mman.h>
 
+void alloc_stack_1k() {
+  char t[1024];
+}
+
+int main() {
+  alloc_stack_1k();
+  mlockall(MCL_CURRENT | MCL_FUTURE);
+}
+\end{lstlisting} 
+\end{frame} 
+
+% \begin{frame}{Bibliographie}
+% \begin{itemize} 
+%   \item Thomas Petazoni et ??? ???
+%   \item Documentation/ dans les sources du noyau
+% \end{itemize} 
+% \end{frame}
+
+\note{Montrer l'arborescence du kernel: mm, kernel, include, arch, drivers, scripts, tools, Documentation, }
 

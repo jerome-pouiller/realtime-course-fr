@@ -14,27 +14,43 @@
 \section{Ordonnancement avec contraintes de précédance}
 
 \begin{frame}{Contraintes de précédence (1)} 
+  Problèmatique: Une tâche $j$ doit s'éxecuter après $i$\\
+
+  Les contraintes de précédence sur l'ordre d'exécution des tâches les
+  unes par rapport aux autres sont généralement décrites par un graphe
+  orienté:
   \begin{itemize}
-  \item ici,  seulement précédence simple: si $i$  est périodique de
-    période $T_i$, alors $j$ l'est aussi et $T_j$
-  \item principe de l'établissement de l'ordonnancement :
+  \item $i < j$ indique que  la tâche $i$ est un prédécesseur de
+    $j$
+  \item $i  → j$  indique que la  tâche $i$ est  un prédécesseur
+    immédiat de $j$
+  \end{itemize}
+  \begin{center}
+    \input{pics/constraint-graph}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Contraintes de précédence (2)} 
+  \begin{itemize}
+  \item Ici, seulement précédence simple: Les tâche dépendantes ont la même période
+  \item Principe de l'établissement de l'ordonnancement :
     \begin{itemize} 
-    \item transformer l'ensemble des tâches dépendantes en un ensemble
+    \item Transformer l'ensemble des tâches dépendantes en un ensemble
       de  tâches \textbf{indépendantes} que  l'on ordonnancera  par un
       algorithme classique
-    \item par des modifications des  paramètres des tâches : si $i →
+    \item Par des modifications des  paramètres des tâches : si $i →
       j$ alors la règle de transformation doit respecter:
       \begin{itemize} 
       \item $r_j ≤ r_i$
       \item $P_i < P_j$
       \end{itemize} 
-    \item  validation  de   l'ordonnancabilité  selon  des  critères
+    \item  Validation  de   l'ordonnancabilité  selon  des  critères
       utilisés pour des tâches indépendantes
     \end{itemize}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Contraintes de précédence (2)} 
+\begin{frame}{Contraintes de précédence avec RM} 
   Contraintes  de  précédence  et  Rate Monotonic:  la  transformation
   s'opère hors ligne sur la date de réveil et sur les délais critiques
   \begin{itemize} 
@@ -45,35 +61,61 @@
   \end{itemize}
 \end{frame} 
 
-\begin{frame}{Contraintes de précédence (2)} 
+\begin{frame}{Exemple - RM}
+  \begin{center}
+    \input{pics/constraint-graph}\\[2ex]
+
+    \begin{tabular}{ccccccc}
+      \hline
+      Tâche & Arrivée  & $r^*_i$ & $P_i$\\
+      \hline
+      A & 0  &  \uncover<2->{0} & \uncover<3->{1}\\
+      B & 5  &  \uncover<2->{5} & \uncover<3->{1}\\
+      C & 0  &  \uncover<2->{0} & \uncover<3->{2}\\
+      D & 0  &  \uncover<2->{5} & \uncover<3->{2}\\
+      E & 0  &  \uncover<2->{5} & \uncover<3->{3}\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \uncover<3->{A renouveller pour chaque période}
+\end{frame}
+
+\begin{frame}{Contraintes de précédence avec DM} 
   Contraintes de  précédence et Deadline  Monotonic: la transformation
   s'opère hors ligne sur la date de réveil et sur les délais critiques
   \begin{itemize}
   \item $r^*_i =  \max \left\{ r_i, r^*_j \right\}$  pour tous les $j$
     tels que $j → i$
   \item $D^*_i =  \max \left\{ D_i, D^*_j \right\}$  pour tous les $j$
-    tels que $j → i$
-  \item  si $i  →  j$  alors $P_i  >  P_j$ dans  le
-    respect de la règle d'affectation des priorités par DMA
+    tels que $j → i$ (ne corrspond pas au délais critique réel)
+  \item si  $i →  j$ alors  $P_i > P_j$  dans le  respect de  la règle
+    d'affectation des priorités par Deadline Monotonic
   \end{itemize} 
 \end{frame} 
 
-\begin{frame}{Contraintes de précédence (2)} 
-  Les contraintes de précédence sur l'ordre d'exécution des tâches les
-  unes par rapport aux autres sont généralement décrites par un graphe
-  orienté:
-  \begin{itemize}
-  \item $J_a < J_b$ indique que  la tâche $J_a$ est un prédécesseur de
-    $J_b$
-  \item $J_a  → J_b$  indique que la  tâche $J_a$ est  un prédécesseur
-    immédiat de $J_b$
-  \end{itemize}
- \end{frame}
+\begin{frame}{Exemple - DM}
+  \begin{center}
+    \input{pics/constraint-graph}\\[2ex]
 
-\begin{frame}{Contraintes de précédence (3)} 
+    \begin{tabular}{ccccccc}
+      \hline
+      Tâche & Arrivée & Délai & $r^*_i$ & $D^*_i$ & $P_i$\\
+      \hline
+      A & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{1}\\
+      B & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} & \uncover<4->{3}\\
+      C & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{2}\\
+      D & 0 & 10 & \uncover<2->{5} & \uncover<3->{10} & \uncover<4->{4}\\
+      E & 0 & 12 & \uncover<2->{5} & \uncover<3->{12} & \uncover<4->{5}\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \uncover<4->{A renouveller pour chaque période}
+\end{frame}
+
+\begin{frame}{Contraintes de précédence avec EDF} 
   Contraintes de précédence et EDF
   \begin{itemize}
-  \item  modification des  échéances de  façon à  ce qu'une  tâche ait
+  \item  modification des  échéances de  facon à  ce qu'une  tâche ait
     toujours un di inférieur à celui de ses successeurs (algorithme de
     Chetto et al.)
   \item une tâche ne doit être activable que si tous ses prédécesseurs
@@ -91,6 +133,25 @@
     \end{itemize}
   \end{itemize}
   \note{Ajouter des exemples, etc...}
+\end{frame}
+
+\begin{frame}{Exemple - EDF}
+  \begin{center}
+    \input{pics/constraint-graph}\\[2ex]
+
+    \begin{tabular}{ccccc}
+      \hline
+      Tâche & Arrivée & Délai & $r^*_i$ & $d^*_i$\\
+      \hline
+      A & 0 & 5  & \uncover<2->{0} & \uncover<3->{3} \\
+      B & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} \\
+      C & 0 & 5  & \uncover<2->{1} & \uncover<3->{5} \\
+      D & 0 & 10 & \uncover<2->{7} & \uncover<3->{9} \\
+      E & 0 & 12 & \uncover<2->{8} & \uncover<3->{12}\\
+      \hline
+    \end{tabular}
+  \end{center}
+  \uncover<3->{A renouveller pour chaque période}
 \end{frame}
 
 \section{Problèmatique des accès concurents}
@@ -328,8 +389,8 @@ lock(m1);
   \textbf{Remarque:} \\
   Le code suivant:
   \begin{lstlisting} 
-lock();
-lock(); 
+lock(m);
+lock(m); 
   \end{lstlisting} 
   entraine un  \emph{double lock},  un type particulier  de \emph{Dead
     lock}
@@ -530,7 +591,7 @@ lock();
     une tâche de plus basse priorité nominale est borné
   \item ...  mais le calcul de  ce temps de blocage  maximum peut être
     très complexe
-  \item Condition nécessaire d'ordonnançabilité par un algorithme Rate
+  \item Condition nécessaire d'ordonnancabilité par un algorithme Rate
     Monotonic :
     $$\forall i \in tasks \left( \sum_{k = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i(2^{1/i} - 1)$$
   \end{itemize}
@@ -693,7 +754,7 @@ lock();
 % \end{frame} 
 
 \begin{frame}{Priorité plafonnée} 
-  On a  le même critère d'ordonnançabilité  par RM que dans  le cas du
+  On a  le même critère d'ordonnancabilité  par RM que dans  le cas du
   protocole d'héritage de priorité:
   $$\forall i \in tasks \left( \sum_{k = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i(2^{1/i} - 1)$$
   mais le calcul du temps de  blocage maximum de chaque tâche est plus
@@ -952,32 +1013,48 @@ enable_interrupts()
   \end{itemize} 
 \end{frame} 
 
-\subsection{RCU}
-\begin{frame}[fragile]{Read-Copy-Update}
-Type d'algorithme non bloquant
+\subsection{Read-Copy-Update (RCU)}
 
-Particulièrement utile pour les manipulation de listes:
-\begin{lstlisting} 
+\begin{frame}{Read-Copy-Update (RCU)}
+  Type d'algorithme non bloquant:
+  \begin{itemize} 
+  \item La lecture n'est pas bloquante
+  \item On note le nombre de lecteurs
+  \item Les modification s'effectuent sur une copie de l'objet
+  \item Les lecture suivante se font sur la nouvelle version de l'objet
+  \item Lorsque  le dernier lecteur  a terminé, l'objet  d'origine est
+    détruit. Seul subsiste la nouvelle version.
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}[fragile]{Exemple : Manipulation de listes} 
+  \begin{center}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{colBasic},commentstyle=\scriptsize\itshape\color{colComments},numbers=none]
 typedef struct {
    struct a_t a;
    int count_usage = 0;
    bool obsolete = false;
 } rcu_t;
 rcu_t *a = malloc(sizeof(rcu_t)); 
-
+    \end{lstlisting}
+  \end{center}
+  \begin{columns}
+    \begin{column}{5cm}
+      \begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{colBasic},commentstyle=\scriptsize\itshape\color{colComments},numbers=none]
 void read_a() {
   // lock:
   rcu_t *ptr = a;
   ptr->count_usage++;
-
   // do something with ptr;
-
   // unlock:
   ptr->count_usage--;
-  if (ptr->obsolete && ! ptr->count_usage)
+  if (ptr->obsolete && !ptr->count_usage)
     free(ptr);
 }
-
+      \end{lstlisting}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{colBasic},commentstyle=\scriptsize\itshape\color{colComments},numbers=none]
 void write_a() { 
    struct rcu_t *a3 = a;
    struct rcu_t *a2 = malloc(sizeof(rcu_t));
@@ -988,5 +1065,7 @@ void write_a() {
    if (!a3->count_usage)
       free(ptr);
 }
-\end{lstlisting} 
+      \end{lstlisting} 
+    \end{column}
+  \end{columns}
 \end{frame} 

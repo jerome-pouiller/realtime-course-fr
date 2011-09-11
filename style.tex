@@ -26,11 +26,11 @@
 \let\oldinsertshorttitle\insertshorttitle%
 \renewcommand*\insertshorttitle{\oldinsertshorttitle\hfill\insertframenumber\,/\,\inserttotalframenumber}
 
-\usepackage[french]{babel}            % Pour la sortie francaise
-%\usepackage{ucs}
-%\usepackage[utf8]{inputenc}
-\usepackage[utf8x]{inputenc}
+\usepackage{ucs}                      % La sortie est en UTF8
+\usepackage[utf8x]{inputenc}          % L'entrée aussi
 \usepackage[T1]{fontenc}      % Pour la césure des mots accentués
+\usepackage{lmodern}          % Pour les lettres francaises
+\usepackage[french]{babel}            % Pour la sortie francaise
 \usepackage{times}
 \usepackage{mathptmx}         % Font (don't forget to install latex-font-recommended)
 
