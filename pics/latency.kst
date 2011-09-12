@@ -3,20 +3,20 @@
   <windowsize>
     <width>995</width>
     <height>731</height>
-    <active name="Realtime system"/>
+    <active name="Classic system"/>
   </windowsize>
   <graphicsautosave time="1" enabled="false" format="PNG" xsize="1200" ysize="480" display="2" square="false" />
   <kstfile>
-    <tag>DS-latencyRT.dat-1</tag>
-    <filename>/home/jezz/cours/cm/latencyRT.dat</filename>
+    <tag>DS-latencyNorm.dat</tag>
+    <filename>/home/jezz/cours/cm/pics/latencyNorm.dat</filename>
     <type>ASCII</type>
     <comment delimiters="#/c!;"/>
     <columns type="0"/>
     <header start="0"/>
   </kstfile>
   <kstfile>
-    <tag>DS-latencyNorm.dat-1</tag>
-    <filename>/home/jezz/cours/cm/latencyNorm.dat</filename>
+    <tag>DS-latencyRT.dat</tag>
+    <filename>/home/jezz/cours/cm/pics/latencyRT.dat</filename>
     <type>ASCII</type>
     <comment delimiters="#/c!;"/>
     <columns type="0"/>
@@ -25,12 +25,12 @@
   <scalar>
     <tag>P2/XMin</tag>
     <orphan/>
-    <value>15603.773584906</value>
+    <value>19978.882075472</value>
   </scalar>
   <scalar>
     <tag>P2/XMax</tag>
     <orphan/>
-    <value>30396.226415094</value>
+    <value>20020.617924528</value>
   </scalar>
   <scalar>
     <tag>P2/YMin</tag>
@@ -85,12 +85,12 @@
   <scalar>
     <tag>P5/XMin</tag>
     <orphan/>
-    <value>15603.773584906</value>
+    <value>19978.882075472</value>
   </scalar>
   <scalar>
     <tag>P5/XMax</tag>
     <orphan/>
-    <value>30396.226415094</value>
+    <value>20020.617924528</value>
   </scalar>
   <scalar>
     <tag>P5/YMin</tag>
@@ -103,57 +103,57 @@
     <value>1600</value>
   </scalar>
   <vector>
-    <tag>DS-latencyNorm.dat-1/Timestamp-RT</tag>
-    <provider>DS-latencyNorm.dat-1</provider>
-    <filename>/home/jezz/cours/cm/latencyNorm.dat</filename>
+    <tag>DS-latencyRT.dat/Timestamp-RT</tag>
+    <provider>DS-latencyRT.dat</provider>
+    <filename>/home/jezz/cours/cm/pics/latencyRT.dat</filename>
     <field>1</field>
     <start>0</start>
     <num>-1</num>
   </vector>
   <vector>
-    <tag>DS-latencyRT.dat-1/Normal-RT</tag>
-    <provider>DS-latencyRT.dat-1</provider>
-    <filename>/home/jezz/cours/cm/latencyRT.dat</filename>
+    <tag>DS-latencyRT.dat/Normal-RT</tag>
+    <provider>DS-latencyRT.dat</provider>
+    <filename>/home/jezz/cours/cm/pics/latencyRT.dat</filename>
     <field>2</field>
     <start>0</start>
     <num>-1</num>
   </vector>
   <vector>
-    <tag>DS-latencyRT.dat-1/Charge-RT</tag>
-    <provider>DS-latencyRT.dat-1</provider>
-    <filename>/home/jezz/cours/cm/latencyRT.dat</filename>
+    <tag>DS-latencyRT.dat/Charge-RT</tag>
+    <provider>DS-latencyRT.dat</provider>
+    <filename>/home/jezz/cours/cm/pics/latencyRT.dat</filename>
     <field>3</field>
     <start>0</start>
     <num>-1</num>
   </vector>
   <vector>
-    <tag>DS-latencyNorm.dat-1/Timestamp-Norm</tag>
-    <provider>DS-latencyNorm.dat-1</provider>
-    <filename>/home/jezz/cours/cm/latencyNorm.dat</filename>
+    <tag>DS-latencyNorm.dat/Timestamp-Norm</tag>
+    <provider>DS-latencyNorm.dat</provider>
+    <filename>/home/jezz/cours/cm/pics/latencyNorm.dat</filename>
     <field>1</field>
     <start>0</start>
     <num>-1</num>
   </vector>
   <vector>
-    <tag>DS-latencyNorm.dat-1/Normal-Norm</tag>
-    <provider>DS-latencyNorm.dat-1</provider>
-    <filename>/home/jezz/cours/cm/latencyNorm.dat</filename>
+    <tag>DS-latencyNorm.dat/Normal-Norm</tag>
+    <provider>DS-latencyNorm.dat</provider>
+    <filename>/home/jezz/cours/cm/pics/latencyNorm.dat</filename>
     <field>2</field>
     <start>0</start>
     <num>-1</num>
   </vector>
   <vector>
-    <tag>DS-latencyNorm.dat-1/charge-Norm</tag>
-    <provider>DS-latencyNorm.dat-1</provider>
-    <filename>/home/jezz/cours/cm/latencyNorm.dat</filename>
+    <tag>DS-latencyNorm.dat/charge-Norm</tag>
+    <provider>DS-latencyNorm.dat</provider>
+    <filename>/home/jezz/cours/cm/pics/latencyNorm.dat</filename>
     <field>3</field>
     <start>0</start>
     <num>-1</num>
   </vector>
   <curve>
     <tag>Charge-RT-C</tag>
-    <xvectag>DS-latencyNorm.dat-1/Timestamp-RT</xvectag>
-    <yvectag>DS-latencyRT.dat-1/Charge-RT</yvectag>
+    <xvectag>DS-latencyRT.dat/Timestamp-RT</xvectag>
+    <yvectag>DS-latencyRT.dat/Charge-RT</yvectag>
     <legend></legend>
     <interp>0</interp>
     <hasMinus/>
@@ -167,8 +167,8 @@
   </curve>
   <curve>
     <tag>Normal-RT-C</tag>
-    <xvectag>DS-latencyNorm.dat-1/Timestamp-RT</xvectag>
-    <yvectag>DS-latencyRT.dat-1/Normal-RT</yvectag>
+    <xvectag>DS-latencyRT.dat/Timestamp-RT</xvectag>
+    <yvectag>DS-latencyRT.dat/Normal-RT</yvectag>
     <legend></legend>
     <interp>0</interp>
     <hasMinus/>
@@ -182,8 +182,8 @@
   </curve>
   <curve>
     <tag>Normal-Norm</tag>
-    <xvectag>DS-latencyNorm.dat-1/Timestamp-Norm</xvectag>
-    <yvectag>DS-latencyNorm.dat-1/Normal-Norm</yvectag>
+    <xvectag>DS-latencyNorm.dat/Timestamp-Norm</xvectag>
+    <yvectag>DS-latencyNorm.dat/Normal-Norm</yvectag>
     <legend></legend>
     <interp>0</interp>
     <hasMinus/>
@@ -197,8 +197,8 @@
   </curve>
   <curve>
     <tag>charge-Norm</tag>
-    <xvectag>DS-latencyNorm.dat-1/Timestamp-Norm</xvectag>
-    <yvectag>DS-latencyNorm.dat-1/charge-Norm</yvectag>
+    <xvectag>DS-latencyNorm.dat/Timestamp-Norm</xvectag>
+    <yvectag>DS-latencyNorm.dat/charge-Norm</yvectag>
     <legend></legend>
     <interp>0</interp>
     <hasMinus/>
@@ -226,8 +226,8 @@
     <yscalemode>6</yscalemode>
     <xscalemodedefault>0</xscalemodedefault>
     <yscalemodedefault>5</yscalemodedefault>
-    <xmin>15603.773584906</xmin>
-    <xmax>30396.226415094</xmax>
+    <xmin>19978.882075472</xmin>
+    <xmax>20020.617924528</xmax>
     <ymin>0.8</ymin>
     <ymax>1600</ymax>
     <xreversed>0</xreversed>
@@ -259,7 +259,7 @@
       <size>3</size>
     </ylabel>
     <xticklabel>
-      <text>30000</text>
+      <text>20020</text>
       <interpret/>
       <rotation>-45</rotation>
       <fontfamily></fontfamily>
@@ -342,8 +342,8 @@
     <yscalemode>6</yscalemode>
     <xscalemodedefault>5</xscalemodedefault>
     <yscalemodedefault>5</yscalemodedefault>
-    <xmin>15603.773584906</xmin>
-    <xmax>30396.226415094</xmax>
+    <xmin>19978.882075472</xmin>
+    <xmax>20020.617924528</xmax>
     <ymin>0.8</ymin>
     <ymax>1600</ymax>
     <xreversed>0</xreversed>
@@ -373,7 +373,7 @@
       <size>3</size>
     </ylabel>
     <xticklabel>
-      <text>30000</text>
+      <text>20020</text>
       <interpret/>
       <rotation>-45</rotation>
       <fontfamily></fontfamily>

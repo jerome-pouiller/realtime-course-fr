@@ -63,9 +63,7 @@
 
 % En d'autre termes:
 \begin{frame}{Contexte}
-$$
-R_i = C_i + \sum_{j \in hp(i)} \left\lceil\frac{R_i}{T_j}\right\rceil C_j
-$$
+  $$TR_i = C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
 Pour les allergiques: le temps de réponse d'une tâche est égal à la somme du
 temps d'exécution de la tache et de toutes les tâche de priorité supérieure
 qui s'exécutent en même temps.\\[1.5ex]
@@ -137,7 +135,7 @@ Pas si simple:
 
 \begin{frame}{Latence aux évènements}{Système classique}
   \begin{center}
-    \pgfimage[width=10cm]{pics/latency_2}
+    \pgfimage[width=10cm]{pics/latencyNorm}
   \end{center}
 \end{frame}
 
@@ -145,7 +143,7 @@ Pas si simple:
 % Schema des temps de réponses
 \begin{frame}{Latence aux évènements}{Système temps réels}
   \begin{center}
-    \pgfimage[width=10cm]{pics/latency_1}
+    \pgfimage[width=10cm]{pics/latencyRT}
   \end{center}
 \end{frame}
 %     -> Taches RT << 100\%
@@ -157,7 +155,22 @@ Pas si simple:
 
 \section{Systèmes Symétrique et asymétriques}
 
-\begin{frame}{Systèmes symétriques}
+\begin{frame}{Architectures multi-CPU}
+Il est possible d'utiliser des architecture multi-CPU pour des systèmes temps réels.\\
+On distingue alors 2 types d'architectures:
+\begin{itemize} 
+\item Les systèmes symétriques (SMP) où les tâches ne sont pas affectées à un CPU particulier
+\item Les systèmes asymétriques où on affecte manuellement les tâches à un CPU
+\end{itemize} 
+\end{frame}
+
+\begin{frame}{Systèmes asymétriques}
+Les systèmes asymétriques sont assez simples à architecturer:
+\begin{itemize} 
+\item On effectue une étude séparées pour chaque CPU
+\item On considère les échanges entre les CPU comme des entrées/sorties
+\end{itemize} 
+Sous Linux, 
 \end{frame} 
 
 \begin{frame}{Systèmes asymétriques}
@@ -233,7 +246,8 @@ Pas si simple:
   \begin{itemize}
    \item Possibilité de préempter le noyau sans patch low-latency
    \item Possibilité de differer les interruptions
-   \item Possibilité d'ignorer les interruptions dans les sections temps réelles
+   \item  Possibilité d'ignorer  les interruptions  dans  les sections
+     temps réelles
    \item Performances excellentes (< 20µs)
    \item Technique non spécifique à Linux
    \item Peu de code en mode temps réelles
@@ -244,7 +258,9 @@ Pas si simple:
    \item Communication entre les tâches temps réelles et le reste
    \item[$\to$] Nécessite de patcher le noyau
    
-   \item RTLinux, RTAI et Adeos (\texttt{http://download.gna.org/adeos/patches/}, \texttt{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
+   \item           RTLinux,           RTAI          et           Adeos
+     (\texttt{http://download.gna.org/adeos/patches/},
+     \texttt{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
   \end{itemize}
 \end{frame}
 
