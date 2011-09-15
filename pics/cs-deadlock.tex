@@ -1,0 +1,12 @@
+% AABBAXXX
+\begin{tikzpicture}[scale=0.35]
+  \timeline{9}{-3.5}{-1.0/A, -2.5/B}
+  \fill[color=black!25] (5, -1.5) rectangle +(4, 1);
+  \fill[color=black!25] (4, -3.0) rectangle +(5, 1);
+  \fill[cgreen] (0,-1.5)  \hi 2 \lo 2 \hi 1 \lo 4;
+  \fill[cred]   (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 4;
+  \pattern[pattern=north east lines] (1, -1.5) rectangle +(8, 1);
+  \pattern[pattern=north west lines] (3, -3.0) rectangle +(6, 1);
+  \pb{0}{-1}{cgreen};
+  \pb{2}{-2.5}{cred};
+\end{tikzpicture}

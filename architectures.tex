@@ -9,8 +9,6 @@
 %     - Jérôme Pouiller <jezz@sysmic.org>
 %
 
-% (cours Tours) patchRT, hyperviseurs
-
 \tikzstyle{main}     = [node distance=1cm, transform shape, inner sep=0pt, outer sep=0pt, rounded corners=2mm, text centered, minimum height=0.9cm]
 \tikzstyle{cred}     = [fill=red!20!white,     draw=red!50!black,     rounded corners=2mm]
 \tikzstyle{cblue}    = [fill=blue!20!white,    draw=blue!50!black,    rounded corners=2mm]
@@ -89,21 +87,9 @@ Pas si simple:
       simplement le temps de réponses de nos tâches.
   \end{itemize}
 
-\begin{preview}  
   \begin{center}
-   \begin{tikzpicture}[scale=0.8]
-     \tikzstyle{msize}=[main, minimum height=2cm, font=\LARGE]
-     \draw
-       node[anchor=south]                at (2, 3) {Interruption}
-       edge[->, line width=0.5mm]  (2, 1.5)
-       node[msize, cblue,  minimum width=4cm, text width=4cm] at (  0, 0) {Tache}
-       node[msize, cgreen, minimum width=3cm, text width=3cm] at (3.5, 0) {Latence}
-       node[msize, cblue,  minimum width=6cm, text width=6cm] at (  8, 0) {Tache de priorité supérieure}
-       (-2, -1.2) edge[->, line width=0.5mm]  (11, -1.2)
-       node at (10, -1.5) {temps};
-   \end{tikzpicture}
+    \input{pics/interrupt-latency}
   \end{center}
-\end{preview}
 \end{frame}
 
 \begin{frame}{Latence aux évènements}{Exemple concret}
@@ -153,38 +139,74 @@ Pas si simple:
 %        Interruptions, cache miss, changement de contexte, etc...
 %     -> Présenter les diagramme normal va RT
 
-\section{Systèmes Symétrique et asymétriques}
+\section{Systèmes Symétriques et Asymétriques}
 
 \begin{frame}{Architectures multi-CPU}
-Il est possible d'utiliser des architecture multi-CPU pour des systèmes temps réels.\\
-On distingue alors 2 types d'architectures:
-\begin{itemize} 
-\item Les systèmes symétriques (SMP) où les tâches ne sont pas affectées à un CPU particulier
-\item Les systèmes asymétriques où on affecte manuellement les tâches à un CPU
-\end{itemize} 
+  Il  est  possible d'utiliser  des  architecture  multi-CPU pour  des
+  systèmes temps réels.\\
+
+  On distingue alors 2 types d'architectures:
+  \begin{itemize} 
+  \item  Les systèmes  symétriques (SMP)  où  les tâches  ne sont  pas
+    affectées à un CPU particulier
+  \item  Les  systèmes asymétriques  où  on  affecte manuellement  les
+    tâches à un CPU
+  \end{itemize} 
 \end{frame}
 
 \begin{frame}{Systèmes asymétriques}
-Les systèmes asymétriques sont assez simples à architecturer:
-\begin{itemize} 
-\item On effectue une étude séparées pour chaque CPU
-\item On considère les échanges entre les CPU comme des entrées/sorties
-\end{itemize} 
-Sous Linux, 
+  Les systèmes asymétriques sont assez simples à architecturer:
+  \begin{itemize} 
+  \item On effectue une étude séparées pour chaque CPU
+  \item   On  considère  les   échanges  entre   les  CPU   comme  des
+    entrées/sorties
+  \end{itemize} 
+  Sous Linux, il est possible d'associer une tâche avec un CPU grace à:
+  \begin{itemize}  
+  \item la fonction \emph{CPU affinity}
+  \item la commande \c{taskset}
+  \item aux fonctions \emph{cgroup} et \emph{cpuset}
+  \end{itemize}
+  \note{ca       fonctionne      avec       \texttt{mount       -t      cpuset
+      /mnt/cpuset. cf. Documentation/cgroup/cpuset.txt}}
 \end{frame} 
 
-\begin{frame}{Systèmes asymétriques}
+\begin{frame}{Systèmes symétriques}
+  \begin{itemize} 
+  \item Beaucoup plus complexe à architecturer
+  \item  La plupart de  nos algorithme  ne sont  plus prouvé  dans une
+    architecture SMP
+  \item La technologie est relativement récente (fin des années 90)
+  \item Pourquoi si tard?
+    \begin{itemize} 
+    \item Principalement problèmes matériels
+    \item Problèmes de barrières mémoires (hard ou soft)
+    \item Algorithme beaucoup plus hardu (inversion de priorité par exemple)
+    \end{itemize}
+  \end{itemize}
 \end{frame} 
+
+\section{Horloges haute précision}
+
+\begin{frame}{Horloges haute précision}
+  L'accès  à des  horloges haute  précision est  un élément  clef d'un
+  système temsp réel.\\
+
+  Le framework hpet est assez récent  dans le noyau (2001) (à titre de
+  comparaison, hpet est apparu sous Widnows à partir de Vista).
+\end{frame}
 
 \section{Low-latency}
 
 \begin{frame}{Noyau low latency}{Problème du noyau normal} % 10min
- Un seul contexte noyau pour tout le monde
+  Dans un  noyau Linux classique, il  y a un seul  contexte noyau pour
+  tout le monde
  \begin{itemize}
   \item Pas possible de préempter le système
-  \item Personne ne peut prendre la main lorsqu'un processus est dans un syscall
+  \item Personne ne peut prendre  la main lorsqu'un processus est dans
+    un \emph{syscall} (ordonnaceur désactivé)
   \item Équivalent d'une ressource partagée par tout les processus
-  \item Possible de créer une gigantesque inversion de priorité
+  \item[$\to$] Latence
  \end{itemize}
 \end{frame}
 
@@ -201,12 +223,11 @@ Sous Linux,
 
 \begin{frame}{Noyau low latency}{Résultats} % 5min
  \begin{itemize}
-   \item Patch low-latency mergé dans le mainstream avec le noyau 2.6 (\texttt{CONFIG\_PREEMPT})
-   \item Latences maximum de l'ordre de 300µs (chiffres de l'époque)
+ \item Patch  low-latency mergé dans  le mainstream avec le  noyau 2.6
+   (\texttt{CONFIG\_PREEMPT})
+ \item Latences maximum de l'ordre de 300µs (chiffres de l'époque)
  \end{itemize}
 \end{frame}
-%      -> Patch low-latency, mergé dans le mainstream avec le noyau 2.6 (CONFIG\_PREEMPT)
-%      -> A l'époque, on obtenait des latence max de l'ordre de 300µs
 
 \section{Hyperviseurs} % (30min)
 
@@ -217,8 +238,6 @@ Sous Linux,
     \item Hyperviseur
   \end{itemize}
 \end{frame}
-%      -> Utilisation d'un hyperviseur
-%      -> Shéma RTLinux et ADEOS
 
 % \begin{frame}{Temps réel}{Micro Kernel}
 %   \includegraphics[height=6cm]{pics/RT-microKernel}
@@ -229,16 +248,7 @@ Sous Linux,
 % \end{frame}
 \begin{frame}{Temps réel}{Nano Kernel}
   \begin{center}
-    \begin{tikzpicture}[scale=1.2]
-      \draw[font=\small]
-        node[size1, ccyan]   at (1, 2) {Tache temps réel}
-        node[size1, ccyan]   at (3, 2) {Tache temps réel}
-        node[size1, corange] at (5, 3) {Application}
-        node[size1, corange] at (7, 3) {Application}
-        node[size2, cred]    at (6, 2) {Noyau (non temps réel)}
-        node[size4, cpurple] at (4, 1) {Hyperviseur}
-        node[size4, cgreen]  at (4, 0) {Matériel};
-    \end{tikzpicture}
+    \input{pics/arch-hypervisor}
   \end{center}
 \end{frame}
 
@@ -259,8 +269,8 @@ Sous Linux,
    \item[$\to$] Nécessite de patcher le noyau
    
    \item           RTLinux,           RTAI          et           Adeos
-     (\texttt{http://download.gna.org/adeos/patches/},
-     \texttt{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
+     (\url{http://download.gna.org/adeos/patches/},
+     \url{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
   \end{itemize}
 \end{frame}
 
@@ -270,21 +280,16 @@ Sous Linux,
     \item API utilisateur assurée par Xenomai
     \begin{itemize}
       \item Skins 
-      \item[$\to$] Possibilité de faire fonctionner une application développée pour vxWorks
+      \item[$\to$]  Possibilité de  faire fonctionner  une application
+        développée pour vxWorks
 % Parler de vxWorks: Référence dans le domaine des OS RT Posix, OS des sondes Martiennes
       \item Skin native consistante
       \item Beaucoup mieux que Posix (de plus, il existe une skin Posix)
-      \item \texttt{www.xenomai.org/documentation/xenomai-head/html/api}
+      \item \url{http://www.xenomai.org/documentation/xenomai-head/html/api}
     \end{itemize}
   \end{itemize}
 \end{frame}
-%      -> API utilisateur assurée par Xenomai
-%         -> Skin, possibilité de faire fonctionner une application faite pour vxWorks
-%         -> Skin native consistante
-%         -> Beaucoup mieux que Posix (de plus, il existe une skin Posix)
 
-% TP Interuptions avec Xenomai
-% Mettre en place l'interruption RTC (8) voir Doucmentation/rtc.txt
 \section{RT-préempt} % (30min)
 
 \begin{frame}{RT-preempt} % (15min)
@@ -302,26 +307,19 @@ Sous Linux,
 
 \begin{frame}{RT-preempt} 
   \begin{center}
-    \begin{tikzpicture}[scale=1.2]
-      \draw[font=\small]
-        node[size2, corange]    at (6, 2) {Application}
-        node[size2, corange]    at (2, 2) { } 
-        node[size1]             at (3, 2) {Application}
-        node[size1, ccyan, scale=0.9] at (1, 2) {Tache temps réel}
-        node[size4, cred]       at (4, 1) { } 
-        node[size3]             at (4, 1) {Noyau}
-        node[size1, cpurple, scale=0.9] at (1, 1) {Tache temps réel}
-        node[size4, cgreen]     at (4, 0) {Matériel};
-    \end{tikzpicture}
+    \input{pics/arch-rtpreempt}
   \end{center}
 \end{frame}
 
 \begin{frame}{RT-preempt}
  \begin{itemize}
-  \item Patch RT (Patchs: \texttt{http://www.kernel.org/pub/linux/kernel/projects/rt/}, Git: \texttt{git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-2.6-rt.git})
+ \item                 Patch                RT                (Patchs:
+   \url{http://www.kernel.org/pub/linux/kernel/projects/rt/},   Git:
+   \url{git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-2.6-rt.git})
   \item Implémentation assez complexe
   \item[$\to$] Non portable
   \item Performance très bonnes (~20µs)
+  \item Intégré dans le noyau 3.0
  \end{itemize}
 \end{frame}
 %     -> Gère les interruption dans des thread

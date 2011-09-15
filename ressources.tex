@@ -11,6 +11,14 @@
 
 \part{Partage de ressources}
 
+\begin{frame}
+  \partpage
+\end{frame}
+
+\begin{frame}
+  \tableofcontents[currentpart]
+\end{frame}
+
 \section{Ordonnancement avec contraintes de précédance}
 
 \begin{frame}{Contraintes de précédence (1)} 
@@ -132,7 +140,6 @@
       pas de successeur pour le calcul des $d$
     \end{itemize}
   \end{itemize}
-  \note{Ajouter des exemples, etc...}
 \end{frame}
 
 \begin{frame}{Exemple - EDF}
@@ -287,11 +294,11 @@ void send(int data) {
   Notion de section critique :
   \begin{itemize}
   \item  séquence  d'instructions pendant  lesquelles  on utilise  une
-    ressource critique \note{hein?}
+    ressource critique
   \item sans  problème dans le cas d'un  ordonnancement non préemptif,
-    mais  c'est rarement  le cas  dans un  environnement temps  réel ⇒
-    évaluation du  temps de  réponse très difficile,  sinon impossible
-    (abondante littérature !)
+    mais  c'est rarement  le cas  dans un  environnement temps  réel
+  \item[⇒]  évaluation  du  temps  de réponse  très  difficile,  sinon
+    impossible (abondante littérature !)
   \end{itemize}
 \end{frame}
 
@@ -299,11 +306,11 @@ void send(int data) {
 
 \begin{frame}[fragile]{Fonctionnement d'un mutex}
   Nécessite une instruction assembleur  premettant un accès en lecture
-  et une écriture  en une instruction: \texttt{test\_and\_set} affecte
-  le registre d'état  en fonction de la valeur  du registre et affecte
-  la valeur 1  au registre. On peut développer  la fonction \c{lock} à
-  partir de là:
-\begin{lstlisting} 
+  et une écriture  en une instruction: \\
+  \texttt{test\_and\_set} affecte le registre d'état en fonction de la
+  valeur  du registre  et affecte  la valeur  1 au  registre.  On peut
+  développer la fonction \c{lock} à partir de là:
+  \begin{lstlisting} 
 void lock(mutex_t *m) {
   while (test_and_set(m))
     schedule();
@@ -313,7 +320,7 @@ void unlock(mutex_t *m) {
   m = 0;
   schedule();
 }
-\end{lstlisting} 
+  \end{lstlisting} 
 \end{frame}
 
 \begin{frame}[fragile]{Fonctionnement d'un mutex}
@@ -338,6 +345,16 @@ void unlock(mutex_t *m) {
 \end{frame} 
 
 \section{Problème liés aux partage de ressources}
+
+\begin{frame}{Problèmes associés aux sections critiques}
+  Voici les problèmes à prendre en considération lors de l'utilisation
+  de sections critiques:
+  \begin{itemize}
+  \item Dead Lock
+  \item Latence induite
+  \item Inversion de priorité
+  \end{itemize} 
+\end{frame}
 
 \subsection{Dead Lock}
 
@@ -369,20 +386,9 @@ lock(m1);
       \end{lstlisting} 
     \end{column}
   \end{columns}
-\begin{center}
-  % AABBAXXX
-  \begin{tikzpicture}[scale=0.35]
-    \timeline{10}{-3.5}{-1.0/A, -2.5/B}
-    \fill[color=black!25] (5, -1.5) rectangle +(4, 1);
-    \fill[color=black!25] (4, -3.0) rectangle +(5, 1);
-    \fill[cgreen] (0,-1.5)  \hi 2 \lo 2 \hi 1 \lo 4;
-    \fill[cred]   (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 4;
-    \pattern[pattern=north east lines] (1, -1.5) rectangle +(7, 1);
-    \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
-    \pb{0}{-1}{cgreen};
-    \pb{2}{-2.5}{cred};
-  \end{tikzpicture}
-\end{center}
+  \begin{center}
+    \input{pics/cs-deadlock.tex}
+  \end{center}
 \end{frame} 
 
 \begin{frame}[fragile]{Dead lock}
@@ -397,13 +403,14 @@ lock(m);
 \end{frame} 
 
 \begin{frame}[fragile]{Mutex dans une interruption}
+  \textbf{Remarque:} \\
   Ne jamais utiliser de mutex dans une interruption.
   \begin{itemize} 
   \item Si  la ressource  est occuppée par  la tâche qui  vient d'être
     préemptée, le \texttt{lock()} s'éxécutera dans le même contexte
   \item[$\rightarrow$] Double lock
   \item De plus,  le blocage d'un mutex peut  entrainer peut entrainer
-    une  très  important latance  ce  qui  est  en contradiction  avec
+    une  très  important latence  ce  qui  est  en contradiction  avec
     l'objectif de rester le minimum de temps dans une interruption
   \item[$\rightarrow$] Règle générale: Il ne faut pas appeller \texttt{schedule} dans une interruption.
   \end{itemize} 
@@ -417,48 +424,33 @@ lock(m);
     d'une tâche de haute priorité.
   \item Existe uniquement en environnement préemptif
   \end{itemize} 
-  Exemple avec deux tâches $P(A) < P(B)$:
+  Exemple avec deux tâches $P_A < P_B$:
   \begin{itemize} 
   \item Cas sans partage de ressource:
-  \begin{columns}
-    \begin{column}{6cm}
-    % AABBBAAAA
-    \begin{center}
-    \begin{tikzpicture}[scale=0.35]
-        \timeline{10}{-3.5}{-1.0/A, -2.5/B}
-         \fill[cgreen] (0,-1.5)  \hi 2 \lo 3 \hi 4 \lo 1;
-         \fill[cred]   (0,-3.0)  \lo 2 \hi 3 \lo 4 \lo 1;
-         \pb{0}{-1}{cgreen};
-         \pb{2}{-2.5}{cred};
-     \end{tikzpicture}
-   \end{center}
- \end{column}
-   \begin{column}{4cm}
- $$TR_B = 3$$
-\end{column}
-\end{columns}
+    \begin{columns}
+      \begin{column}{6cm}
+        % AABBBAAAA
+        \begin{center}
+          \input{pics/cs-latency-1}
+        \end{center}
+      \end{column}
+      \begin{column}{4cm}
+        $$TR_B = 3$$
+      \end{column}
+    \end{columns}
   \item Cas avec une ressource partagée:
-  \begin{columns}
-    \begin{column}{6cm}
-     % AABAAABBA
-    \begin{center}
-     \begin{tikzpicture}[scale=0.35]
-        \timeline{10}{-3.5}{-1.0/A, -2.5/B}
-        \fill[color=black!25] (3, -3.0) rectangle +(3, 1);
-        \fill[cgreen] (0,-1.5)  \hi 2 \lo 1 \hi 3 \lo 2 \hi 1 \lo 1;
-        \fill[cred]   (0,-3.0)  \lo 2 \hi 1 \lo 3 \hi 2 \lo 1 \lo 1;
-        \pattern[pattern=north east lines] (1, -1.5) rectangle +(5, 1);
-        \pattern[pattern=north east lines] (6, -3.0) rectangle +(1, 1);
-        \pb{0}{-1}{cgreen};
-        \pb{2}{-2.5}{cred};
-      \end{tikzpicture}
-   \end{center}
- \end{column}
-   \begin{column}{4cm}
-      $$TR_B = 6$$
-    \end{column}
-  \end{columns}
-\end{itemize}     
+    \begin{columns}
+      \begin{column}{6cm}
+        % AABAAABBA
+        \begin{center}
+          \input{pics/cs-latency-1}
+        \end{center}
+      \end{column}
+      \begin{column}{4cm}
+        $$TR_B = 6$$
+      \end{column}
+    \end{columns}
+  \end{itemize}     
 \end{frame} 
 
 \subsection{Inversion de priorité}
@@ -479,41 +471,39 @@ lock(m);
 \begin{frame}{Inversion de priorité}
   \textbf{Exemple:}\\
   On ajoute à l'exemple précédant une  tâche $C$ telle que : 
-  $P(B) > P(C) > P(A)$
+  $P_B > P_C > P_A$
   \begin{itemize} 
   \item   Cas sans partage de ressource:
     % AABBBBCCCCCCCCCAA
     \begin{center}
-      \begin{tikzpicture}[scale=0.30]
-           \timeline{16}{-5}{-1./A, -2.5/B, -4./C}
-           \fill[cgreen] (0,-1.5)  \hi 2 \lo 4 \lo 9 \hi 2;
-           \fill[cred]   (0,-3.0)  \lo 2 \hi 4 \lo 9 \lo 2;
-           \fill[cblue]  (0,-4.5)  \lo 2 \lo 4 \hi 9 \lo 2;
-           \pb{0}{-1}{cgreen};
-           \pb{2}{-2.5}{cred};
-           \pb{2}{-4}{cblue};
-         \end{tikzpicture}
+      \input{pics/cs-pi-1}
     \end{center}
   \item   Cas avec un mutex:
     % AABCCCCCCCCCABBBA
     \begin{center}
-      \begin{tikzpicture}[scale=0.30]
-        \timeline{16}{-5}{-1./A, -2.5/B, -4./C, }
-        \fill[color=black!25] (3, -3.0) rectangle +(10, 1);
-        \fill[cgreen] (0,-1.5)  \hi 2 \lo 1 \lo 9 \hi 1 \lo 3 \hi 1;
-        \fill[cred]   (0,-3.0)  \lo 2 \hi 1 \lo 9 \lo 1 \hi 3 \lo 1;
-        \fill[cblue]  (0,-4.5)  \lo 2 \lo 1 \hi 9 \lo 1 \lo 3 \lo 1;
-        \pattern[pattern=north east lines] (1, -1.5) rectangle +(12, 1);
-        \pattern[pattern=north east lines] (13, -3.0) rectangle +(1, 1);
-        \pb{0}{-1}{cgreen};
-        \pb{2}{-2.5}{cred};
-        \pb{2}{-4}{cblue};
-      \end{tikzpicture}
+      \input{pics/cs-pi-2}
     \end{center}
     La tâche  $C$ s'éxecute alors  qu'elle a une priorité  inféreure à
     $B$ et ne partage aucune ressource avec $B$.
   \end{itemize} 
 \end{frame} 
+
+\begin{frame}{Temps de réponse}
+  Avec  les  ressources  partagées:
+  \begin{itemize} 
+  \item  Le  temps de  réponse  avec  un  algorithme à  priorité  fixe
+    devient:
+    $$TR_i = B_i + C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
+  \item  $B_i$  est le  temps  de  blocage de  la  tâche  $i$ par  une
+    ressource
+    détenue par une tâche de priorité inférieure.
+  \item $B_i$ est difficile à calculer
+  \item La  condition nécessaire d'ordonnancabilité  par un algorithme
+    Rate Monotonic devient:
+    $$\forall i \in tasks, \left( \sum_{k \in tasks} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i \left(2^{\frac{1}{i}}-1\right)$$
+    \note{Formule à vérifier}
+  \end{itemize} 
+\end{frame}
 
 \begin{frame}{Conseils}
   \begin{itemize} 
@@ -521,7 +511,7 @@ lock(m);
   \item  Essayer  de découper  les  sections  critiques  de manière  à
     favoriser la préemption des tâches de haute priorité
   \item Essayer de  diminuer la granularité des mutex  afin de limiter
-    la taille des section critique.
+    la taille des sections critiques.
   \end{itemize} 
 \end{frame} 
 
@@ -541,45 +531,20 @@ lock(m);
     polynomial)   dans   le   cas   d'architectures   multiprocesseurs
     symétriques sur des \cmd{rw\_lock}.
   \end{itemize} 
-  Exemple précédant:
+  Exemple précédent:
   % AABABBBCCCCCCCCCA
   \begin{center}
-    \begin{tikzpicture}[scale=0.30]
-      \timeline{16}{-5}{-1./A, -2.5/B, -4./C, }
-      \fill[color=black!25] (3, -3.0) rectangle +(1, 1);
-      \fill[cgreen] (0,-1.5)  \hi 2 \lo 1 \hi 1 \lo 3 \lo 9 \hi 1;
-      \fill[cred]   (0,-3.0)  \lo 2 \hi 1 \lo 1 \hi 3 \lo 9 \lo 1;
-      \fill[cblue]  (0,-4.5)  \lo 2 \lo 1 \lo 1 \lo 3 \hi 9 \lo 1;
-      \pattern[pattern=north east lines] (1, -1.5) rectangle +(3, 1);
-      \pattern[pattern=north east lines] (4, -3.0) rectangle +(1, 1);
-      \pb{0}{-1}{cgreen};
-      \pb{2}{-2.5}{cred};
-      \pb{2}{-4}{cblue};
-    \end{tikzpicture}
+    \input{pics/cs-pi-3}
   \end{center}
 \end{frame} 
 
 \begin{frame}{Héritage de priorité}
   Autre exemple:
   Soit 3 tâches et 2 ressources telle que A et B partage la première ressource et B et C partage la seconde:
-  $$P(A) > P(B) > P(C)$$
+  $$P_A > P_B > P_C$$
   % CCBBCACBABC  
   \begin{center}
-    \begin{tikzpicture}[scale=0.5]
-      \timeline{11}{-5}{-1./A, -2.5/B, -4./C, }
-      \fill[color=black!25] (6, -1.5) rectangle +(2, 1);
-      \fill[color=black!25] (3, -3.0) rectangle +(4, 1);
-      \fill[cgreen] (0,-1.5)  \lo 2 \lo 2 \lo 1 \hi 1 \lo 1 \lo 1 \hi 1 \lo 1 \lo 1;
-      \fill[cred] (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 1 \lo 1 \hi 1 \lo 1 \hi 1 \lo 1;
-      \fill[cblue] (0,-4.5)  \hi 2 \lo 2 \hi 1 \lo 1 \hi 1 \lo 1 \lo 1 \lo 1 \hi 1;
-      \pattern[pattern=north east lines] (1, -4.5) rectangle +(6, 1);
-      \pattern[pattern=north east lines] (7, -3.0) rectangle +(3, 1);
-      \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
-      \pattern[pattern=north west lines] (8, -1.5) rectangle +(1, 1);
-      \pb{5}{-1}{cgreen};
-      \pb{2}{-2.5}{cred};
-      \pb{0}{-4}{cblue};
-    \end{tikzpicture}
+    \input{pics/pi-1}
   \end{center}
 \end{frame} 
 
@@ -589,27 +554,24 @@ lock(m);
   \begin{itemize}
   \item Le  temps de blocage $B_i$  d'une tâche de  haute priorité par
     une tâche de plus basse priorité nominale est borné
-  \item ...  mais le calcul de  ce temps de blocage  maximum peut être
-    très complexe
-  \item Condition nécessaire d'ordonnancabilité par un algorithme Rate
-    Monotonic :
-    $$\forall i \in tasks \left( \sum_{k = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i(2^{1/i} - 1)$$
+  \item ...  mais le calcul de  ce temps de blocage maximum reste très
+    complexe
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Problème rémanent} 
   \begin{itemize}
-  \item Blocages en chaîne (cf notre exemple avec 3 tâches)
+  \item Blocages en chaîne (cf. notre exemple avec 3 tâches)
   \item Deadlock
   \end{itemize}
-\note{Ajouter deux exemples?}
 \end{frame}
 
-\subsection{Priority ceilling}
+\subsection{Original ceiling priority}
 
-\begin{frame}{Priorité plafonnée}
+\begin{frame}{Priorité plafonnée originale}
   \begin{itemize} 
-  \item Aussi appellée \emph{Priority ceilling}
+  \item  Aussi  appellée   \emph{Original  Ceiling  Priority  Protocol
+      (OCPP)}
   \item Introduit  à la  fin des années  80 pour résoudre  le problème
     d'inversion de priorité tout en prévenant l'occurence de deadlocks
     et de blocages en chaîne
@@ -629,15 +591,27 @@ lock(m);
   \item  On attribue  à chaque  sémaphore $S_k$  une  priorité plafond
     $C(S_k)$ égale à la plus haute priorité des tâches susceptibles de
     l'acquérir
-  \item Soit $i$  la tâche prête de plus  haute priorité : l'accès
-    au processeur est donné à $i$
-  \item soit $S*$ le sémaphore dont la priorité plafond $C(S*)$ est la
+  \item Soit  $i$ la tâche prête  de plus haute priorité  : l'accès au
+    processeur est donné à $i$
+  \item Soit $S*$ le sémaphore dont la priorité plafond $C(S*)$ est la
     plus grande parmi  tous les sémaphores déjà acquis  par des tâches
     autres que $i$
   \item Pour entrer dans une  section critique gardée par un sémaphore
-    $S_k$, $i$ doit avoir une  priorité supérieure à $C(S*)$. Si $P_i
-    ≤ C(S*)$,  l'accès à $S_k$  est interdit et  on dit que  $i$ est
-    bloquée sur $S*$ par la tâche qui possède $S*$
+    $S_k$, $i$ doit avoir une priorité supérieure à $C(S*)$. Si $P_i ≤
+    C(S*)$, l'accès à $S_k$ est interdit et on dit que $i$ est bloquée
+    sur $S*$ par la tâche qui possède $S*$
+  \end{itemize} 
+\end{frame} 
+
+\subsection{Immediate Priority ceilling}
+
+\begin{frame}{Priorité plafonnée immédiate}
+  \begin{itemize} 
+  \item  Aussi  appellée  \emph{Immediate  Ceiling  Priority  Protocol
+      (ICPP)}
+  \item Similaire à OCPP mais plus simple.
+  \item Dès  qu'une tâche acquiert une sémaphore  $S_k$, elle acquiert
+    sa priorité $C(S_k)$ en même temps
   \end{itemize} 
 \end{frame} 
 
@@ -654,27 +628,52 @@ lock(m);
       \hline
     \end{tabular}
   \end{center}
-  Les priorités plafond sont donc: 
-  \begin{itemize}
-  \item $C(S_1) = P_A$ 
-  \item $C(S_2) = P_A$ 
-  \end{itemize}
-\end{frame} 
+  \begin{overprint}
+    \onslide<1>
 
-\begin{frame}{Sans mécanisme de protection}
-  \input{pics/prio-inherit-1.tex}
-\end{frame} 
+    \onslide<2>
+    Sans mécanisme de protection
+    \begin{center}
+      \input{pics/prio-inherit-1.tex}
+      \begin{tabular}{cccc}
+        $TR_A = 12$ & $TR_B = 6$ & $TR_C = 8$ & $TR_D = 17$\\
+      \end{tabular}
+    \end{center}
+    
+    \onslide<3>
+    Par héritage de priorité
+    \begin{center}
+      \input{pics/prio-inherit-2.tex}
+      \begin{tabular}{cccc}
+        $TR_A = 9$ & $TR_B = 12$ & $TR_C = 14$ & $TR_D = 17$\\
+      \end{tabular}
+    \end{center}
 
-\begin{frame}{Par héritage de priorité}
-  \input{pics/prio-inherit-2.tex}
-\end{frame} 
+    \onslide<4>
+    Par \emph{Priority Ceiling}, les priorités plafond sont donc: 
+    \begin{itemize}
+    \item $C(S_1) = P_A$ 
+    \item $C(S_2) = P_A$ 
+    \end{itemize}
 
-\begin{frame}{Par priorité plafonnée originale}
-  \input{pics/prio-inherit-3.tex}
-\end{frame} 
+    \onslide<5>
+    Par priorité plafonnée originale:
+    \begin{center}
+      \input{pics/prio-inherit-3.tex}
+      \begin{tabular}{cccc}
+        $TR_A = 7$ & $TR_B = 12$ & $TR_C = 14$ & $TR_D = 17$\\
+      \end{tabular}
+    \end{center}
 
-\begin{frame}{Par priorité plafonnée immédiate}
-  \input{pics/prio-inherit-4.tex}
+    \onslide<6>
+    Par priorité plafonnée immédiate:
+    \begin{center}
+      \input{pics/prio-inherit-4.tex}
+      \begin{tabular}{cccc}
+        $TR_A = 6$ & $TR_B = 12$ & $TR_C = 14$ & $TR_D = 17$\\
+      \end{tabular}
+    \end{center}
+  \end{overprint}
 \end{frame} 
 
 % \begin{frame}{Priorité plafonnée} 
@@ -756,16 +755,18 @@ lock(m);
 \begin{frame}{Priorité plafonnée} 
   On a  le même critère d'ordonnancabilité  par RM que dans  le cas du
   protocole d'héritage de priorité:
-  $$\forall i \in tasks \left( \sum_{k = 1..i} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i(2^{1/i} - 1)$$
+  $$\forall i \in tasks, \left( \sum_{k \in tasks} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i \left(2^{\frac{1}{i}}-1\right)$$
+  et le même calcul du temps de réponse:
+  $$TR_i = B_i + C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
   mais le calcul du temps de  blocage maximum de chaque tâche est plus
   simple :
     \begin{itemize}
     \item on  peut démontrer  que le temps  de bloquage  maximum $B_i$
       d'une tâche  $i$ est la durée  de la plus  longue des sections
-      critiques ($\max D_{j,k}$) parmi celles appartenant à des tâches
+      critiques ($\max SC_{j,k}$) parmi celles appartenant à des tâches
       de  priorité inférieure à  $P_i$ et  gardées par  des sémaphores
       dont la priorité plafond est supérieure ou égale à $P_i$
-      $$B_i = \max D_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$ 
+      $$B_i = \max SC_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$ 
     \end{itemize}
 \end{frame}
 
@@ -789,8 +790,8 @@ lock(m);
     mutex  permet  d'avoir un  morceau  de  code mutuelement  exclusif
     tandis que  le sémaphore est  une section de  code limité à  uen 1
     ressource.
-  \item  Notons  aussi  que  les  algorithme  d'héritage  de  priorité
-    néxistent pas sur les sémaphores
+  \item  Notons  aussi  que  les  algorithmes  d'héritage  de  priorité
+    n'éxistent pas sur les sémaphores
   \end{itemize} 
 \end{frame} 
 
@@ -914,9 +915,9 @@ Tâche 2:
 \subsection{Condition}
 
 \begin{frame}[fragile]{Conditions}
-  Peut être  considéré comme des \emph{rendez-vous} à  sens unique. Si
-  une  tâche attend,  elle  est débloquée,  sinon,  aucun effet.  Très
-  utilisée pour le pattern des \cmd{work-thread}
+  Peuvent  être   considérés  comme  des   \emph{rendez-vous}  à  sens
+  unique. Si une tâche attend, elle est débloquée, sinon, aucun effet.
+  Très utilisée pour le pattern des \cmd{work-thread}
   \begin{columns}
     \begin{column}{5cm}
       \begin{lstlisting} 
@@ -934,14 +935,16 @@ void signal() {
 }
       \end{lstlisting}
     \end{column}
-    \begin{column}{5cm}
+    \begin{column}{5.5cm}
       \begin{lstlisting} 
-// broadcast debloque tous les 
-// waiters que alors signal en 
-// debloque uniquement un
+// broadcast debloque
+// tous les waiters alors
+// que signal en debloque
+// uniquement un
 void broadcast()  {
-  // Plus complexe, il faut 
-  // un mutex par waiters. 
+  // Plus complexe, il
+  // faut un mutex par
+  // waiters. 
 }
       \end{lstlisting} 
     \end{column}
@@ -952,10 +955,10 @@ void broadcast()  {
 
 \begin{frame}[fragile]{Buffer circulaire et Queue}
   \begin{itemize} 
-  \item  Précédement décrit dans  la section  ``Partage d'informtaiton
+  \item  Précédement décrit dans  la section  ``Partage d'information
     avec les interruptions''
   \item Fonctionne aussi très bien entre les tâches
-  \item Une  des rare structure  permettant d'être paratgée à  la fois
+  \item Une  des rare structure  permettant d'être partagée à  la fois
     avec une interruption et des tâches
   \item Faire attention à l'allocation dynamique des objets
   \end{itemize}
@@ -988,7 +991,7 @@ void broadcast()  {
 \end{frame}
 
 \begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
-  On pourrait imaginer un cas cimmulant les trois contraintes:
+  On pourrait imaginer un cas cummulant les trois contraintes:
   \begin{lstlisting} 
 disable_interrupts()
 mutex_lock(m)

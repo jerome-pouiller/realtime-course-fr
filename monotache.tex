@@ -11,6 +11,14 @@
 
 \part{Fonctionnement monotâches}
 
+\begin{frame}
+  \partpage
+\end{frame}
+
+\begin{frame}
+  \tableofcontents[currentpart]
+\end{frame}
+
 \begin{frame}{Quelques définitions}
   \begin{itemize}
   \item \textbf{Temps de réponse} : temps entre un évènement et la fin
@@ -121,11 +129,14 @@ int main() {
     \item  \textbf{Exception}.   Asynchrone  ou Synchrone.   Exemples:
       Division  par zéro,  Erreur arithmétique,  Erreur d'instruction,
       Erreur d'alignement, Erreur de page, Breakpoint matériel, Double
-      faute,  etc...  \note{Une overflow  arithmétique ne  produit pas
-        d'exception, il lève le flags ``retenue''} \note{Un breakpoint
-        logiciel   change  une   instruction   par  une   interruption
-        logicielle. Un break point  software n'est pas possible en ROM
-        alors que le breakpoint hardware oui}
+      faute,  etc...  
+
+      \note{Un  overflow arithmétique ne  produit pas  d'exception, il
+        lève le flags ``retenue''\\}
+      
+      \note{Un  breakpoint  logiciel change  une  instruction par  une
+        interruption  logicielle. Un  break point  software  n'est pas
+        possible en ROM alors que le breakpoint hardware oui\\}
     \end{itemize} 
   \item \textbf{Logicielle}. Déclenché par une instruction. Synchrone.
   \end{itemize}
@@ -444,7 +455,11 @@ void read() {
 \subsection{Spin Lock}
 
 \begin{frame}[fragile]{Spin Lock}
-  Attente active
+  Attente active.\\
+  Nécessite une instruction assembleur  premettant un accès en lecture
+  et une écriture  en une instruction: \\
+  \texttt{test\_and\_set} affecte le registre d'état en fonction de la
+  valeur  du registre  et affecte  la valeur  1 au  registre.
   \begin{lstlisting} 
 void lock(int m) {
   while(atomic_test_and_set(m))
@@ -471,7 +486,7 @@ void unlock(int m) {
     principale
   \item Interaction entre les évènements complexe
   \end{itemize} 
-  \note{Parler du mot clef volatile} 
+  \note{Parler du mot clef volatile\\} 
   \note{Montrer ici  le code du HC08  de la Cobalt.  Commencer par une
     description du but,  du hard: 3 ADC pour  Joystick, deux encodeur,
     clavier matricé,  bus can, prise coaxiale, 20ms,  sytème pour deux
@@ -479,7 +494,7 @@ void unlock(int m) {
     principe.pdf.   Montrer MC68HC908GZ16.h  (montrer  les registres),
     MC68HC908GZ16.c   (montrer   volatile),   link.prm  (montrer   les
     vecteurs),   start.c  (copie  ROM   vers  RAM),   interrupt.c  (en
-    particulier intGenlock), main.c (fonction loop)}
+    particulier intGenlock), main.c (fonction loop)\\}
 \end{frame} 
 
 % \section{Biographie}

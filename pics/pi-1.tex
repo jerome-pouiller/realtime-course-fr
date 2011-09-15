@@ -1,0 +1,15 @@
+\begin{tikzpicture}[scale=0.5]
+  \timeline{11}{-5}{-1./A, -2.5/B, -4./C, }
+  \fill[color=black!25] (6, -1.5) rectangle +(2, 1);
+  \fill[color=black!25] (3, -3.0) rectangle +(4, 1);
+  \fill[cgreen] (0,-1.5)  \lo 2 \lo 2 \lo 1 \hi 1 \lo 1 \lo 1 \hi 1 \lo 1 \lo 1;
+  \fill[cred]   (0,-3.0)  \lo 2 \hi 2 \lo 1 \lo 1 \lo 1 \hi 1 \lo 1 \hi 1 \lo 1;
+  \fill[cblue]  (0,-4.5)  \hi 2 \lo 2 \hi 1 \lo 1 \hi 1 \lo 1 \lo 1 \lo 1 \hi 1;
+  \pattern[pattern=north east lines] (1, -4.5) rectangle +(6, 1);
+  \pattern[pattern=north east lines] (7, -3.0) rectangle +(3, 1);
+  \pattern[pattern=north west lines] (3, -3.0) rectangle +(5, 1);
+  \pattern[pattern=north west lines] (8, -1.5) rectangle +(1, 1);
+  \pb{5}{-1}{cgreen};
+  \pb{2}{-2.5}{cred};
+  \pb{0}{-4}{cblue};
+\end{tikzpicture}

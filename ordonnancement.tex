@@ -11,6 +11,14 @@
 
 \part{Ordonnancement}
 
+\begin{frame}
+  \partpage
+\end{frame}
+
+\begin{frame}
+  \tableofcontents[currentpart]
+\end{frame}
+
 \section{Quelques notions théoriques}
 
 \subsection{Modèle de tâches}
@@ -65,7 +73,7 @@
   \item Facteur d'utilisation du processeur: $U_i =  C_i / T_i$
   \item Facteur de charge du processeur : $CH_i = C_i / D_i $ ($CH_i =
     U_i$ si délai critique sur périodes)
-  \item Laxité de la tâche (retard maximum acceptable pour l'exécution
+  \item Laxité (ou \emph{Slack}) de la tâche (retard maximum acceptable pour l'exécution
     de la tâche) : $L_i = D_i - C_i$
   \end{itemize} 
 \end{frame}
@@ -271,76 +279,42 @@
     \onslide<2>
     Charge du CPU:
     $$\frac{8}{40} + \frac{1}{10} + \frac{1}{4} = 0.75$$
-
+    
     \onslide<3>
     Mode préemptif ($ppcm(4, 10, 20) = 20$) :
     \begin{center}
-      \begin{tikzpicture}[scale=0.5]
-        % CBAACAAACABACAAACXXX
-      \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
-      \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi 2 \lo 1 \hi 3 \lo 1 \hi 1 \lo 1 \hi 1 \lo 1 \hi 3 \lo 1 \lo 3;
-      \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo 2 \lo 1 \lo 3 \lo 1 \lo 1 \hi 1 \lo 1 \lo 1 \lo 3 \lo 1 \lo 3;
-      \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo 2 \hi 1 \lo 3 \hi 1 \lo 1 \lo 1 \lo 1 \hi 1 \lo 3 \hi 1 \lo 3;
-      \pb{0}{-1}{cgreen};
-      \p{20}{-1}{cgreen};
-      \pb{0}{-2.5}{cred};
-      \p{10}{-2.5}{cred};
-      \p{20}{-2.5}{cred};
-      \pb{0}{-4}{cblue};
-      \p {4}{-4}{cblue};
-      \p {8}{-4}{cblue};
-      \p{12}{-4}{cblue};
-      \p{16}{-4}{cblue};
-      \p{20}{-4}{cblue};
-    \end{tikzpicture}
-  \end{center}
+      \input{pics/RM-1A}
+    \end{center}
 
-  \onslide<4>
-  Mode non-préemptif :
-  \begin{center}
-    \begin{tikzpicture}[scale=0.5]
-      % CBAAAAAAAAAACCCBXCXXX
-      \timeline{20}{-5}{-1.0/A, -2.5/B, -4.0/C}
-      \fill[cgreen] (0,-1.5) \lo 1 \lo 1 \hi{10} \lo 3 \lo 1 \lo 1 \lo 1 \lo 2;
-      \fill[cred]   (0,-3.0) \lo 1 \hi 1 \lo{10} \lo 3 \hi 1 \lo 1 \lo 1 \lo 2;
-      \fill[cblue]  (0,-4.5) \hi 1 \lo 1 \lo{10} \hi 3 \lo 1 \lo 1 \hi 1 \lo 2;
-      \pb{0}{-1}{cgreen};
-      \p{20}{-1}{cgreen};
-      \pb{0}{-2.5}{cred};
-      \p{10}{-2.5}{cred};
-      \p{20}{-2.5}{cred};
-      \pb{0}{-4}{cblue};
-      \p {4}{-4}{cblue};
-      \p {8}{-4}{cblue};
-      \p{12}{-4}{cblue};
-      \p{16}{-4}{cblue};
-      \p{20}{-4}{cblue};
-      \draw (8, -4) node {\textcolor{red!80}{\huge{$\times$}}};
-      \draw (12, -4) node {\textcolor{red!80}{\huge{$\times$}}};
-    \end{tikzpicture}
-  \end{center}
-\end{overprint}
+    \onslide<4>
+    Mode non-préemptif :
+    \begin{center}
+      \input{pics/RM-1B}
+    \end{center}
+  \end{overprint}
 \end{frame}
 
 \begin{frame}{Exemple 2}
-    \begin{center}
-      \begin{tabular}{ccccc}
-        \hline
-        Tâche & Arrivée & Période & Capacité & Délai \\
-        \hline
-        A & 0 & 16 & 8 & Fin de période\\
-        B & 0 &  8 & 2 & Fin de période\\
-        C & 0 &  4 & 1 & Fin de période\\
-        \hline
-      \end{tabular}
-    \end{center}
-    \pause
-    Charge du CPU:
-    $$\frac{8}{16} + \frac{2}{8} + \frac{1}{4} = 1$$
-    \pause
-    \begin{center}
-      \input{pics/RM-2.tex}
-    \end{center}
+  \begin{center}
+    \begin{tabular}{ccccc}
+      \hline
+      Tâche & Arrivée & Période & Capacité & Délai \\
+      \hline
+      A & 0 & 16 & 8 & Fin de période\\
+      B & 0 &  8 & 2 & Fin de période\\
+      C & 0 &  4 & 1 & Fin de période\\
+      \hline
+    \end{tabular}
+  \end{center}
+  
+  \pause
+  Charge du CPU:
+  $$\frac{8}{16} + \frac{2}{8} + \frac{1}{4} = 1$$
+  
+  \pause
+  \begin{center}
+    \input{pics/RM-2.tex}
+  \end{center}
 \end{frame}
 
 \subsection{Deadline Monotonic (DM)}
