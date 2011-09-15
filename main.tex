@@ -7,6 +7,18 @@
 % Copyright 2010 Jérôme Pouiller <jezz@sysmic.org>
 %
 
+% Pour faire une version imprimable, avec les notes sans overlay
+% \PassOptionsToClass{notes=show,handout}
+% Pour en faire un article
+% \documentclass[a4paper]{article}
+
+\documentclass[10pt,ucs,usepdftitle=false]{beamer}
+\usepackage{beamerarticle}
+
+% Pour mettre deux pages sur une
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[a4paper,border shrink=5mm]
+
 \input{style}
                         
 % Apparait sur chaque slide:
@@ -47,30 +59,12 @@
     \end{itemize} 
   \end{frame}
   
-  \begin{frame}{Sommaire}
-    \tableofcontents[part=1]
-  \end{frame}
-  \input{problematique}
-  \begin{frame}{Sommaire}
-    \tableofcontents[part=2]
-  \end{frame}
-  \input{monotache}
-  \begin{frame}{Sommaire}
-    \tableofcontents[part=3]
-  \end{frame}
-  \input{multitaches}
-  \begin{frame}{Sommaire}
-    \tableofcontents[part=4]
-  \end{frame}
-  \input{ordonnancement}
-  \begin{frame}{Sommaire}
-    \tableofcontents[part=5]
-  \end{frame}
-  \input{ressources}
-  \begin{frame}{Sommaire}
-    \tableofcontents[part=6]
-  \end{frame}
-  \input{architectures}
+  \include{problematique}
+  \include{monotache}
+  \include{multitaches}
+  \include{ordonnancement}
+  \include{ressources}
+  \include{architectures}
 
 \end{document}
 
