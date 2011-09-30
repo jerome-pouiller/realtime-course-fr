@@ -571,7 +571,7 @@ lock(m);
 \begin{frame}{Priorité plafonnée originale}
   \begin{itemize} 
   \item  Aussi  appellée   \emph{Original  Ceiling  Priority  Protocol
-      (OCPP)}
+      (OCPP)} ou tout simplement \emph{Ceiling Priority}
   \item Introduit  à la  fin des années  80 pour résoudre  le problème
     d'inversion de priorité tout en prévenant l'occurence de deadlocks
     et de blocages en chaîne
@@ -593,13 +593,14 @@ lock(m);
     l'acquérir
   \item Soit  $i$ la tâche prête  de plus haute priorité  : l'accès au
     processeur est donné à $i$
-  \item Soit $S*$ le sémaphore dont la priorité plafond $C(S*)$ est la
+  \item Soit $S_*$ le sémaphore dont la priorité plafond $C(S_*)$ est la
     plus grande parmi  tous les sémaphores déjà acquis  par des tâches
     autres que $i$
   \item Pour entrer dans une  section critique gardée par un sémaphore
-    $S_k$, $i$ doit avoir une priorité supérieure à $C(S*)$. Si $P_i ≤
-    C(S*)$, l'accès à $S_k$ est interdit et on dit que $i$ est bloquée
-    sur $S*$ par la tâche qui possède $S*$
+    $S_k$, $i$ doit avoir une  priorité supérieure à $C(S_*)$. Si $P_i
+    ≤ C(S_*)$,  l'accès à  $S_k$ est  interdit et on  dit que  $i$ est
+    bloquée sur $S_*$  par la tâche qui possède  $S_*$. La priorité de
+    $i$ est alors passée à la tâche proriétaire de $S_*$
   \end{itemize} 
 \end{frame} 
 
@@ -608,7 +609,7 @@ lock(m);
 \begin{frame}{Priorité plafonnée immédiate}
   \begin{itemize} 
   \item  Aussi  appellée  \emph{Immediate  Ceiling  Priority  Protocol
-      (ICPP)}
+      (ICPP)} ou \emph{Hightest Lock}
   \item Similaire à OCPP mais plus simple.
   \item Dès  qu'une tâche acquiert une sémaphore  $S_k$, elle acquiert
     sa priorité $C(S_k)$ en même temps
@@ -760,14 +761,14 @@ lock(m);
   $$TR_i = B_i + C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
   mais le calcul du temps de  blocage maximum de chaque tâche est plus
   simple :
-    \begin{itemize}
-    \item on  peut démontrer  que le temps  de bloquage  maximum $B_i$
-      d'une tâche  $i$ est la durée  de la plus  longue des sections
-      critiques ($\max SC_{j,k}$) parmi celles appartenant à des tâches
-      de  priorité inférieure à  $P_i$ et  gardées par  des sémaphores
-      dont la priorité plafond est supérieure ou égale à $P_i$
-      $$B_i = \max SC_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$ 
-    \end{itemize}
+  \begin{itemize}
+  \item on peut démontrer que le temps de bloquage maximum $B_i$ d'une
+    tâche $i$  est la durée de  la plus longue  des sections critiques
+    ($\max  SC_{j,k}$)  parmi  celles  appartenant  à  des  tâches  de
+    priorité inférieure à $P_i$ et  gardées par des sémaphores dont la
+    priorité plafond est supérieure ou égale à $P_i$
+    $$B_i = \max SC_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$ 
+  \end{itemize}
 \end{frame}
 
 \section{Autres mécanismes de gestion d'accès concurrents}

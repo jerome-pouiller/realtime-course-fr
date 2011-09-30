@@ -7,13 +7,25 @@
 #
 
 # Exemple:
-# ./make.sh arch '\includeonly{architectures}\PassOptionsToClass{notes=show}{beamer}'
+# ./make.sh arch -o architectures,ordonnancement -b beamer -e \RequirePackage{calc}'
 
 EXTRA=
 OPTIND=1
 FORCE=
+
+#fun() { 
+#    typeset -A Args
+#    Args=(-sl 0 -si 0 -sm 0 -ss x)
+#    echo ${(kvqq)Args}
+#    zparseopts -K -D -E -A Args sl si sm ss sd
+#    echo ${(kvqq)Args}
+#}
+#pdfnup --a4paper --landscape --keepinfo --nup 1x1 --frame true \
+#        --outfile sheets.pdf presentation.pdf
+
+FILE=main
 while [[ $OPTIND -le $# ]]; do
-    while getopts fb:o:e: OPT; do
+    while getopts fb:o:e:d:i: OPT; do
         case $OPT in
             o)
                 EXTRA+="\includeonly{$OPTARG}"
@@ -21,8 +33,14 @@ while [[ $OPTIND -le $# ]]; do
             b)
                 EXTRA+="\PassOptionsToClass{$OPTARG}{beamer}"
                 ;;
+            d)
+                EXTRA+="\def\\\\$OPTARG{1}"
+                ;;
             e)
                 EXTRA+="$OPTARG"
+                ;;
+            i)
+                FILE="$OPTARG"
                 ;;
             f)
                 FORCE=1
@@ -37,21 +55,28 @@ while [[ $OPTIND -le $# ]]; do
     ((OPTIND++))
 done
 
-[ -n "$OUT" ] || exit 1
+[ -n "$OUT" ] || OUT=.
 
 if  [ -z "$FORCE" -a -d "$OUT" -a -n "$EXTRA" ]; then
     echo Please do not provide options for a predefined compilation
     exit 1
 fi
 
-if [ ! -d $OUT ]; then  
-    mkdir $OUT
-    echo "$EXTRA" > $OUT/options
+if [ ! -d $OUT -o -n "$FORCE" ]; then  
+    [ ! -d $OUT ] && mkdir -p $OUT
+    echo "$EXTRA\input{$FILE}" > $OUT/input
+    pwd > $OUT/source
+elif [ -d $OUT -a ! -e $OUT/source -o ! -e $OUT/input ]; then
+    echo '"source" or "input" not found. Target is corrupted?'
+    exit 1
 fi
 
-EXTRA=$(cat $OUT/options)
-echo Compiling $OUT with options $EXTRA
-pdflatex -jobname=realtime-$OUT -file-line-error -output-directory=$OUT "$EXTRA\input{main}" < /dev/null
-mv $OUT/realtime-$OUT.pdf .
-
+TARGET="$(readlink -f $OUT)"
+INPUT="$(cat $OUT/input)"
+SRC="$(cat $OUT/source)"
+echo Compiling $OUT with $INPUT
+pushd "$SRC"
+pdflatex -jobname=realtime-$(basename "$TARGET") -file-line-error -output-directory=$TARGET "$INPUT" < /dev/null
+popd
+# mv $OUT/realtime-$OUT.pdf .
 
