@@ -20,8 +20,6 @@ FORCE=
 #    zparseopts -K -D -E -A Args sl si sm ss sd
 #    echo ${(kvqq)Args}
 #}
-#pdfnup --a4paper --landscape --keepinfo --nup 1x1 --frame true \
-#        --outfile sheets.pdf presentation.pdf
 
 FILE=main
 while [[ $OPTIND -le $# ]]; do
@@ -34,7 +32,11 @@ while [[ $OPTIND -le $# ]]; do
                 EXTRA+="\PassOptionsToClass{$OPTARG}{beamer}"
                 ;;
             d)
-                EXTRA+="\def\\\\$OPTARG{1}"
+                if [[ $OPTARG = *=* ]]; then
+                    EXTRA+="\def\\${OPTARG%\=*}{${OPTARG#*\=}}"
+                else
+                    EXTRA+="\def\\$OPTARG{1}"
+                fi
                 ;;
             e)
                 EXTRA+="$OPTARG"
@@ -64,19 +66,19 @@ fi
 
 if [ ! -d $OUT -o -n "$FORCE" ]; then  
     [ ! -d $OUT ] && mkdir -p $OUT
-    echo "$EXTRA\input{$FILE}" > $OUT/input
+    echo -E "$EXTRA\input{$FILE}" > $OUT/input
     pwd > $OUT/source
 elif [ -d $OUT -a ! -e $OUT/source -o ! -e $OUT/input ]; then
-    echo '"source" or "input" not found. Target is corrupted?'
+    echo "\"$OUT/source\" or \"$OUT/input\" not found. Target is corrupted?"
     exit 1
 fi
 
 TARGET="$(readlink -f $OUT)"
 INPUT="$(cat $OUT/input)"
 SRC="$(cat $OUT/source)"
-echo Compiling $OUT with $INPUT
+echo -E "Compiling $OUT with $INPUT"
 pushd "$SRC"
-pdflatex -jobname=realtime-$(basename "$TARGET") -file-line-error -output-directory=$TARGET "$INPUT" < /dev/null
+pdflatex -interaction=nonstopmode -jobname=realtime-$(basename "$TARGET") -file-line-error -output-directory=$TARGET "$INPUT" < /dev/null
 popd
 # mv $OUT/realtime-$OUT.pdf .
 

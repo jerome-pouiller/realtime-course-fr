@@ -7,5 +7,6 @@
 \usepackage{pdfpages}
 
 \begin{document}
-\includepdf[pages={\pages},fitpaper=true]{\in}
+\edef\keypages{pages={\pages}}
+\expandafter\includepdf\expandafter[\keypages,fitpaper=true]{\in}
 \end{document}
