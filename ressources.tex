@@ -75,13 +75,13 @@
 
     \begin{tabular}{ccccccc}
       \hline
-      Tâche & Arrivée  & $r^*_i$ & $P_i$\\
+      Tâche & Capacité & Arrivée  & $r^*_i$ & $P_i$\\
       \hline
-      A & 0  &  \uncover<2->{0} & \uncover<3->{1}\\
-      B & 5  &  \uncover<2->{5} & \uncover<3->{1}\\
-      C & 0  &  \uncover<2->{0} & \uncover<3->{2}\\
-      D & 0  &  \uncover<2->{5} & \uncover<3->{2}\\
-      E & 0  &  \uncover<2->{5} & \uncover<3->{3}\\
+      A & 1 & 0  &  \uncover<2->{0} & \uncover<3->{1}\\
+      B & 2 & 5  &  \uncover<2->{5} & \uncover<3->{1}\\
+      C & 2 & 0  &  \uncover<2->{0} & \uncover<3->{2}\\
+      D & 1 & 0  &  \uncover<2->{5} & \uncover<3->{2}\\
+      E & 3 & 0  &  \uncover<2->{5} & \uncover<3->{3}\\
       \hline
     \end{tabular}
   \end{center}
@@ -107,13 +107,13 @@
 
     \begin{tabular}{ccccccc}
       \hline
-      Tâche & Arrivée & Délai & $r^*_i$ & $D^*_i$ & $P_i$\\
+      Tâche & Capacité & Arrivée & Délai & $r^*_i$ & $D^*_i$ & $P_i$\\
       \hline
-      A & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{1}\\
-      B & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} & \uncover<4->{3}\\
-      C & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{2}\\
-      D & 0 & 10 & \uncover<2->{5} & \uncover<3->{10} & \uncover<4->{4}\\
-      E & 0 & 12 & \uncover<2->{5} & \uncover<3->{12} & \uncover<4->{5}\\
+      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{1}\\
+      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} & \uncover<4->{3}\\
+      C & 2 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{2}\\
+      D & 1 & 0 & 10 & \uncover<2->{5} & \uncover<3->{10} & \uncover<4->{4}\\
+      E & 3 & 0 & 12 & \uncover<2->{5} & \uncover<3->{12} & \uncover<4->{5}\\
       \hline
     \end{tabular}
   \end{center}
@@ -146,15 +146,15 @@
   \begin{center}
     \input{pics/constraint-graph}\\[2ex]
 
-    \begin{tabular}{ccccc}
+    \begin{tabular}{cccccc}
       \hline
-      Tâche & Arrivée & Délai & $r^*_i$ & $d^*_i$\\
+      Tâche & Capacité & Arrivée & Délai & $r^*_i$ & $d^*_i$\\
       \hline
-      A & 0 & 5  & \uncover<2->{0} & \uncover<3->{3} \\
-      B & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} \\
-      C & 0 & 5  & \uncover<2->{1} & \uncover<3->{5} \\
-      D & 0 & 10 & \uncover<2->{7} & \uncover<3->{9} \\
-      E & 0 & 12 & \uncover<2->{8} & \uncover<3->{12}\\
+      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{3} \\
+      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} \\
+      C & 2 & 0 & 5  & \uncover<2->{1} & \uncover<3->{5} \\
+      D & 1 & 0 & 10 & \uncover<2->{7} & \uncover<3->{9} \\
+      E & 3 & 0 & 12 & \uncover<2->{8} & \uncover<3->{12}\\
       \hline
     \end{tabular}
   \end{center}
@@ -443,7 +443,7 @@ lock(m);
       \begin{column}{6cm}
         % AABAAABBA
         \begin{center}
-          \input{pics/cs-latency-1}
+          \input{pics/cs-latency-2}
         \end{center}
       \end{column}
       \begin{column}{4cm}
@@ -791,8 +791,8 @@ lock(m);
     mutex  permet  d'avoir un  morceau  de  code mutuelement  exclusif
     tandis que  le sémaphore est  une section de  code limité à  uen 1
     ressource.
-  \item  Notons  aussi  que  les  algorithmes  d'héritage  de  priorité
-    n'éxistent pas sur les sémaphores
+%  \item  Notons  aussi  que  les  algorithmes  d'héritage  de  priorité
+%    sont encore plus complexe sur les sémaphores
   \end{itemize} 
 \end{frame} 
 
