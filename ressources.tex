@@ -40,7 +40,7 @@
 
 \begin{frame}{Contraintes de précédence (2)} 
   \begin{itemize}
-  \item Ici, seulement précédence simple: Les tâche dépendantes ont la même période
+  \item Ici, seulement précédence simple: Les tâches dépendantes ont la même période
   \item Principe de l'établissement de l'ordonnancement :
     \begin{itemize} 
     \item Transformer l'ensemble des tâches dépendantes en un ensemble
@@ -95,7 +95,7 @@
   \item $r^*_i =  \max \left\{ r_i, r^*_j \right\}$  pour tous les $j$
     tels que $j → i$
   \item $D^*_i =  \max \left\{ D_i, D^*_j \right\}$  pour tous les $j$
-    tels que $j → i$ (ne corrspond pas au délais critique réel)
+    tels que $j → i$ (ne correspond pas au délais critique réel)
   \item si  $i →  j$ alors  $P_i > P_j$  dans le  respect de  la règle
     d'affectation des priorités par Deadline Monotonic
   \end{itemize} 
@@ -166,7 +166,7 @@
 \subsection{Protection des structures de données}
 
 \begin{frame}[fragile]{Exemple de partage de données}
-  Le partage de données entre les tâches posent les mêmes problème que
+  Le partage de données entre les tâches posent les mêmes problèmes que
   le partage de données avec les interruptions
 
   Prennons deux tâches \c{f1} et \c{f2}:
@@ -211,7 +211,7 @@ a++;
     \end{column}
   \end{columns}
 
-  Au lieu d'écrire  les deux donnée l'une après  l'autre, la valeur de
+  Au lieu d'écrire  les deux données l'une après  l'autre, la valeur de
   \verb+data1+ est perdue alors  que \verb+t[1]+ contiendra une valeur
   aléatoire.
 \end{frame} 
@@ -263,11 +263,11 @@ void send(int data) {
   \emph{races  conditions}.   C'est à  dire  des problèmes  aléatoires
   produit par une séquence particulière d'évènements
   \begin{itemize} 
-  \item   Les  \emph{race  conditions}   sont  souvent   difficiles  à
+  \item   Les  \emph{races  conditions}   sont  souvent   difficiles  à
     reproduire et à identifier
-  \item Les  \emph{race conditions} peuvent être latente  dans le code
+  \item Les  \emph{races conditions} peuvent être latente  dans le code
     et se déclarer suite à une modification de l'environnement externe
-  \item Une race condition coûte chère (diffuculté de correction, peut
+  \item Une race condition coûte chère (difficulté de correction, peut
     potentiellement atterrir en production)
   \end{itemize} 
 \end{frame}
@@ -305,8 +305,8 @@ void send(int data) {
 \subsection{Partage de ressource entre deux tâches: Fonctionnement d'un mutex}
 
 \begin{frame}[fragile]{Fonctionnement d'un mutex}
-  Nécessite une instruction assembleur  premettant un accès en lecture
-  et une écriture  en une instruction: \\
+  Nécessite une instruction assembleur  permettant un accès en lecture
+  et en écriture  en une instruction: \\
   \texttt{test\_and\_set} affecte le registre d'état en fonction de la
   valeur  du registre  et affecte  la valeur  1 au  registre.  On peut
   développer la fonction \c{lock} à partir de là:
@@ -409,7 +409,7 @@ lock(m);
   \item Si  la ressource  est occuppée par  la tâche qui  vient d'être
     préemptée, le \texttt{lock()} s'éxécutera dans le même contexte
   \item[$\rightarrow$] Double lock
-  \item De plus,  le blocage d'un mutex peut  entrainer peut entrainer
+  \item De plus,  le blocage d'un mutex peut entrainer
     une  très  important latence  ce  qui  est  en contradiction  avec
     l'objectif de rester le minimum de temps dans une interruption
   \item[$\rightarrow$] Règle générale: Il ne faut pas appeller \texttt{schedule} dans une interruption.
@@ -461,8 +461,8 @@ lock(m);
     ressources à accès exclusif dans un environnement préemptif
   \item  Une  tâche  de  priorité  intermédiaire peut  être  élue  par
     l'ordonnanceur  alors  que  des  tâches  de  plus  haute  priorité
-    attentent.
-  \item Il est diffile de calculer  le temps de blocage des tâches par
+    attendent.
+  \item Il est difficile de calculer  le temps de blocage des tâches par
     une inversion de priorité (il est généralement non-borné)
   \end{itemize} 
   Cas notable de \emph{Path Finder}
@@ -507,7 +507,7 @@ lock(m);
 
 \begin{frame}{Conseils}
   \begin{itemize} 
-  \item Essayer de limiter la taille des sections critique
+  \item Essayer de limiter la taille des sections critiques
   \item  Essayer  de découper  les  sections  critiques  de manière  à
     favoriser la préemption des tâches de haute priorité
   \item Essayer de  diminuer la granularité des mutex  afin de limiter
@@ -800,7 +800,7 @@ lock(m);
     aucune.
   \item Parfois le sémaphore  binaire est utilisé pour implémentéer le
     mutex.
-  \item Toutefois,  d'un point de  vue sémantique, on pourrait  que le
+  \item Toutefois,  d'un point de  vue sémantique, on pourrait pemser  que le
     mutex  permet  d'avoir un  morceau  de  code mutuelement  exclusif
     tandis  que le  sémaphore est  une section  de code  limité  à une
     ressource.
@@ -973,7 +973,7 @@ void broadcast()  {
   \item  Précédement décrit dans  la section  ``Partage d'information
     avec les interruptions''
   \item Fonctionne aussi très bien entre les tâches
-  \item Une  des rare structure  permettant d'être partagée à  la fois
+  \item Une  des rares structures  permettant d'être partagée à  la fois
     avec une interruption et des tâches
   \item Faire attention à l'allocation dynamique des objets
   \end{itemize}
@@ -984,7 +984,7 @@ void broadcast()  {
 \begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
   Lorsque:
   \begin{itemize} 
-  \item  Vos  sections critique  font  intervenir  des  tâches et  des
+  \item  Vos  sections critiques  font  intervenir  des  tâches et  des
     interruptions
   \item Votre problème ne concerne  pas un échange de données (et donc
     le buffer circulaire n'est pas une solution)
@@ -995,10 +995,10 @@ void broadcast()  {
 
   Le point sur ces trois mécanismes:
   \begin{itemize} 
-  \item  Si  une  ressource  est   partagé  entre  une  tâche  et  une
+  \item  Si  une  ressource  est   partagée  entre  une  tâche  et  une
     interruption sur  le même coeur,  il est nécessaire  de désactiver
     les interruptions
-  \item  Si une ressource  est partagé  entre deux  tâche sur  un même
+  \item  Si une ressource  est partagé  entre deux  tâches sur  un même
     coeur, il est nécessaire d'utiliser un mutex
   \item Si  la ressource est  partagée avec un  autre coeur et  que le
     temps d'utilisation est court, utilisez un Spin Lock.
@@ -1026,8 +1026,8 @@ enable_interrupts()
   \item Algorithme thread-safe n'utilisant pas de sections ciritques. 
   \item Ces  algorithmes utilisent souvant  des instructions atomiques
     proposés par certains processeurs
-  \item Par conséquant, ils sont peu portables
-  \item Souvent utilisé dans les base de données
+  \item Par conséquent, ils sont peu portables
+  \item Souvent utilisé dans les bases de données
   \end{itemize} 
 \end{frame} 
 
@@ -1038,8 +1038,8 @@ enable_interrupts()
   \begin{itemize} 
   \item La lecture n'est pas bloquante
   \item On note le nombre de lecteurs
-  \item Les modification s'effectuent sur une copie de l'objet
-  \item Les lecture suivante se font sur la nouvelle version de l'objet
+  \item Les modifications s'effectuent sur une copie de l'objet
+  \item Les lectures suivante se font sur la nouvelle version de l'objet
   \item Lorsque  le dernier lecteur  a terminé, l'objet  d'origine est
     détruit. Seul subsiste la nouvelle version.
   \end{itemize} 

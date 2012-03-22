@@ -57,8 +57,8 @@
   \end{itemize} 
   Très souvent:
   \begin{itemize}
-    \item Les tâches sont connues début de l'ordonnacement : $S_i = 0$
-    \item Les tâches périodique sont actives dès le début de
+    \item Les tâches sont connues au début de l'ordonnacement : $S_i = 0$
+    \item Les tâches périodiques sont actives dès le début de
       l'ordonnancement : $R_i = 0$
     \item Le délai critique des  tâches périodiques est leur période  : $D_i =
       T_i$
@@ -132,7 +132,7 @@
 \section{Algorithmes à priorité statique}
 
 \begin{frame}{Typologie des algorithmes}
-  On distingue diverse typologie d'algorithmes:
+  On distingue diverses typologies d'algorithmes:
   \begin{itemize}
   \item  \emph{on  line}  ou   \emph{off  line}:  Choix  dynamique  ou
     prédéfini à la conception
@@ -229,9 +229,9 @@
 \subsection{Rate Monotonique (RM)}
 
 \begin{frame}{Rate Monotonique}
-  Aussi appellé \emph{RMA} (\emph{Rate Monotonic Algorithm}
+  Aussi appellé \emph{RMA} (\emph{Rate Monotonic Algorithm})
 
-  Ordonnancement à priorité statique où les priorité sont inversement
+  Ordonnancement à priorité statique où les priorités sont inversement
   proportionnelles aux périodes des tâches. 
 
   Fonctionne  en version préemptive.  La version  non-préemptive n'est
@@ -280,7 +280,7 @@
     \onslide<1>
     \onslide<2>
     Charge du CPU:
-    $$\frac{8}{40} + \frac{1}{10} + \frac{1}{4} = 0.75$$
+    $$\frac{8}{20} + \frac{1}{10} + \frac{1}{4} = 0.75$$
     
     \onslide<3>
     Mode préemptif ($ppcm(4, 10, 20) = 20$) :
@@ -537,8 +537,8 @@
   \begin{itemize} 
   \item  Algorithme fonctionnant  avec DMA,  EDF ou  LST et  des tâches
     apériodiques avec des délais critiques
-  \item On  ordonnance les tâches  apériodique de la même  manière que
-    les tâche périodiques
+  \item On  ordonnance les tâches  apériodiques de la même  manière que
+    les tâches périodiques
   \item  Avant  d'accepter  la  tâche,  il faut  vérifier  le  critère
     d'acceptabilité (ce qui correspond à évaluer l'algorithme hors ligne)
   \end{itemize} 
@@ -618,16 +618,16 @@
   \begin{itemize}
   \item Un  serveur est une  tâche périodique créée  spécialement pour
     prendre en compte les tâches apériodiques
-  \item Un serveur caractérisé par :
+  \item Un serveur est caractérisé par :
     \begin{itemize}
     \item Sa période 
     \item Son temps d'exécution : capacité du serveur  
     \end{itemize}
   \item Un serveur est généralement ordonnancé suivant  le même algorithme
     que les autres tâches périodiques
-  \item Très  souvent, afin  de diminuer le  temps de  répondes tâches
-    apériodique,  la  priorité  du   serveur  est  haute  (sinon,  ses
-    performances sont identique au traitement sur temps creux)
+  \item Très  souvent, afin  de diminuer le  temps de  réponses des tâches
+    apériodiques,  la  priorité  du   serveur  est  haute  (sinon,  ses
+    performances sont identiques au traitement sur temps creux)
   \item Une fois actif, le serveur sert les tâches apériodiques dans
     la limite de sa capacité.
   \item l'ordre de traitement  des tâches apériodiques ne dépend pas
@@ -652,8 +652,8 @@
     tâches périodiques
   \item Quand une instance (un événement) de tâche apériodique arrive,
     elle attend jusqu’à ce que la capacité du serveur soit disponible.
-  \item  Il est  possible de  rendre la  main au  CPU si  aucune tache
-    apériodique  n'est  en  attente  (TR  des  taches  periodiques  +,
+  \item  Il est  possible de  rendre la  main au  CPU si  aucunes taches
+    apériodiques  n'est  en  attente  (TR  des  taches  periodiques  +,
     prédictabilité -)
   \item  Dans  le  cas  ou  le  serveur à  la  plus  petite  priorité,
     l'algorithme équivaut à peu près au traitement en background
@@ -761,7 +761,7 @@
   \begin{itemize} 
   \item Aussi appellé serveur ajournable
   \item La fausse bonne idée
-  \item Mal géré, il provoque des erreur d'ordonnancement
+  \item Mal géré, il provoque des erreurs d'ordonnancement
   \item Cas d'éxecution \emph{dos à dos} du serveur
   \end{itemize}
 \end{frame}

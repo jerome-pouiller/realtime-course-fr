@@ -63,8 +63,8 @@ int main() {
   \item Si certains évènements entrainent des temps de traitement long
     ou si il y a beaucoup  d'entrées à scruter, le temps de réponse en
     pire cas peut rapidement devenir très grand
-  \item Tous les évènements sont traité avec la même priorité
-  \item  Mauvaise modularité  du code.  Ajouter des  des périphériques
+  \item Tous les évènements sont traités avec la même priorité
+  \item  Mauvaise modularité  du code.  Ajouter des périphériques
     revient à repenser tout le système
   \end{itemize} 
 \end{frame} 
@@ -106,14 +106,14 @@ int main() {
   \item Temps de réponse assez simple à calculer. Somme de 
     \begin{itemize}
     \item Temps de traitement de l'évenement
-    \item Temps de traitement des évènemnts de priorité supérieures
+    \item Temps de traitement des évènements de priorité supérieures
     \item Temps du changement de contexte (plus ou moins constant)
-    \item Pire interval de temps ou les interruptions sont désactivée 
+    \item Pire interval de temps ou les interruptions sont désactivées 
     \end{itemize} 
   \item[$\rightarrow$] Dans  un système simple, ca peut  se calculer à
     la louche
-  \item Le  temps de réponse en pire  cas des calcul en  tâche de fond
-    est quasiement  identique au traitement  par scrutation (attention
+  \item Le  temps de réponse en pire  cas des calculs en  tâche de fond
+    est quasiment  identique au traitement  par scrutation (attention
     tout de même à la fréquence maximum des interruptions)
   \end{itemize} 
 \end{frame} 
@@ -138,7 +138,7 @@ int main() {
         interruption  logicielle. Un  break point  software  n'est pas
         possible en ROM alors que le breakpoint hardware oui\\}
     \end{itemize} 
-  \item \textbf{Logicielle}. Déclenché par une instruction. Synchrone.
+  \item \textbf{Logicielle}. Déclenchée par une instruction. Synchrone.
   \end{itemize}
 \end{frame} 
 
@@ -155,7 +155,7 @@ int main() {
     (principalement le pointeur d'instruction) sur la pile
   \item Le CPU passe en mode superviseur (nous y reviendrons)
   \item  Le CPU  recherche dans  l'IVT (\emph{Interrupt  Vector Table}
-    aussi  appellé  IDT,  \emph{Interrupt  Description  Table})  l'ISR
+    aussi  appellée  IDT,  \emph{Interrupt  Description  Table})  l'ISR
     (\emph{Interruption Service Routine}) associée
   \item Le CPU place le pointeur d'instruction sur l'ISR
   \item  L'ISR traite  l'évènement (fin  de traitement  d'une E/S,
@@ -209,12 +209,12 @@ int main() {
 
 \begin{frame}{Exemple}
   \begin{enumerate}
-    \setcounter{enumi}{8}
+    \setcounter{enumi}{7}
   \item Le  gestionnaire d'interruption se branche  sur l'ISR associée
     (ici, ISR1)
   \item L'IRQ du processeur est  acquitée. Les autre IRQ peuvent ainsi
     être levées
-  \item L'ISR1 lit lit la  valeur provenant du \emph{Timer} et acquite
+  \item L'ISR1 lit la  valeur provenant du \emph{Timer} et acquite
     l'interruption  du \emph{Timer}. Ce  périphérique peut  de nouveau
     lever des IRQ.
   \item Les registres généraux sont restaurés
@@ -235,7 +235,7 @@ int main() {
   \item  Dans  le  cas  du  traitement  par  scrutation,  nous  allons
     periodiquement voir  si un résultat est arrivé.  Beaucoup de temps
     est  consommé  pour  rien   et  lorsque  le  résultat  arrive,  le
-    traitement du résultats sera retardé
+    traitement du résultat sera retardé
   \item  Une interruption  est  levée quand  une  nouvelle donnée  est
     disponible. Le processeur peut alors la traiter.
   \end{itemize}
@@ -245,7 +245,7 @@ int main() {
   \begin{itemize} 
   \item Un périphérique ne génère pas d'IRQ si la précédante n'est pas
     acquitée (en principe)
-  \item Vu  les que les  interruptions sont souvent  multiplexées, les
+  \item Vu  que les  interruptions sont souvent  multiplexées, les
     interruptions sont  souvent désactivées lors de  la première phase
     de traitement
   \item  Pour des  raisons techniques,  il est  parfois  nécessaire de
@@ -258,19 +258,19 @@ int main() {
   \begin{itemize} 
   \item Augmente les temps de réponses
   \item Temps réponse plus difficile à calculer
-  \item  Risque   de  perdre  des  interruption  (Dans   ce  cas,  une
+  \item  Risque   de  perdre  des  interruptions  (Dans   ce  cas,  une
     interruption \emph{overrun} est (devrait être) déclenchée)
   \end{itemize} 
 \end{frame} 
 
 \begin{frame}{Precautions avec les interruption}
   \begin{itemize} 
-  \item Acquiter l'interruption le plus tot possible
-  \item Rester le moins de temps possible dans dans une interruption
-  \item Accèder à un minimum de données pour eviter d'avoir à partager
+  \item Acquiter l'interruption le plus tôt possible
+  \item Rester le moins de temps possible dans une interruption
+  \item Accèder à un minimum de données pour éviter d'avoir à partager
     des données avec le background
   \item Transferer un maximum de traitement hors de l'interruption
-  \item[$\rightarrow$] Gestion des interruption asynchrone
+  \item[$\rightarrow$] Gestion des interruptions asynchrones
   \end{itemize} 
 \end{frame} 
 
@@ -375,9 +375,9 @@ a++;
   \emph{races  conditions}.   C'est à  dire  des problèmes  aléatoires
   produit par une séquence particulière d'évènements
   \begin{itemize} 
-  \item   Les  \emph{race  conditions}   sont  souvent   difficiles  à
+  \item   Les  \emph{races  conditions}   sont  souvent   difficiles  à
     reproduire et à identifier
-  \item Les  \emph{race conditions} peuvent être latente  dans le code
+  \item Les  \emph{races conditions} peuvent être latente  dans le code
     et se déclarer suite à une modification de l'environnement externe
   \item Une race condition coûte chère (difficulté de correction, peut
     potentiellement atterrir en production)
@@ -388,7 +388,7 @@ a++;
   \item Utiliser des accès atomiques
   \item  Utiliser  des  structures  adaptées: buffers  circulaires  et
     queues
-  \item  Désactiver  les  interruption  lors  d'accès  à  des  données
+  \item  Désactiver  les  interruptions  lors  d'accès  à  des  données
     partagées
   \end{itemize} 
 \end{frame} 
@@ -435,8 +435,8 @@ void read() {
   Si l'utilisation de Buffer circulaires ne résoud pas le problème, il
   est possible de désactiver les interruptions.
 
-  La desactivation des interruption peut entrainer des latence dans la
-  gestion  des  interruption  et  des  perte  d'interruptions  le  cas
+  La désactivation des interruptions peut entrainer des latences dans la
+  gestion  des  interruptions  et  des  pertes  d'interruptions  le  cas
   échéant.
 \end{frame}
 
@@ -446,7 +446,7 @@ void read() {
     courant)
   \item Une interruption peut se produire sur un autre coeur
   \item Nécessité d'utiliser un mécanisme supplémentaire d'exclusion
-  \item \emph{Spin lock} suvent utilisé pour ce cas.
+  \item \emph{Spin lock} souvent utilisé pour ce cas.
   \item  Pas beaucoup  d'autres  choix.  Par  conséquent les  sections
     critiques dans les interruptions doivent être très limitées
   \end{itemize} 
@@ -456,7 +456,7 @@ void read() {
 
 \begin{frame}[fragile]{Spin Lock}
   Attente active.\\
-  Nécessite une instruction assembleur  premettant un accès en lecture
+  Nécessite une instruction assembleur  permettant un accès en lecture
   et une écriture  en une instruction: \\
   \texttt{test\_and\_set} affecte le registre d'état en fonction de la
   valeur  du registre  et affecte  la valeur  1 au  registre.
@@ -474,7 +474,7 @@ void unlock(int m) {
 
 \section{Les limites du monotache}
 
-\begin{frame}{Problèmes de la gestion des interruption asynchrone}
+\begin{frame}{Problèmes de la gestion des interruptions asynchrones}
   Nous n'avons pas résolu notre problème récurent:
   \begin{itemize} 
   \item  Le partage  de l'information  entre les  interruptions  et la
@@ -482,7 +482,7 @@ void unlock(int m) {
   \end{itemize} 
   On retrouve certains problèmes que l'on avait avec la scrutation:
   \begin{itemize} 
-  \item  Ne permet  pas de  prioriser  les traitement  dans la  boucle
+  \item  Ne permet  pas de  prioriser  les traitements  dans la  boucle
     principale
   \item Interaction entre les évènements complexe
   \end{itemize} 
