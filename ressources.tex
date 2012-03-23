@@ -73,7 +73,7 @@
   \begin{center}
     \input{pics/constraint-graph}\\[2ex]
 
-    \begin{tabular}{ccccccc}
+    \begin{tabular}{cccccc}
       \hline
       Tâche & Capacité & Arrivée  & $r^*_i$ & $P_i$\\
       \hline
@@ -109,9 +109,9 @@
       \hline
       Tâche & Capacité & Arrivée & Délai & $r^*_i$ & $D^*_i$ & $P_i$\\
       \hline
-      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{1}\\
-      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} & \uncover<4->{3}\\
-      C & 2 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5} & \uncover<4->{2}\\
+      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5}  & \uncover<4->{1}\\
+      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7}  & \uncover<4->{3}\\
+      C & 2 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5}  & \uncover<4->{2}\\
       D & 1 & 0 & 10 & \uncover<2->{5} & \uncover<3->{10} & \uncover<4->{4}\\
       E & 3 & 0 & 12 & \uncover<2->{5} & \uncover<3->{12} & \uncover<4->{5}\\
       \hline
@@ -148,13 +148,13 @@
 
     \begin{tabular}{cccccc}
       \hline
-      Tâche & Capacité & Arrivée & Délai & $r^*_i$ & $d^*_i$\\
+      Tâche & Capacité & Arrivée & Délai & $r^*_i$ & $d^*_i$ \\
       \hline
-      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{3} \\
-      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7} \\
-      C & 2 & 0 & 5  & \uncover<2->{1} & \uncover<3->{5} \\
-      D & 1 & 0 & 10 & \uncover<2->{7} & \uncover<3->{9} \\
-      E & 3 & 0 & 12 & \uncover<2->{8} & \uncover<3->{12}\\
+      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{3}  \\
+      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7}  \\
+      C & 2 & 0 & 5  & \uncover<2->{1} & \uncover<3->{5}  \\
+      D & 1 & 0 & 10 & \uncover<2->{7} & \uncover<3->{9}  \\
+      E & 3 & 0 & 12 & \uncover<2->{8} & \uncover<3->{12} \\
       \hline
     \end{tabular}
   \end{center}
@@ -424,7 +424,7 @@ lock(m);
     d'une tâche de haute priorité.
   \item Existe uniquement en environnement préemptif
   \end{itemize} 
-  Exemple avec deux tâches $P_A < P_B$:
+  Exemple avec deux tâches $P_A > P_C$:
   \begin{itemize} 
   \item Cas sans partage de ressource:
     \begin{columns}
@@ -435,7 +435,7 @@ lock(m);
         \end{center}
       \end{column}
       \begin{column}{4cm}
-        $$TR_B = 3$$
+        $$TR_A = 3$$
       \end{column}
     \end{columns}
   \item Cas avec une ressource partagée:
@@ -447,7 +447,7 @@ lock(m);
         \end{center}
       \end{column}
       \begin{column}{4cm}
-        $$TR_B = 6$$
+        $$TR_A = 6$$
       \end{column}
     \end{columns}
   \end{itemize}     
@@ -470,8 +470,8 @@ lock(m);
 
 \begin{frame}{Inversion de priorité}
   \textbf{Exemple:}\\
-  On ajoute à l'exemple précédant une  tâche $C$ telle que : 
-  $P_B > P_C > P_A$
+  On ajoute à l'exemple précédent une  tâche $B$ telle que : 
+  $P_A > P_B > P_C$
   \begin{itemize} 
   \item   Cas sans partage de ressource:
     % AABBBBCCCCCCCCCAA
@@ -483,8 +483,8 @@ lock(m);
     \begin{center}
       \input{pics/cs-pi-2}
     \end{center}
-    La tâche  $C$ s'éxecute alors  qu'elle a une priorité  inféreure à
-    $B$ et ne partage aucune ressource avec $B$.
+    La tâche $B$  s'éxecute alors qu'elle a une  priorité inférieure à
+    $A$ et ne partage aucune ressource avec $A$.
   \end{itemize} 
 \end{frame} 
 
@@ -561,7 +561,8 @@ lock(m);
 
 \begin{frame}{Problème rémanent} 
   \begin{itemize}
-  \item Blocages en chaîne (cf. notre exemple avec 3 tâches)
+  \item Blocages en  chaîne (cf. notre exemple avec  3 tâches) rendent
+    le calcul des temps de réponses complexes
   \item Deadlock
   \end{itemize}
 \end{frame}
@@ -593,14 +594,15 @@ lock(m);
     l'acquérir
   \item Soit  $i$ la tâche prête  de plus haute priorité  : l'accès au
     processeur est donné à $i$
-  \item Soit $S_*$ le sémaphore dont la priorité plafond $C(S_*)$ est la
-    plus grande parmi  tous les sémaphores déjà acquis  par des tâches
-    autres que $i$
+  \item Soit $S_*$ le sémaphore  dont la priorité plafond $C(S_*)$ est
+    la  plus grande  parmi tous  les  sémaphores déjà  acquis par  des
+    tâches autres que $i$
   \item Pour entrer dans une  section critique gardée par un sémaphore
-    $S_k$, $i$ doit avoir une  priorité supérieure à $C(S_*)$. Si $P_i
-    ≤ C(S_*)$,  l'accès à  $S_k$ est  interdit et on  dit que  $i$ est
-    bloquée sur $S_*$  par la tâche qui possède  $S_*$. La priorité de
-    $i$ est alors passée à la tâche proriétaire de $S_*$
+    $S_k$,  $i$  doit  avoir  une priorité  strictement  supérieure  à
+    $C(S_*)$. Si  $P_i ≤ C(S_*)$, l'accès  à $S_k$ est  interdit et on
+    dit  que  $i$ est  bloquée  sur $S_*$  par  la  tâche qui  possède
+    $S_*$. La priorité de $i$  est alors passée à la tâche proriétaire
+    de $S_*$
   \end{itemize} 
 \end{frame} 
 
@@ -771,13 +773,24 @@ lock(m);
   \end{itemize}
 \end{frame}
 
-\section{Autres mécanismes de gestion d'accès concurrents}
+\note{Reprendre l'exemple d'OCCP et appliquer cette formule dessus}
 
-\subsection{Désactivation de l'ordonnanceur}
+\section{Autres mécanismes de gestion d'accès concurrents}
 
 \note{Pour chacun  des mécanisme,  donner les fonction  dasn plusieurs
   API,  faire  un exemple  ou  mieux,  donner  le code:  Posix,  Java,
   Xenomai, ucosII, vxWorks}
+
+\subsection{Désactivation de l'ordonnanceur}
+
+\begin{frame}{Désactivation de l'ordonnanceur}
+  \begin{itemize} 
+  \item On demande à l'OS de ne plus être préemptif
+  \item Horriblement dangereux
+  \item A  priori, à  ne jamais  utiliser sauf pour  faire des  cas de
+    tests
+  \end{itemize} 
+\end{frame} 
 
 \subsection{Sémaphore}
 
@@ -789,8 +802,10 @@ lock(m);
     mutex.
   \item Toutefois,  d'un point de  vue sémantique, on pourrait  que le
     mutex  permet  d'avoir un  morceau  de  code mutuelement  exclusif
-    tandis que  le sémaphore est  une section de  code limité à  uen 1
+    tandis  que le  sémaphore est  une section  de code  limité  à une
     ressource.
+  \item  Généralement,  les algorithmes  d'héritage  de priorité  sont
+    implémentés sur les mutex mais pas sur les sémaphore.
 %  \item  Notons  aussi  que  les  algorithmes  d'héritage  de  priorité
 %    sont encore plus complexe sur les sémaphores
   \end{itemize} 
@@ -804,8 +819,7 @@ lock(m);
     même mutex, le mutex est non-bloquant.
   \item Dans le cas  d'un mutex non-réentrant, ceci entraine forcement
     un dead-lock.
-  \item  Un sémaphore est maintenu pour connaitre le
-    nombre de passage.
+  \item Un sémaphore est maintenu pour connaitre le nombre de passage.
   \end{itemize} 
 \end{frame} 
 
