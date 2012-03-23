@@ -1,0 +1,16 @@
+REALTIME COURSE
+===============
+Jérôme Pouiller <jezz@sysmic.org>
+
+This directory contains course of realtime systems I give to my university
+students. This course is written in French.
+
+How to compile
+--------------
+
+These are written in LaTeX with beamer. If you have correctly installed your
+LaTeX distribution, a simple "pdflatex main.tex" should be sifficient to
+compile pdf version of this course. You can also found an already compiled
+version on http://sysmic.org/rt
+
+
