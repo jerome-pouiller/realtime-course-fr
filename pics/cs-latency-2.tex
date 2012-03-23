@@ -1,10 +1,10 @@
 \begin{tikzpicture}[scale=0.35]
-  \timeline{10}{-3.5}{-1.0/A, -2.5/B}
-  \fill[color=black!25] (3, -3.0) rectangle +(3, 1);
-  \fill[cgreen] (0,-1.5)  \hi 2 \lo 1 \hi 3 \lo 2 \hi 1 \lo 1;
-  \fill[cred]   (0,-3.0)  \lo 2 \hi 1 \lo 3 \hi 2 \lo 1 \lo 1;
-  \pattern[pattern=north east lines] (1, -1.5) rectangle +(5, 1);
-  \pattern[pattern=north east lines] (6, -3.0) rectangle +(1, 1);
-  \pb{0}{-1}{cgreen};
-  \pb{2}{-2.5}{cred};
+  \timeline{10}{-3.5}{-1.0/A, -2.5/C}
+  \fill[color=black!25] (3, -1.5) rectangle +(3, 1);
+  \fill[cgreen]   (0,-1.5)  \lo 2 \hi 1 \lo 3 \hi 2 \lo 1 \lo 1;
+  \fill[cred] (0,-3.0)  \hi 2 \lo 1 \hi 3 \lo 2 \hi 1 \lo 1;
+  \pattern[pattern=north east lines] (6, -1.5) rectangle +(1, 1);
+  \pattern[pattern=north east lines] (1, -3.0) rectangle +(5, 1);
+  \pb{2}{-1}{cgreen};
+  \pb{0}{-2.5}{cred};
 \end{tikzpicture}

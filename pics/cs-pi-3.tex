@@ -1,12 +1,12 @@
 \begin{tikzpicture}[scale=0.30]
-  \timeline{16}{-5}{-1./A, -2.5/B, -4./C, }
-  \fill[color=black!25] (3, -3.0) rectangle +(1, 1);
-  \fill[cgreen] (0,-1.5)  \hi 2 \lo 1 \hi 1 \lo 3 \lo 9 \hi 1;
-  \fill[cred]   (0,-3.0)  \lo 2 \hi 1 \lo 1 \hi 3 \lo 9 \lo 1;
-  \fill[cblue]  (0,-4.5)  \lo 2 \lo 1 \lo 1 \lo 3 \hi 9 \lo 1;
-  \pattern[pattern=north east lines] (1, -1.5) rectangle +(3, 1);
-  \pattern[pattern=north east lines] (4, -3.0) rectangle +(1, 1);
-  \pb{0}{-1}{cgreen};
-  \pb{2}{-2.5}{cred};
-  \pb{2}{-4}{cblue};
+  \timeline{17}{-5}{-1./A, -2.5/B, -4./C, }
+  \fill[color=black!25] (3, -1.5) rectangle +(3, 1);
+  \fill[cgreen] (0,-1.5)  \lo 2 \hi 1 \lo 3 \hi 2 \lo 8 \lo 1;
+  \fill[cblue]  (0,-3.0)  \lo 2 \lo 1 \lo 3 \lo 2 \hi 8 \lo 1;
+  \fill[cred]   (0,-4.5)  \hi 2 \lo 1 \hi 3 \lo 2 \lo 8 \hi 1;
+  \pattern[pattern=north east lines] (6, -1.5) rectangle +(1, 1);
+  \pattern[pattern=north east lines] (1, -4.5) rectangle +(5, 1);
+  \pb{2}{-1.0}{cgreen};
+  \pb{2}{-2.5}{cblue};
+  \pb{0}{-4.0}{cred};
 \end{tikzpicture}
