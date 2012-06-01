@@ -6,32 +6,43 @@
 %
 % Copyright 2010 Jérôme Pouiller <jezz@sysmic.org>
 %
-%\documentclass[french,a4paper,10pt]{beamer}
+
 % Configurationde de Beamer
+
 \usetheme{Warsaw}
+
+% Quiris
+%\usecolortheme[RGB={238,127,0}]{structure}
+% Apollo
+%\usecolortheme[RGB={0,56,126}]{structure}
+% Sysmic
 \usecolortheme[RGB={181,0,0}]{structure}
+
 % Headers et footers
 \useoutertheme[subsection=false]{smoothbars}
 % Rectangle dans les itemize
 \useinnertheme{rectangles}
 % Pas de symboles pour la navigation
 \setbeamertemplate{navigation symbols}{}
-%\setbeamertemplate{background canvas}{%
-%  \tikz {%
-%    \node at (0,0) {};
-%    \node[inner sep=0pt, opacity=0.2] at (0.5\paperwidth,-0.5\paperheight) {\includegraphics[height=27.2mm,width=65.1mm]{logo}};
-%  }
-%}
+
+% Logo en filigranne
+\setbeamertemplate{background canvas}{
+  \tikz {
+    \node at (0,0) {};
+    \node[inner sep=0pt, opacity=0.2] at (0.5\paperwidth,-0.5\paperheight) {\includegraphics[height=27.2mm,width=65.1mm]{pics/logo}};
+  }
+}
+
 % Ajout des numéros de pages
 \newcommand*\oldinsertshortitle{}%
 \let\oldinsertshorttitle\insertshorttitle%
 \renewcommand*\insertshorttitle{\oldinsertshorttitle\hfill\insertframenumber\,/\,\inserttotalframenumber}
 
-\usepackage{ucs}                      % La sortie est en UTF8
-\usepackage[utf8x]{inputenc}          % L'entrée aussi
+\usepackage{ucs}              % La sortie est en UTF8
+\usepackage[utf8x]{inputenc}  % L'entrée aussi
 \usepackage[T1]{fontenc}      % Pour la césure des mots accentués
 \usepackage{lmodern}          % Pour les lettres francaises
-\usepackage[french]{babel}            % Pour la sortie francaise
+\usepackage[french]{babel}    % Pour la sortie francaise
 \usepackage{times}
 \usepackage{mathptmx}         % Font (don't forget to install latex-font-recommended)
 
@@ -49,10 +60,12 @@
 \PreviewEnvironment{frame}
 
 \usepackage{hyperref} % Doit être chargé avant ntheorem
+\newcommand{\email}[1]{\href{mailto:#1}{\nolinkurl{<#1>}}}
 \newcommand{\file}[1]{\texttt{#1}}
 \newcommand{\cmd}[1]{\texttt{#1}}
-\renewcommand{\c}[1]{\cmd{#1}}
-\newcommand{\email}[1]{\href{mailto:#1}{\nolinkurl{<#1>}}}
+\renewcommand\c[1]{\lstinline[language=c]{#1}}
+
+\usepackage[newcommand]{ragged2e}
 
 % \usepackage[]{version} 
 % \usepackage{ntheorem} 
@@ -126,7 +139,7 @@
   emptylines=1,%
   breaklines=true,%
   breakautoindent=true,%     % Inutile avec breaklines=false
-  %literate={\'e}{{\'e}}1 {\`e}{{\`e}}1 {\^o}{{\^o}}1
+  literate={é}{{\'e}}1 {è}{{\`e}}1 {ô}{{\^o}}1 {à}{{\`a}}1 {ç}{{\c{c}}}1 
 }
 \lstset{language=C++}        % ... En C++
 
@@ -143,6 +156,9 @@
 }
 
 \hypersetup{colorlinks=true,plainpages=false,urlcolor=blue,linkcolor=}
+
+
+
 
 
 
