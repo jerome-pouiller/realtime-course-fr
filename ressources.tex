@@ -21,7 +21,7 @@
 
 \section{Ordonnancement avec contraintes de précédance}
 
-\begin{frame}{Contraintes de précédence (1)} 
+\begin{frame}{Contraintes de précédence (1)}
   Problèmatique: Une tâche $j$ doit s'éxecuter après $i$\\
 
   Les contraintes de précédence sur l'ordre d'exécution des tâches les
@@ -38,36 +38,36 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{Contraintes de précédence (2)} 
+\begin{frame}{Contraintes de précédence (2)}
   \begin{itemize}
   \item Ici, seulement précédence simple: Les tâches dépendantes ont la même période
   \item Principe de l'établissement de l'ordonnancement :
-    \begin{itemize} 
+    \begin{itemize}
     \item Transformer l'ensemble des tâches dépendantes en un ensemble
       de  tâches \textbf{indépendantes} que  l'on ordonnancera  par un
       algorithme classique
-    \item Par des modifications des  paramètres des tâches : si $i →
-      j$ alors la règle de transformation doit respecter:
-      \begin{itemize} 
+    \item Par des modifications des  paramètres des tâches : si $j →
+      i$ alors la règle de transformation doit respecter:
+      \begin{itemize}
       \item $r_j ≤ r_i$
       \item $P_i < P_j$
-      \end{itemize} 
+      \end{itemize}
     \item  Validation  de   l'ordonnancabilité  selon  des  critères
       utilisés pour des tâches indépendantes
     \end{itemize}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Contraintes de précédence avec RM} 
+\begin{frame}{Contraintes de précédence avec RM}
   Contraintes  de  précédence  et  Rate Monotonic:  la  transformation
   s'opère hors ligne sur la date de réveil et sur les délais critiques
-  \begin{itemize} 
+  \begin{itemize}
   \item $r^*_i = \max\{r_i, r^*_j\}$ pour tous les $j$ tels que $j →
     i$
   \item si $i  → j$ alors $P_i > P_j$ dans  le respect de la
     règle d'affectation des priorités par Rate Monotonic
   \end{itemize}
-\end{frame} 
+\end{frame}
 
 \begin{frame}{Exemple - RM}
   \begin{center}
@@ -86,20 +86,21 @@
     \end{tabular}
   \end{center}
   \uncover<3->{A renouveller pour chaque période}
+  % TODO: Tracer le chronogramme
 \end{frame}
 
-\begin{frame}{Contraintes de précédence avec DM} 
+\begin{frame}{Contraintes de précédence avec DM}
   Contraintes de  précédence et Deadline  Monotonic: la transformation
   s'opère hors ligne sur la date de réveil et sur les délais critiques
   \begin{itemize}
   \item $r^*_i =  \max \left\{ r_i, r^*_j \right\}$  pour tous les $j$
     tels que $j → i$
   \item $D^*_i =  \max \left\{ D_i, D^*_j \right\}$  pour tous les $j$
-    tels que $j → i$ (ne correspond pas au délais critique réel)
+    tels que $j → i$ (ne correspond pas aux délais critiques réels)
   \item si  $i →  j$ alors  $P_i > P_j$  dans le  respect de  la règle
     d'affectation des priorités par Deadline Monotonic
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Exemple - DM}
   \begin{center}
@@ -109,18 +110,19 @@
       \hline
       Tâche & Capacité & Arrivée & Délai & $r^*_i$ & $D^*_i$ & $P_i$\\
       \hline
-      A & 1 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5}  & \uncover<4->{1}\\
-      B & 2 & 5 & 7  & \uncover<2->{5} & \uncover<3->{7}  & \uncover<4->{3}\\
-      C & 2 & 0 & 5  & \uncover<2->{0} & \uncover<3->{5}  & \uncover<4->{2}\\
-      D & 1 & 0 & 10 & \uncover<2->{5} & \uncover<3->{10} & \uncover<4->{4}\\
-      E & 3 & 0 & 12 & \uncover<2->{5} & \uncover<3->{12} & \uncover<4->{5}\\
+      A & 1 & 0 & 5 & \uncover<2->{0} & \uncover<3->{5}  & \uncover<4->{1}\\
+      B & 2 & 5 & 7 & \uncover<2->{5} & \uncover<3->{7}  & \uncover<4->{3}\\
+      C & 2 & 0 & 4 & \uncover<2->{0} & \uncover<3->{5}  & \uncover<4->{2}\\
+      D & 1 & 0 & 5 & \uncover<2->{5} & \uncover<3->{7} & \uncover<4->{4}\\
+      E & 3 & 0 & 6 & \uncover<2->{5} & \uncover<3->{7} & \uncover<4->{5}\\
       \hline
     \end{tabular}
   \end{center}
   \uncover<4->{A renouveller pour chaque période}
+  % TODO: Tracer le chronogramme
 \end{frame}
 
-\begin{frame}{Contraintes de précédence avec EDF} 
+\begin{frame}{Contraintes de précédence avec EDF}
   Contraintes de précédence et EDF
   \begin{itemize}
   \item  modification des  échéances de  facon à  ce qu'une  tâche ait
@@ -159,6 +161,7 @@
     \end{tabular}
   \end{center}
   \uncover<3->{A renouveller pour chaque période}
+  % TODO: Tracer le chronogramme
 \end{frame}
 
 \section{Problèmatique des accès concurents}
@@ -182,7 +185,7 @@ void f2() {
   a++;
 }
        \end{lstlisting}
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]{Exemple de partage de données}
 Prennons le cas ou \verb+f1+ est préemptée par \verb+f2+:
@@ -201,7 +204,7 @@ a++;
      \begin{column}{5cm}
       \begin{lstlisting}[showlines=true,emptylines=10,escapeinside=\{\}]
 
-t[a] = data2; 
+t[a] = data2;
 // t[0] est {é}cras{é}!
 a++;
 // a = 1 maintenant
@@ -214,7 +217,7 @@ a++;
   Au lieu d'écrire  les deux données l'une après  l'autre, la valeur de
   \verb+data1+ est perdue alors  que \verb+t[1]+ contiendra une valeur
   aléatoire.
-\end{frame} 
+\end{frame}
 
 \subsection{Protection des ressources matériel}
 
@@ -223,35 +226,35 @@ a++;
   Le  registre  \c{0xABC0}  permet  de  placer la  donnée  à  envoyer.
   L'écriture  d'un 1  sur  le registre  \c{0xABC4} permet  d'effectuer
   l'envoi:
-\begin{lstlisting} 
+\begin{lstlisting}
 void send(int data) {
   *0xABC0 = data;
   *0xABC4 = 1;
 }
-  \end{lstlisting} 
-\end{frame} 
+  \end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]{Exemple de ressource partagée}
   Etudions le cas de l'éxecution simultanée de cette fonction par deux
   tâches.  La première tâche appelle \c{send} avec \cmd{data = 42}:
-  \begin{lstlisting} 
+  \begin{lstlisting}
 *0xABC0 = 42
-  \end{lstlisting} 
+  \end{lstlisting}
   La  tâche est  préemptée.  La  seconde tâche  appelle  \c{send} avec
   \cmd{data = 10}:
-\begin{lstlisting} 
+\begin{lstlisting}
 *0xABC0 = 10
 *0xABC4 = 1
-\end{lstlisting} 
+\end{lstlisting}
   \c{10} est envoyé. La tâche 1 reprend la main:
-\begin{lstlisting} 
+\begin{lstlisting}
 *0xABC4 = 1
-\end{lstlisting} 
+\end{lstlisting}
   \c{10} (au lieu de \c{42}) est de nouveau envoyé.\\[3mm]
 
   Ce cas  est aussi valable dans  le cas d'une  interruption (bien que
   plus rare dans la pratique).
-\end{frame} 
+\end{frame}
 
 \subsection{Réentrance}
 
@@ -262,30 +265,30 @@ void send(int data) {
   Les problèmes d'accès concurrents se traduisent très souvent par des
   \emph{races  conditions}.   C'est à  dire  des problèmes  aléatoires
   produit par une séquence particulière d'évènements
-  \begin{itemize} 
+  \begin{itemize}
   \item   Les  \emph{races  conditions}   sont  souvent   difficiles  à
     reproduire et à identifier
   \item Les  \emph{races conditions} peuvent être latente  dans le code
     et se déclarer suite à une modification de l'environnement externe
   \item Une race condition coûte chère (difficulté de correction, peut
     potentiellement atterrir en production)
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Comment s'en protèger?}
   Comment s'en protèger?
-  \begin{itemize} 
+  \begin{itemize}
   \item  Ne  pas  utiliser  de  variables globales  ou  de  ressources
     partagées
   \item Utiliser des accès atomiques
   \item   Placer  des   accès   aux  ressources   partagée  dans   des
     \emph{sections critiques}
-  \end{itemize} 
+  \end{itemize}
   Une  fonction  pouvant  être  appellée simultanénement  depuis  deux
   contextes de tâches différentes est dite \emph{réentrante}
-\end{frame} 
+\end{frame}
 
-\begin{frame}{Partage de ressources critiques} 
+\begin{frame}{Partage de ressources critiques}
   Une ressource critique ne peut :
   \begin{itemize}
   \item être utilisée simultanément par plusieurs tâches
@@ -310,24 +313,24 @@ void send(int data) {
   \texttt{test\_and\_set} affecte le registre d'état en fonction de la
   valeur  du registre  et affecte  la valeur  1 au  registre.  On peut
   développer la fonction \c{lock} à partir de là:
-  \begin{lstlisting} 
+  \begin{lstlisting}
 void lock(mutex_t *m) {
-  while (test_and_set(m))
+  while (test_and_set(*m))
     schedule();
 }
 
 void unlock(mutex_t *m) {
-  m = 0;
+  *m = 0;
   schedule();
 }
-  \end{lstlisting} 
+  \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]{Fonctionnement d'un mutex}
   Un peu mieux:
-  \begin{lstlisting} 
+  \begin{lstlisting}
 void lock(mutex_t *m) {
-  while (test_and_set(m)) {
+  while (test_and_set(*m)) {
     this_task.reason = m;
     this_task.state = stop;
     schedule();
@@ -342,7 +345,7 @@ void unlock(mutex_t *m) {
   schedule();
 }
   \end{lstlisting}
-\end{frame} 
+\end{frame}
 
 \section{Problème liés aux partage de ressources}
 
@@ -353,17 +356,17 @@ void unlock(mutex_t *m) {
   \item Dead Lock
   \item Latence induite
   \item Inversion de priorité
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
 \subsection{Dead Lock}
 
 \begin{frame}[fragile]{Dead lock}
-  \begin{itemize} 
+  \begin{itemize}
   \item Aussi appellé \emph{étreinte fatale}
   \item Deux tâches utilisent  deux ressources imbriquées dans l'ordre
     inverses
-  \end{itemize} 
+  \end{itemize}
   \begin{columns}
     \begin{column}{5cm}
       Tache 1:
@@ -373,7 +376,7 @@ lock(m1);
 
 
 lock(m2);
-      \end{lstlisting} 
+      \end{lstlisting}
     \end{column}
     \begin{column}{5cm}
       Tache 2:
@@ -383,29 +386,29 @@ lock(m2);
 // Deadlock ici:
 lock(m1);
 
-      \end{lstlisting} 
+      \end{lstlisting}
     \end{column}
   \end{columns}
   \begin{center}
     \input{pics/cs-deadlock.tex}
   \end{center}
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]{Dead lock}
   \textbf{Remarque:} \\
   Le code suivant:
-  \begin{lstlisting} 
+  \begin{lstlisting}
 lock(m);
-lock(m); 
-  \end{lstlisting} 
+lock(m);
+  \end{lstlisting}
   entraine un  \emph{double lock},  un type particulier  de \emph{Dead
     lock}
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]{Mutex dans une interruption}
   \textbf{Remarque:} \\
   Ne jamais utiliser de mutex dans une interruption.
-  \begin{itemize} 
+  \begin{itemize}
   \item Si  la ressource  est occuppée par  la tâche qui  vient d'être
     préemptée, le \texttt{lock()} s'éxécutera dans le même contexte
   \item[$\rightarrow$] Double lock
@@ -413,19 +416,19 @@ lock(m);
     une  très  important latence  ce  qui  est  en contradiction  avec
     l'objectif de rester le minimum de temps dans une interruption
   \item[$\rightarrow$] Règle générale: Il ne faut pas appeller \texttt{schedule} dans une interruption.
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{Latence introduite}
 
 \begin{frame}{Latence}
-  \begin{itemize} 
+  \begin{itemize}
   \item  Cas d'une tâche  de faible  priorité utilisant  une ressource
     d'une tâche de haute priorité.
   \item Existe uniquement en environnement préemptif
-  \end{itemize} 
+  \end{itemize}
   Exemple avec deux tâches $P_A > P_C$:
-  \begin{itemize} 
+  \begin{itemize}
   \item Cas sans partage de ressource:
     \begin{columns}
       \begin{column}{6cm}
@@ -450,13 +453,13 @@ lock(m);
         $$TR_A = 6$$
       \end{column}
     \end{columns}
-  \end{itemize}     
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{Inversion de priorité}
 
 \begin{frame}{Inversion de priorité}
-  \begin{itemize} 
+  \begin{itemize}
   \item Phénomène dû à la présence simultanée de priorités fixes et de
     ressources à accès exclusif dans un environnement préemptif
   \item  Une  tâche  de  priorité  intermédiaire peut  être  élue  par
@@ -464,15 +467,15 @@ lock(m);
     attendent.
   \item Il est difficile de calculer  le temps de blocage des tâches par
     une inversion de priorité (il est généralement non-borné)
-  \end{itemize} 
+  \end{itemize}
   Cas notable de \emph{Path Finder}
 \end{frame}
 
 \begin{frame}{Inversion de priorité}
   \textbf{Exemple:}\\
-  On ajoute à l'exemple précédent une  tâche $B$ telle que : 
+  On ajoute à l'exemple précédent une  tâche $B$ telle que :
   $P_A > P_B > P_C$
-  \begin{itemize} 
+  \begin{itemize}
   \item   Cas sans partage de ressource:
     % AABBBBCCCCCCCCCAA
     \begin{center}
@@ -485,12 +488,12 @@ lock(m);
     \end{center}
     La tâche $B$  s'éxecute alors qu'elle a une  priorité inférieure à
     $A$ et ne partage aucune ressource avec $A$.
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Temps de réponse}
   Avec  les  ressources  partagées:
-  \begin{itemize} 
+  \begin{itemize}
   \item  Le  temps de  réponse  avec  un  algorithme à  priorité  fixe
     devient:
     $$TR_i = B_i + C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
@@ -502,25 +505,25 @@ lock(m);
     Rate Monotonic devient:
     $$\forall i \in tasks, \left( \sum_{k \in tasks} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i \left(2^{\frac{1}{i}}-1\right)$$
     \note{Formule à vérifier}
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Conseils}
-  \begin{itemize} 
+  \begin{itemize}
   \item Essayer de limiter la taille des sections critiques
   \item  Essayer  de découper  les  sections  critiques  de manière  à
     favoriser la préemption des tâches de haute priorité
   \item Essayer de  diminuer la granularité des mutex  afin de limiter
     la taille des sections critiques.
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \section{Solutions}
 
 \subsection{Priority inheritence}
 
 \begin{frame}{Héritage de priorité}
-  \begin{itemize} 
+  \begin{itemize}
   \item Aussi appellé \emph{Priority inheritence}
   \item Principe: Si  une tâche bloque une ressource  demandée par une
     tâche  de plus  haute  priorité, elle  acquiert temporairement  la
@@ -530,25 +533,25 @@ lock(m);
     existe même des cas problèmatiques (dont le cout de résolution est
     polynomial)   dans   le   cas   d'architectures   multiprocesseurs
     symétriques sur des \cmd{rw\_lock}.
-  \end{itemize} 
+  \end{itemize}
   Exemple précédent:
   % AABABBBCCCCCCCCCA
   \begin{center}
     \input{pics/cs-pi-3}
   \end{center}
-\end{frame} 
+\end{frame}
 
 \begin{frame}{Héritage de priorité}
   Autre exemple:
   Soit 3 tâches et 2 ressources telle que A et B partage la première ressource et B et C partage la seconde:
   $$P_A > P_B > P_C$$
-  % CCBBCACBABC  
+  % CCBBCACBABC
   \begin{center}
     \input{pics/pi-1}
   \end{center}
-\end{frame} 
+\end{frame}
 
-\begin{frame}{Héritage de priorité} 
+\begin{frame}{Héritage de priorité}
   Concernant le temps de réponse  des tâches dans un système intégrant
   l'héritage de priorité:
   \begin{itemize}
@@ -559,7 +562,7 @@ lock(m);
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Problème rémanent} 
+\begin{frame}{Problème rémanent}
   \begin{itemize}
   \item Blocages en  chaîne (cf. notre exemple avec  3 tâches) rendent
     le calcul des temps de réponses complexes
@@ -570,7 +573,7 @@ lock(m);
 \subsection{Original ceiling priority}
 
 \begin{frame}{Priorité plafonnée originale}
-  \begin{itemize} 
+  \begin{itemize}
   \item  Aussi  appellée   \emph{Original  Ceiling  Priority  Protocol
       (OCPP)} ou tout simplement \emph{Ceiling Priority}
   \item Introduit  à la  fin des années  80 pour résoudre  le problème
@@ -584,11 +587,11 @@ lock(m);
     l'acquérir. Une  tâche ne pourra  entrer dans la  section critique
     que si  elle possède une  priorité supérieure à toutes  celles des
     priorités plafond des sémaphores acquis par les autres tâches
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Algorithme}
-  \begin{itemize} 
+  \begin{itemize}
   \item  On attribue  à chaque  sémaphore $S_k$  une  priorité plafond
     $C(S_k)$ égale à la plus haute priorité des tâches susceptibles de
     l'acquérir
@@ -603,20 +606,20 @@ lock(m);
     dit  que  $i$ est  bloquée  sur $S_*$  par  la  tâche qui  possède
     $S_*$. La priorité de $i$  est alors passée à la tâche proriétaire
     de $S_*$
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{Immediate Priority ceilling}
 
 \begin{frame}{Priorité plafonnée immédiate}
-  \begin{itemize} 
+  \begin{itemize}
   \item  Aussi  appellée  \emph{Immediate  Ceiling  Priority  Protocol
       (ICPP)} ou \emph{Hightest Lock}
   \item Similaire à OCPP mais plus simple.
   \item Dès  qu'une tâche acquiert une sémaphore  $S_k$, elle acquiert
     sa priorité $C(S_k)$ en même temps
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Exemple}
   \begin{center}
@@ -642,7 +645,7 @@ lock(m);
         $TR_A = 12$ & $TR_B = 6$ & $TR_C = 8$ & $TR_D = 17$\\
       \end{tabular}
     \end{center}
-    
+
     \onslide<3>
     Par héritage de priorité
     \begin{center}
@@ -653,10 +656,10 @@ lock(m);
     \end{center}
 
     \onslide<4>
-    Par \emph{Priority Ceiling}, les priorités plafond sont donc: 
+    Par \emph{Priority Ceiling}, les priorités plafond sont donc:
     \begin{itemize}
-    \item $C(S_1) = P_A$ 
-    \item $C(S_2) = P_A$ 
+    \item $C(S_1) = P_A$
+    \item $C(S_2) = P_A$
     \end{itemize}
 
     \onslide<5>
@@ -677,9 +680,9 @@ lock(m);
       \end{tabular}
     \end{center}
   \end{overprint}
-\end{frame} 
+\end{frame}
 
-% \begin{frame}{Priorité plafonnée} 
+% \begin{frame}{Priorité plafonnée}
 %   \begin{itemize}
 %   \item à t = 0, T2 est activée et démarre.
 %   \item à t =  1, Le sémaphore S2 est demandé et  obtenu (il n'y a pas
@@ -731,7 +734,7 @@ lock(m);
 %       \pattern[pattern=north west lines] (10, -1.5) rectangle +(1, 1);
 %     \end{tikzpicture}
 %   \end{center}
-% \end{frame} 
+% \end{frame}
 
 % \begin{frame}{Autre Exemple}
 %   Par priorité plafonnée:
@@ -753,9 +756,9 @@ lock(m);
 %       \pattern[pattern=north west lines] (10, -3.0) rectangle +(2, 1);
 %     \end{tikzpicture}
 %   \end{center}
-% \end{frame} 
+% \end{frame}
 
-\begin{frame}{Priorité plafonnée} 
+\begin{frame}{Priorité plafonnée}
   On a  le même critère d'ordonnancabilité  par RM que dans  le cas du
   protocole d'héritage de priorité:
   $$\forall i \in tasks, \left( \sum_{k \in tasks} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i \left(2^{\frac{1}{i}}-1\right)$$
@@ -769,8 +772,26 @@ lock(m);
     ($\max  SC_{j,k}$)  parmi  celles  appartenant  à  des  tâches  de
     priorité inférieure à $P_i$ et  gardées par des sémaphores dont la
     priorité plafond est supérieure ou égale à $P_i$
-    $$B_i = \max SC_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$ 
+    $$B_i = \max SC_{j,k} | P_j < P_i, C(S_k) ≥ P_i$$
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Priorité plafonnée}
+  Dans notre cas précédent:
+  \begin{center}
+    \begin{tabular}{cccc}
+      $B_A = 4$ & $B_B = 4$ & $B_C = 4$ & $B_D = 0$\\
+    \end{tabular}
+  \end{center}
+  Vu que nos tâches ne sont pas périodiques, on peut estimer que 
+  $$ \left\lceil\frac{TR_i}{T_j}\right\rceil = 1 $$
+  donc
+  \begin{align*}
+    TR_A &= B_A + C_A = 9\\
+    TR_B &= B_B + C_B + C_A = 14\\
+    TR_C &= B_C + C_C + C_B + C_A = 15\\
+    TR_D &= B_D + C_D + C_C + C_B + C_A = 18
+  \end{align*}
 \end{frame}
 
 \note{Reprendre l'exemple d'OCCP et appliquer cette formule dessus}
@@ -784,18 +805,18 @@ lock(m);
 \subsection{Désactivation de l'ordonnanceur}
 
 \begin{frame}{Désactivation de l'ordonnanceur}
-  \begin{itemize} 
+  \begin{itemize}
   \item On demande à l'OS de ne plus être préemptif
   \item Horriblement dangereux
   \item A  priori, à  ne jamais  utiliser sauf pour  faire des  cas de
     tests
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{Sémaphore}
 
 \begin{frame}{Sémaphore}
-  \begin{itemize} 
+  \begin{itemize}
   \item  Différence entre un  mutex et  un semaphore  binaire: presque
     aucune.
   \item Parfois le sémaphore  binaire est utilisé pour implémentéer le
@@ -808,20 +829,20 @@ lock(m);
     implémentés sur les mutex mais pas sur les sémaphore.
 %  \item  Notons  aussi  que  les  algorithmes  d'héritage  de  priorité
 %    sont encore plus complexe sur les sémaphores
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{Mutex réentrant}
 
 \begin{frame}{Mutex Réentrant}
-  \begin{itemize} 
+  \begin{itemize}
   \item Idem  mutex, mais  si la même  tâche tente de  revérouiller le
     même mutex, le mutex est non-bloquant.
   \item Dans le cas  d'un mutex non-réentrant, ceci entraine forcement
     un dead-lock.
   \item Un sémaphore est maintenu pour connaitre le nombre de passage.
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{R/W Lock}
 
@@ -834,7 +855,7 @@ sections critiques.
 Solution 1 (\emph{reader preference}):
 \begin{columns}
   \begin{column} {5cm}
-    \begin{lstlisting} 
+    \begin{lstlisting}
 void read_lock() {
   // mutex protege read_count
   lock(mutex);
@@ -843,10 +864,10 @@ void read_lock() {
     lock(w);
   unlock(mutex);
 }
-    \end{lstlisting} 
+    \end{lstlisting}
   \end{column}
   \begin{column} {5cm}
-    \begin{lstlisting} 
+    \begin{lstlisting}
 void read_unlock() {
   lock(mutex);
   readcount--;
@@ -860,17 +881,17 @@ void write_lock() {
 void write_unlock() {
   unlock(w);
 }
-    \end{lstlisting} 
+    \end{lstlisting}
   \end{column}
 \end{columns}
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]{Read/Write Lock}
   Problème: un accès en écriture doit attendre que toutes les lectures
   soient terminées. Solution 2 (\emph{writer preference}):
   \begin{columns}
     \begin{column} {5cm}
-      \begin{lstlisting} 
+      \begin{lstlisting}
 void read_lock() {
   lock(r);
   lock(mutex);
@@ -881,10 +902,10 @@ void read_lock() {
   unlock(r);
   // r n'est pas bloque durant la lecture
 }
-       \end{lstlisting} 
+       \end{lstlisting}
      \end{column}
      \begin{column} {5cm}
-       \begin{lstlisting} 
+       \begin{lstlisting}
 void read_unlock() {
   lock(mutex);
   readcount--;
@@ -900,31 +921,31 @@ void write_unlock() {
   unlock(w);
   unlock(r);
 }
-      \end{lstlisting} 
+      \end{lstlisting}
     \end{column}
   \end{columns}
-\end{frame} 
+\end{frame}
 
 \subsection{Rendez-vous ou barrier}
 \begin{frame}[fragile]{Rendez-vous}
   Permet de synchroniser  deux tâches. La première tâche  arrivée à la
   barrière attend la seconde.
-\begin{lstlisting} 
+\begin{lstlisting}
 void init() {
   lock(m1);
   lock(m2);
 }
 \end{lstlisting}
 Tâche 1:
-\begin{lstlisting} 
+\begin{lstlisting}
   unlock(m1);
   lock(m2);
-\end{lstlisting} 
+\end{lstlisting}
 Tâche 2:
-\begin{lstlisting} 
+\begin{lstlisting}
   unlock(m2);
   lock(m1);
-\end{lstlisting} 
+\end{lstlisting}
 \end{frame}
 
 \subsection{Condition}
@@ -935,7 +956,7 @@ Tâche 2:
   Très utilisée pour le pattern des \cmd{work-thread}
   \begin{columns}
     \begin{column}{5cm}
-      \begin{lstlisting} 
+      \begin{lstlisting}
 void init() {
   lock(m);
 }
@@ -951,7 +972,7 @@ void signal() {
       \end{lstlisting}
     \end{column}
     \begin{column}{5.5cm}
-      \begin{lstlisting} 
+      \begin{lstlisting}
 // broadcast debloque
 // tous les waiters alors
 // que signal en debloque
@@ -959,17 +980,17 @@ void signal() {
 void broadcast()  {
   // Plus complexe, il
   // faut un mutex par
-  // waiters. 
+  // waiters.
 }
-      \end{lstlisting} 
+      \end{lstlisting}
     \end{column}
   \end{columns}
-\end{frame} 
+\end{frame}
 
 \subsection{Buffer circulaire et Queue}
 
 \begin{frame}[fragile]{Buffer circulaire et Queue}
-  \begin{itemize} 
+  \begin{itemize}
   \item  Précédement décrit dans  la section  ``Partage d'information
     avec les interruptions''
   \item Fonctionne aussi très bien entre les tâches
@@ -977,24 +998,24 @@ void broadcast()  {
     avec une interruption et des tâches
   \item Faire attention à l'allocation dynamique des objets
   \end{itemize}
-\end{frame} 
+\end{frame}
 
 \subsection{Spin Lock, Mutex et désactivation des interruptions}
 
 \begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
   Lorsque:
-  \begin{itemize} 
+  \begin{itemize}
   \item  Vos  sections critiques  font  intervenir  des  tâches et  des
     interruptions
   \item Votre problème ne concerne  pas un échange de données (et donc
     le buffer circulaire n'est pas une solution)
   \item Vous ne pouvez pas faire autrement
-  \end{itemize} 
+  \end{itemize}
   alors,   vous  devez   combiner  les   trois   mécanismes  suivants:
   Désactivation des interruptions, Mutex et Spin Lock.
 
   Le point sur ces trois mécanismes:
-  \begin{itemize} 
+  \begin{itemize}
   \item  Si  une  ressource  est   partagée  entre  une  tâche  et  une
     interruption sur  le même coeur,  il est nécessaire  de désactiver
     les interruptions
@@ -1007,7 +1028,7 @@ void broadcast()  {
 
 \begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
   On pourrait imaginer un cas cummulant les trois contraintes:
-  \begin{lstlisting} 
+  \begin{lstlisting}
 disable_interrupts()
 mutex_lock(m)
 spin_lock(s)
@@ -1015,37 +1036,37 @@ a++
 spin_unlock(s)
 mutex_unlock(m)
 enable_interrupts()
-  \end{lstlisting} 
+  \end{lstlisting}
   Globalement, évitez!
-\end{frame} 
+\end{frame}
 
 \subsection{Algorithmes non-bloquants}
 
 \begin{frame}{Algorithmes non-bloquants}
-  \begin{itemize} 
-  \item Algorithme thread-safe n'utilisant pas de sections ciritques. 
+  \begin{itemize}
+  \item Algorithme thread-safe n'utilisant pas de sections ciritques.
   \item Ces  algorithmes utilisent souvant  des instructions atomiques
     proposés par certains processeurs
   \item Par conséquent, ils sont peu portables
   \item Souvent utilisé dans les bases de données
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \subsection{Read-Copy-Update (RCU)}
 
 \begin{frame}{Read-Copy-Update (RCU)}
   Type d'algorithme non bloquant:
-  \begin{itemize} 
+  \begin{itemize}
   \item La lecture n'est pas bloquante
   \item On note le nombre de lecteurs
   \item Les modifications s'effectuent sur une copie de l'objet
   \item Les lectures suivante se font sur la nouvelle version de l'objet
   \item Lorsque  le dernier lecteur  a terminé, l'objet  d'origine est
     détruit. Seul subsiste la nouvelle version.
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Exemple : Manipulation de listes} 
+\begin{frame}[fragile]{Exemple : Manipulation de listes}
   \begin{center}
     \begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{colBasic},commentstyle=\scriptsize\itshape\color{colComments},numbers=none]
 typedef struct {
@@ -1053,7 +1074,7 @@ typedef struct {
    int count_usage = 0;
    bool obsolete = false;
 } rcu_t;
-rcu_t *a = malloc(sizeof(rcu_t)); 
+rcu_t *a = malloc(sizeof(rcu_t));
     \end{lstlisting}
   \end{center}
   \begin{columns}
@@ -1073,17 +1094,17 @@ void read_a() {
     \end{column}
     \begin{column}{5cm}
       \begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{colBasic},commentstyle=\scriptsize\itshape\color{colComments},numbers=none]
-void write_a() { 
+void write_a() {
    struct rcu_t *a3 = a;
    struct rcu_t *a2 = malloc(sizeof(rcu_t));
    memcpy(a2, a);
-   // modify a2;   
-   a = a2;  
+   // modify a2;
+   a = a2;
    a3->obsolete = true;
    if (!a3->count_usage)
       free(ptr);
 }
-      \end{lstlisting} 
+      \end{lstlisting}
     \end{column}
   \end{columns}
-\end{frame} 
+\end{frame}

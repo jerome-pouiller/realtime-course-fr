@@ -1,4 +1,4 @@
-% 
+%
 % This document is available under the Creative Commons Attribution-ShareAlike
 % License; additional terms may apply. See
 %   * http://creativecommons.org/licenses/by-sa/3.0/
@@ -33,61 +33,119 @@
 \tableofcontents[currentpart]
 \end{frame}
 
+\section{Systèmes Symétriques et Asymétriques}
+
+\begin{frame}{Architectures multi-CPU}
+  Il  est  possible d'utiliser  des  architecture  multi-CPU pour  des
+  systèmes temps réels.\\
+
+  On distingue alors 2 types d'architectures:
+  \begin{itemize}
+  \item  Les systèmes  symétriques (SMP)  où  les tâches  ne sont  pas
+    affectées à un CPU particulier
+  \item  Les  systèmes asymétriques  où  on  affecte manuellement  les
+    tâches à un CPU
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Systèmes asymétriques}
+  Les systèmes asymétriques sont assez simples à architecturer:
+  \begin{itemize}
+  \item On effectue une étude séparées pour chaque CPU
+  \item   On  considère  les   échanges  entre   les  CPU   comme  des
+    entrées/sorties
+  \end{itemize}
+  Sous Linux, il est possible d'associer une tâche avec un CPU grace à:
+  \begin{itemize}
+  \item la fonction \emph{CPU affinity}
+  \item la commande \c{taskset}
+  \item aux fonctions \emph{cgroup} et \emph{cpuset}
+  \end{itemize}
+  \note{ca       fonctionne      avec       \texttt{mount       -t      cpuset
+      /mnt/cpuset. cf. Documentation/cgroup/cpuset.txt}}
+\end{frame}
+
+\begin{frame}{Systèmes symétriques}
+  \begin{itemize}
+  \item Beaucoup plus complexe à architecturer
+  \item  La plupart de  nos algorithme  ne sont  plus prouvé  dans une
+    architecture SMP
+  \item La technologie est relativement récente (fin des années 90)
+  \item Pourquoi si tard?
+    \begin{itemize}
+    \item Principalement problèmes matériels
+    \item Problèmes de barrières mémoires (hard ou soft)
+    \item Algorithme  beaucoup plus  hardu (inversion de  priorité par
+      exemple)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
 \section{Problématique des OS RT} %(45min)
 
 \begin{frame}{Limites des système classiques}
-  Les systèmes classiques s'appuient sur un système d'exploitation en général mal adapté pour le temps réel:
+  Les systèmes classiques s'appuient  sur un système d'exploitation en
+  général mal adapté pour le temps réel:
   \begin{itemize}
-  \item Politique d'ordonnancement visant à équiliber équitablement le temps alloué à chaque tâche
-  \item Mécanismes d'accès aux ressources partagées et de synchronisation comportent des incertitudes temporelles
+  \item Politique d'ordonnancement visant à équiliber équitablement le
+    temps alloué à chaque tâche
+  \item La gestion de la  mémoire virtuelle, des caches engendrent des
+    fluctuations temporelles
+  \item La  gestion des temporisateurs  qui servent à  la manipulation
+    des temps pas assez fin
+  \item   Mécanismes   d'accès   aux   ressources  partagées   et   de
+    synchronisation comportent des incertitudes temporelles
   \item Gestion des interruptions non-optimisées
-  \item La gestion de la mémoire virtuelle, des caches engendrent des fluctuation temporelles
-  \item La gestion des temporisateurs qui servent à la manipulation des temps pas assez fin
+  \item Systèmes non-certifiés
+  \item API mal adaptées au systèmes temps réels
+  \end{itemize}
+\end{frame}
+
+\section{Bases}
+
+\begin{frame}{Mécanisme basiques}
+  \begin{itemize}
+  \item  Possibilité  d'éxecuter  une  tache avec  \c{SCHED_RT}  ou
+    \c{SCHED_FIFO}
+  \item Possibilité de marquer les pages de mémoire avec \c{mlock}
+  \item L'accès  à des  horloges haute précision  est un  élément clef
+    d'un système temsp réel.
+    \begin{itemize} 
+    \item Le framework  \emph{hpet} (\emph{High Precision Timers}) est
+      assez récent dans le noyau Linux (2001) (à titre de comparaison,
+      l'équivalent de \emph{hpet} est  apparu sous Windows à partir de
+      Vista).
+    \item Autrefois, l'horloge  était utilisée pour l'ordonnanceur. Le
+      temps retourné  par les différents services  était celui calculé
+      par l'ordonnanceur.   Avec \emph{hpet}, les  horloges sont des
+      périphériques à part entière
+    \end{itemize} 
   \end{itemize} 
 \end{frame}
 
-\begin{frame}{Contexte}
-  Garantie qu'une action est éxecutée en moins d'un temps donné.
+% \begin{frame}{Contexte}
+%   Garantie qu'une action est éxecutée en moins d'un temps donné.
 
-  Implique:
-  \begin{itemize}
-    \item Une garantie de qualité (0 bug)
-    \item Souvent des processus garantissant la qualité dans les différentes phases: conception, développement, validation
-    \item Une connaissances importante de l'environnement extérieur (fréquence maximum des interruption, etc...)
-  \end{itemize}
-  $\to$ On se limitera à l'architecture logicielle
-\end{frame}
+%   Implique:
+%   \begin{itemize}
+%     \item Une garantie de qualité (0 bug)
+%     \item  Souvent  des processus  garantissant  la  qualité dans  les
+%       différentes phases: conception, développement, validation
+%     \item  Une connaissances  importante de  l'environnement extérieur
+%       (fréquence maximum des interruption, etc...)
+%   \end{itemize}
+%   $\to$ On se limitera à l'architecture logicielle
+% \end{frame}
 
-\begin{frame}{Contexte}
-  Ordonnancement statique:
-  \begin{itemize}
-    \item Charge des taches temps réelles $\ll 100\%$
-    \item[$\to$] Ordonnancement avec des priorités statiques suffisante
-    \item[$\to$] Problématique des algorithmes d'ordonnancement à priorité dynamique (EDF, LST, etc...) secondaire
-  \end{itemize}
-\end{frame}
-
-% En d'autre termes:
-\begin{frame}{Contexte}
-  $$TR_i = C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
-Pour les allergiques: le temps de réponse d'une tâche est égal à la somme du
-temps d'exécution de la tache et de toutes les tâche de priorité supérieure
-qui s'exécutent en même temps.\\[1.5ex]
-Objectif: Rendre cette formule assez simple pour être prédictible.\\[1.5ex]
-Pas si simple:
-  \begin{itemize}
-    \item Interruptions
-    \item Changement de contexte
-    \item Sections critiques (ordonnanceur désactivé)
-    \item Caches, Swap
-  \end{itemize}
-\end{frame}
 
 % Schema des temps de réponses
 % La principale chose que nous allons combattre, sera le temps de réponse aux
 % évènements. Le temps de réponse peut-être très aléatoire
 % Si on avait un temps de réponse null (ou au moins constant). Alors, il
 % deviendrait simple de calculer les temps de réponse maximum de nos taches
+
+\section{Latences}
+
 \begin{frame}{Latence aux évènements}
   \begin{itemize}
     \item Coeur du problème
@@ -115,9 +173,17 @@ Pas si simple:
 % On mesure les période effectives
 % Le temps de réponse est ici très aléatoire et dépend fortement de la charge de la machine
 % Schema des temps de réponses
-\begin{frame}{Latence aux évènements}{Système classique}
+\begin{frame}{Latence aux évènements}{Système temps réel}
   \begin{center}
     \pgfimage[width=10cm]{pics/blachier_3}
+  \end{center}
+\end{frame}
+
+% Le temps de réponse ici est beaucoup mieux borné
+% Schema des temps de réponses
+\begin{frame}{Latence aux évènements}{Système temps réels}
+  \begin{center}
+    \pgfimage[width=10cm]{pics/latencyRT}
   \end{center}
 \end{frame}
 
@@ -133,13 +199,6 @@ Pas si simple:
   \end{center}
 \end{frame}
 
-% Le temps de réponse ici est beaucoup mieux borné
-% Schema des temps de réponses
-\begin{frame}{Latence aux évènements}{Système temps réels}
-  \begin{center}
-    \pgfimage[width=10cm]{pics/latencyRT}
-  \end{center}
-\end{frame}
 %     -> Taches RT << 100\%
 %     ->  --> Algorithme d'ordonnancement secondaire (RM vs EDF)
 %     -> Rendre cette formule assez simple pour être prédictible
@@ -147,66 +206,36 @@ Pas si simple:
 %        Interruptions, cache miss, changement de contexte, etc...
 %     -> Présenter les diagramme normal va RT
 
-\section{Systèmes Symétriques et Asymétriques}
-
-\begin{frame}{Architectures multi-CPU}
-  Il  est  possible d'utiliser  des  architecture  multi-CPU pour  des
-  systèmes temps réels.\\
-
-  On distingue alors 2 types d'architectures:
-  \begin{itemize} 
-  \item  Les systèmes  symétriques (SMP)  où  les tâches  ne sont  pas
-    affectées à un CPU particulier
-  \item  Les  systèmes asymétriques  où  on  affecte manuellement  les
-    tâches à un CPU
-  \end{itemize} 
+\begin{frame}{Contexte}
+  Ordonnancement statique:
+  \begin{itemize}
+    \item Charge des taches temps réelles $\ll 100\%$
+    \item[$\to$]   Ordonnancement   avec   des   priorités   statiques
+      suffisante
+    \item[$\to$]  Problématique  des  algorithmes  d'ordonnancement  à
+      priorité dynamique (EDF, LST, etc...) secondaire
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Systèmes asymétriques}
-  Les systèmes asymétriques sont assez simples à architecturer:
-  \begin{itemize} 
-  \item On effectue une étude séparées pour chaque CPU
-  \item   On  considère  les   échanges  entre   les  CPU   comme  des
-    entrées/sorties
-  \end{itemize} 
-  Sous Linux, il est possible d'associer une tâche avec un CPU grace à:
-  \begin{itemize}  
-  \item la fonction \emph{CPU affinity}
-  \item la commande \c{taskset}
-  \item aux fonctions \emph{cgroup} et \emph{cpuset}
-  \end{itemize}
-  \note{ca       fonctionne      avec       \texttt{mount       -t      cpuset
-      /mnt/cpuset. cf. Documentation/cgroup/cpuset.txt}}
-\end{frame} 
-
-\begin{frame}{Systèmes symétriques}
-  \begin{itemize} 
-  \item Beaucoup plus complexe à architecturer
-  \item  La plupart de  nos algorithme  ne sont  plus prouvé  dans une
-    architecture SMP
-  \item La technologie est relativement récente (fin des années 90)
-  \item Pourquoi si tard?
-    \begin{itemize} 
-    \item Principalement problèmes matériels
-    \item Problèmes de barrières mémoires (hard ou soft)
-    \item Algorithme beaucoup plus hardu (inversion de priorité par exemple)
-    \end{itemize}
-  \end{itemize}
-\end{frame} 
-
-\section{Horloges haute précision}
-
-\begin{frame}{Horloges haute précision}
-  L'accès  à des  horloges haute  précision est  un élément  clef d'un
-  système temsp réel.\\
-
-  Le framework hpet est assez récent  dans le noyau (2001) (à titre de
-  comparaison, hpet est apparu sous Widnows à partir de Vista).
-\end{frame}
+% % En d'autre termes:
+% \begin{frame}{Contexte}
+%   $$TR_i = C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
+% Pour les allergiques: le temps de réponse d'une tâche est égal à la somme du
+% temps d'exécution de la tache et de toutes les tâche de priorité supérieure
+% qui s'exécutent en même temps.\\[1.5ex]
+% Objectif: Rendre cette formule assez simple pour être prédictible.\\[1.5ex]
+% Pas si simple:
+%   \begin{itemize}
+%     \item Interruptions
+%     \item Changement de contexte
+%     \item Sections critiques (ordonnanceur désactivé)
+%     \item Caches, Swap
+%   \end{itemize}
+% \end{frame}
 
 \section{Low-latency}
 
-\begin{frame}{Noyau low latency}{Problème du noyau normal} % 10min
+\begin{frame}{Noyau low latency}{Problème du noyau normal}
   Dans un  noyau Linux classique, il  y a un seul  contexte noyau pour
   tout le monde
  \begin{itemize}
@@ -218,7 +247,7 @@ Pas si simple:
  \end{itemize}
 \end{frame}
 
-\begin{frame}{Noyau low latency}{Implémentation} % 10min
+\begin{frame}{Noyau low latency}{Implémentation}
  \begin{itemize}
   \item Difficile de gérer les différents contextes noyau
   \item[$\to$] Noyau réentrant (= thread-safe)
@@ -247,13 +276,6 @@ Pas si simple:
   \end{itemize}
 \end{frame}
 
-% \begin{frame}{Temps réel}{Micro Kernel}
-%   \includegraphics[height=6cm]{pics/RT-microKernel}
-% \end{frame}
-% 
-% \begin{frame}{Temps réel}{Nano Kernel}
-%   \includegraphics[height=6cm]{pics/RT-nanoKernel}
-% \end{frame}
 \begin{frame}{Temps réel}{Nano Kernel}
   \begin{center}
     \input{pics/arch-hypervisor}
@@ -268,14 +290,14 @@ Pas si simple:
      temps réelles
    \item Performances excellentes (< 20µs)
    \item Technique non spécifique à Linux
-   \item Peu de code en mode temps réelles
+   \item Peu de code en mode temps réel
    \item[$\to$] Certifiable
 
    \item Fonctionne au dessus du noyau
    \item Comportement des interruptions à modifier
    \item Communication entre les tâches temps réelles et le reste
    \item[$\to$] Nécessite de patcher le noyau
-   
+
    \item           RTLinux,           RTAI          et           Adeos
      (\url{http://download.gna.org/adeos/patches/},
      \url{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
@@ -287,7 +309,7 @@ Pas si simple:
     \item Fork de RTAI
     \item API utilisateur assurée par Xenomai
     \begin{itemize}
-      \item Skins 
+      \item Skins
       \item[$\to$]  Possibilité de  faire fonctionner  une application
         développée pour vxWorks
 % Parler de vxWorks: Référence dans le domaine des OS RT Posix, OS des sondes Martiennes
@@ -313,7 +335,7 @@ Pas si simple:
   \end{itemize}
 \end{frame}
 
-\begin{frame}{RT-preempt} 
+\begin{frame}{RT-preempt}
   \begin{center}
     \input{pics/arch-rtpreempt}
   \end{center}
@@ -334,3 +356,5 @@ Pas si simple:
 %     -> /!\ Pas portable partout
 %     -> Implémentation assez tordue (c'est un cinglé qui a fait ca).
 %     -> PatchRT
+
+
