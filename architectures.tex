@@ -35,10 +35,10 @@
 
 \section{Systèmes Symétriques et Asymétriques}
 
-\begin{frame}{Architectures multi-CPU}
-  Il  est  possible d'utiliser  des  architecture  multi-CPU pour  des
-  systèmes temps réels.\\
-
+\begin{frame}{Architectures multi-coeurs}
+  Il est  possible d'utiliser  des architecture multi-coeurs  pour des
+  systèmes temps réels.
+  \\
   On distingue alors 2 types d'architectures:
   \begin{itemize}
   \item  Les systèmes  symétriques (SMP)  où  les tâches  ne sont  pas
@@ -55,13 +55,14 @@
   \item   On  considère  les   échanges  entre   les  CPU   comme  des
     entrées/sorties
   \end{itemize}
-  Sous Linux, il est possible d'associer une tâche avec un CPU grace à:
+  Sous Linux, il  est possible d'associer une tâche  avec un CPU grâce
+  à:
   \begin{itemize}
   \item la fonction \emph{CPU affinity}
   \item la commande \c{taskset}
   \item aux fonctions \emph{cgroup} et \emph{cpuset}
   \end{itemize}
-  \note{ca       fonctionne      avec       \texttt{mount       -t      cpuset
+  \note{ca     fonctionne     avec     \texttt{mount     -t     cpuset
       /mnt/cpuset. cf. Documentation/cgroup/cpuset.txt}}
 \end{frame}
 
@@ -75,7 +76,7 @@
     \begin{itemize}
     \item Principalement problèmes matériels
     \item Problèmes de barrières mémoires (hard ou soft)
-    \item Algorithme  beaucoup plus  hardu (inversion de  priorité par
+    \item Algorithme  beaucoup plus  ardu (inversion de  priorité par
       exemple)
     \end{itemize}
   \end{itemize}
@@ -87,7 +88,7 @@
   Les systèmes classiques s'appuient  sur un système d'exploitation en
   général mal adapté pour le temps réel:
   \begin{itemize}
-  \item Politique d'ordonnancement visant à équiliber équitablement le
+  \item Politique d'ordonnancement visant à équilibrer équitablement le
     temps alloué à chaque tâche
   \item La gestion de la  mémoire virtuelle, des caches engendrent des
     fluctuations temporelles
@@ -105,12 +106,12 @@
 
 \begin{frame}{Mécanisme basiques}
   \begin{itemize}
-  \item  Possibilité  d'éxecuter  une  tache avec  \c{SCHED_RT}  ou
+  \item  Possibilité  d'exécuter  une  tache avec  \c{SCHED_RT}  ou
     \c{SCHED_FIFO}
   \item Possibilité de marquer les pages de mémoire avec \c{mlock}
   \item L'accès  à des  horloges haute précision  est un  élément clef
-    d'un système temsp réel.
-    \begin{itemize} 
+    d'un système temps réel.
+    \begin{itemize}
     \item Le framework  \emph{hpet} (\emph{High Precision Timers}) est
       assez récent dans le noyau Linux (2001) (à titre de comparaison,
       l'équivalent de \emph{hpet} est  apparu sous Windows à partir de
@@ -119,8 +120,8 @@
       temps retourné  par les différents services  était celui calculé
       par l'ordonnanceur.   Avec \emph{hpet}, les  horloges sont des
       périphériques à part entière
-    \end{itemize} 
-  \end{itemize} 
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 % \begin{frame}{Contexte}
@@ -233,46 +234,46 @@
 %   \end{itemize}
 % \end{frame}
 
-\section{Low-latency}
+\section{Low latency}
 
 \begin{frame}{Noyau low latency}{Problème du noyau normal}
   Dans un  noyau Linux classique, il  y a un seul  contexte noyau pour
   tout le monde
- \begin{itemize}
+  \begin{itemize}
   \item Pas possible de préempter le système
   \item Personne ne peut prendre  la main lorsqu'un processus est dans
-    un \emph{syscall} (ordonnaceur désactivé)
+    un \emph{syscall} (ordonnanceur désactivé)
   \item Équivalent d'une ressource partagée par tout les processus
   \item[$\to$] Latence
- \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Noyau low latency}{Implémentation}
- \begin{itemize}
+  \begin{itemize}
   \item Difficile de gérer les différents contextes noyau
   \item[$\to$] Noyau réentrant (= thread-safe)
   \item Gestion des interruption assez complexe
   \item Overhead assez important
- \end{itemize}
+  \end{itemize}
 \end{frame}
 %         -> Explique le problème des contexte noyaux
 %         -> Définition de "Réentrant" (thread-safe)
 
-\begin{frame}{Noyau low latency}{Résultats} % 5min
- \begin{itemize}
- \item Patch  low-latency mergé dans  le mainstream avec le  noyau 2.6
-   (\texttt{CONFIG\_PREEMPT})
- \item Latences maximum de l'ordre de 300µs (chiffres de l'époque)
- \end{itemize}
+\begin{frame}{Noyau low latency}{Résultats}
+  \begin{itemize}
+  \item Patch low-latency  mergé dans le mainstream avec  le noyau 2.6
+    (\c{CONFIG_PREEMPT})
+  \item Latences maximum de l'ordre de 300µs (chiffres de l'époque)
+  \end{itemize}
 \end{frame}
 
-\section{Hyperviseurs} % (30min)
+\section{Hyperviseurs}
 
 \begin{frame}{Hyperviseur}
   \begin{itemize}
-    \item Noyau low latency encore problèmatique pour les interruptions
-    \item Beaucoup d'interruptions $\to$ latence
-    \item Hyperviseur
+  \item Noyau low latency encore problématique pour les interruptions
+  \item Beaucoup d'interruptions $\to$ latence
+  \item Hyperviseur
   \end{itemize}
 \end{frame}
 
@@ -284,23 +285,23 @@
 
 \begin{frame}[fagile]{Hyperviseur}
   \begin{itemize}
-   \item Possibilité de préempter le noyau sans patch low-latency
-   \item Possibilité de differer les interruptions
-   \item  Possibilité d'ignorer  les interruptions  dans  les sections
-     temps réelles
-   \item Performances excellentes (< 20µs)
-   \item Technique non spécifique à Linux
-   \item Peu de code en mode temps réel
-   \item[$\to$] Certifiable
+  \item Possibilité de préempter le noyau sans patch low-latency
+  \item Possibilité de différer les interruptions
+  \item  Possibilité  d'ignorer les  interruptions  dans les  sections
+    temps réelles
+  \item Performances excellentes (< 20µs)
+  \item Technique non spécifique à Linux
+  \item Peu de code en mode temps réel
+  \item[$\to$] Certifiable
 
-   \item Fonctionne au dessus du noyau
-   \item Comportement des interruptions à modifier
-   \item Communication entre les tâches temps réelles et le reste
-   \item[$\to$] Nécessite de patcher le noyau
+  \item Fonctionne au dessus du noyau
+  \item Comportement des interruptions à modifier
+  \item Communication entre les tâches temps réelles et le reste
+  \item[$\to$] Nécessite de patcher le noyau
 
-   \item           RTLinux,           RTAI          et           Adeos
-     (\url{http://download.gna.org/adeos/patches/},
-     \url{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
+  \item           RTLinux,           RTAI           et           Adeos
+    (\url{http://download.gna.org/adeos/patches/},
+    \url{git://git.xenomai.org/ipipe-gch.git}) (Xenomai)
   \end{itemize}
 \end{frame}
 
@@ -356,5 +357,3 @@
 %     -> /!\ Pas portable partout
 %     -> Implémentation assez tordue (c'est un cinglé qui a fait ca).
 %     -> PatchRT
-
-

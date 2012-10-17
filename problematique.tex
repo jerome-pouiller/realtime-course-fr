@@ -1,4 +1,4 @@
-%                                                                                       
+%
 % This document is available under the Creative Commons Attribution-ShareAlike
 % License; additional terms may apply. See
 %   * http://creativecommons.org/licenses/by-sa/3.0/
@@ -9,7 +9,7 @@
 %     - Jérôme Pouiller <jezz@sysmic.org>
 %
 
-\part{Problèmatique}
+\part{Problématique}
 
 %\begin{frame}
 %  \partpage
@@ -21,12 +21,12 @@
 
 \begin{frame}{Qu'est-ce que le temps réel ?}
   Deux exemples :
-  \begin{itemize} 
+  \begin{itemize}
   \item Un  système de navigation calculant le  meilleur parcours d'un
     navire.
   \item Un système de navigation  calculant la position d'un navire en
     mouvement.
-  \end{itemize}     
+  \end{itemize}
   \begin{itemize}
   \item  Dans le  premier cas  le  temps nécessaire  à l'obtention  du
     calcul est accessoire.
@@ -55,25 +55,25 @@
   du temps où les résultats de ces traitements sont produits.\\[3mm]
 
   En d'autres  termes, un  retard est considéré  comme une  erreur qui
-  peut entrainer de graves  conséquences.  
+  peut entraîner de graves  conséquences.
 
-  \note{Un système temps réel n'est  pas forcement rapide (il est meme
-    souvent plutot sous optimal dans le cas moyen)}
+  \note{Un système temps réel n'est  pas forcement rapide (il est même
+    souvent plutôt sous optimal dans le cas moyen)}
 \end{frame}
 
-\begin{frame}{Echéances et systèmes temps réel}
+\begin{frame}{Échéances et systèmes temps réel}
   On distingue différents types d'échéances
   \begin{itemize}
-  \item  \textbf{Echéance dure}  :  un retard  provoque une  exception
+  \item  \textbf{Échéance dure}  :  un retard  provoque une  exception
     (traitement d'erreur) (exemple:  carte son)
-  \item \textbf{Echéance molle  ou lâche} : un retard  ne provoque pas
+  \item \textbf{Échéance molle  ou lâche} : un retard  ne provoque pas
     d'exception (exemple: IHM)
   \end{itemize}
 
   On distingue par conséquent différents types de systèmes temps réels
   \begin{itemize}
   \item \textbf{Temps  réel dur} :  les échéances ne doivent  en aucun
-    cas  être  dépassées 
+    cas  être  dépassées
   \item \textbf{Temps réel lâche  ou mou} : le dépassement occasionnel
     des échéances ne met pas  le système en péril
   \end{itemize}
@@ -82,33 +82,33 @@
 \begin{frame}{Criticité}
   En plus de la tolérance à l'erreur, nous devons prendre en compte la
   criticité de l'erreur:
-  \begin{itemize} 
+  \begin{itemize}
   \item Téléphone portable
   \item Carte son professionnelle
   \item Système de commande d'un robot industriel
   \item Système de commande d'un avion de ligne
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
 % \begin{frame}{Approche centralisée}
 %   Un processeur traite l'inforation issue de capteurs et envoie le résultat vers
 %   les actionneurs\\[1cm]
-%   
+%
 %   \begin{center}
 %     \includegraphics[width = 12cm]{centralise.eps}
 %   \end{center}
 % \end{frame}
-% 
+%
 % \begin{frame}{Approche multi-systèmes}
 %   Une système contrôlé et un système contrôleur interagissant avec des capteurs et
 %   des contrôleurs\\[3mm]
-%   
+%
 %   \begin{center}
 %     \includegraphics[width = 8cm]{multisysteme.eps}
 %   \end{center}
 % \end{frame}
-% 
-% 
+%
+%
 % \begin{frame}{Cadencement temporel}
 %   \begin{itemize}
 %   \item selon une mesure du temps (système piloté par le temps -
@@ -138,18 +138,18 @@
   \end{itemize}
 
   \textbf{Fiabilité} : comportement et tolérance aux fautes.
-\end{frame} 
+\end{frame}
 
 \begin{frame}{Autour du temps réel}
   Par conséquent, le temps réel possède plusieurs facettes:
-  \begin{itemize} 
+  \begin{itemize}
   \item Ingénierie informatique: Algorithmique, développement
-  \item  Ingérierie   électromécanique:  Maitrise  de  l'environnement
+  \item  Ingénierie   électromécanique:  Maîtrise  de  l'environnement
     physique
-  \item Processus: Maitrise de la qualité du produit, garantie sur les
+  \item Processus: Maîtrise de la qualité du produit, garantie sur les
     bugs
   \item Administrative: Certification
-  \end{itemize} 
+  \end{itemize}
   \textbf{Exemple} : Un airbag est un système temps réel très dur avec
   une échéance de temps très faible. La puissance du système n'est pas
   dans sa  conception, mais dans  sa garantie de qualité.   C'est très
@@ -169,14 +169,14 @@
     messages d'appel, etc.
   \end{itemize}
 
-  Les  contraintes de temps  : 577  $\mu$s de  parole émis  puis recus
+  Les  contraintes de temps  : 577  $\mu$s de  parole émis  puis reçus
   toutes les  4,6 ms.\\[3mm]
 
-  Les  contraintes de  mobilité  :  emettre plus  tôt  si la  distance
+  Les  contraintes de  mobilité  :  émettre plus  tôt  si la  distance
   augmente,  plus tard si elle diminue.\\[3mm]
 
   Le  système  doit  être  assez  réactif pour  que  l'utilisateur  ne
-  s'appercoive de rien (~100ms).
+  s'aperçoive de rien (~100ms).
 
 \end{frame}
 
@@ -196,4 +196,3 @@
 %     du temps pas assez fin
 %   \end{itemize}
 % \end{frame}
-

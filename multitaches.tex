@@ -1,4 +1,4 @@
-%                                                                                                               
+%
 % This document is available under the Creative Commons Attribution-ShareAlike
 % License; additional terms may apply. See
 %   * http://creativecommons.org/licenses/by-sa/3.0/
@@ -21,27 +21,27 @@
 
 \section{Le temps partagé}
 
-\begin{frame}{Concurence}
+\begin{frame}{Concurrence}
   \begin{itemize}
-  \item   Des    tâches   concurentes   sont    des   tâches   éxécutées
-    séquentiellement sur un seul processeur en entrelacant l'éxécution
+  \item   Des   tâches   concurrentes   sont  des   tâches   exécutées
+    séquentiellement sur un seul processeur en entrelaçant l'exécution
     de chaque tâches
   \item  Pour les tâches,  le temps  partagé est  transparent.  Chaque
     tâche à l'impression d'avoir le CPU pour elle-seule
   \item  On  trouvera aussi  le  terme  de  \emph{multitâches} ou  de
     \emph{temps partagé}
   \end{itemize}
-\end{frame} 
+\end{frame}
 
-\begin{frame}{Concurence}
-   La programmation concurente N'EST  PAS de la programmation parallèle
-  (même les système multicoeur sont souvent concurent et parallèle):
+\begin{frame}{Concurrence}
+  La programmation concurrente N'EST PAS de la programmation parallèle
+  (même les système multi-coeurs sont souvent concurrent et parallèle):
   \begin{center}
     \pgfimage[width=10cm]{pics/concurentVsParallel}
   \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{Programmation multitâche}
+\begin{frame}[fragile]{Programmation multitâches}
 \begin{lstlisting}
 #include <unistd.h>
 
@@ -57,56 +57,56 @@ int main() {
     // Child
   }
 }
-\end{lstlisting} 
-\end{frame} 
+\end{lstlisting}
+\end{frame}
 
-\begin{frame}{Concurence}
+\begin{frame}{Concurrence}
   Migration d'un système avec gestion asynchrone des interruptions vers
   un système multitâches:
   \begin{center}
     \pgfimage[width=10cm]{pics/model_multitask}
   \end{center}
-\end{frame} 
+\end{frame}
 
-\begin{frame}{tâches concurentes}
+\begin{frame}{tâches concurrentes}
   Pour les  systèmes plus complexes ou pour  facilité la réutilisation,
-  un   système   multitâche   est   plus   approprié   qu'un   système
+  un   système   multitâches   est   plus   approprié   qu'un   système
   \emph{Foreground/Background}.
-  \begin{itemize} 
+  \begin{itemize}
   \item Facilite la gestion des évènements
   \item Permet de prioriser les traitements
-  \end{itemize} 
+  \end{itemize}
   \note{Parler  des différentes  états des  tâches ici.  Il  manque un
     slide avec du code.}
-\end{frame} 
+\end{frame}
 
-\begin{frame}{Etats des tâches}
+\begin{frame}{États des tâches}
   \begin{center}
     \input{pics/task_states}
   \end{center}
-\end{frame} 
+\end{frame}
 
 
 \subsection{Changement de contexte}
 
 \begin{frame}{Le changement de contexte}
   Chaque tâche possède une pile en mémoire. Une liste globale contient:
-  \note{Faire un schema}
-  \begin{itemize} 
+  \note{Faire un schéma}
+  \begin{itemize}
   \item les états de toutes les tâches
   \item l'emplacement de la pile en mémoire
-  \item le contexte d'éxecution, c'est-à-dire une sauvegarde des registres
-  \end{itemize} 
+  \item le contexte d'exécution, c'est-à-dire une sauvegarde des registres
+  \end{itemize}
   Lors du changement de contexte
-  \begin{itemize} 
+  \begin{itemize}
   \item  on  sauvegarde  le   contexte  de  la  tâche  précédente,  en
     particulier son pointeur de pile et son pointeur d'instruction
   \item on restaure le contexte de la nouvelle tâche
-  \item on restore le pointeur d'instruction
-  \end{itemize} 
-  Dans  la pratique, il  y a  des petites  subtilités dependant  de la
-  manière dont le changement de contexte à été amené.
-\end{frame} 
+  \item on restaure le pointeur d'instruction
+  \end{itemize}
+  Dans la  pratique, il  y a des  petites subtilités selon  la manière
+  dont le changement de contexte à été amené.
+\end{frame}
 
 \begin{frame}{Le changement de contexte}
   \begin{center}
@@ -114,15 +114,15 @@ int main() {
   \end{center}
 \end{frame}
 
-\begin{frame}{Multitâche non-préemptif}
+\begin{frame}{Multitâches non-préemptif}
   Le changement de contexte  peut-être volontaire par les tâches. Dans
   ce   cas,  la   tâche   ayant  terminé   son  traitement   appellera
-  explicitement   la  fonction   \emph{schedule}   qui  effectura   la
-  changement  de   contexte.  le  système  est   dit  non-péemptif  ou
-  multitâche collaboratif.
+  explicitement   la  fonction   \emph{schedule}   qui  effectuera   la
+  changement  de   contexte.  le  système  est   dit  non-préemptif  ou
+  multitâches collaboratif.
 \end{frame}
 
-\begin{frame}{Multitâche non-préemptif}
+\begin{frame}{Multitâches non-préemptif}
   Ce type  de système implique une  latence difficilement quantifiable
   entre un évènement et sont traitement:
   \begin{center}
@@ -130,76 +130,76 @@ int main() {
   \end{center}
 \end{frame}
 
-\begin{frame}{Multitâche non-préemptif}
-  \begin{enumerate} 
-  \item  Une tâche  non prioritaire  est en  cours d'éxecution  et est
-    interrupue par un évènement (une IRQ)
-  \item L'ISR est appellé
+\begin{frame}{Multitâches non-préemptif}
+  \begin{enumerate}
+  \item  Une tâche  non prioritaire  est en  cours d'exécution  et est
+    interrompue par un évènement (une IRQ)
+  \item L'ISR est appelée
   \item Le traitement  l'IRQ rend une tâche de  haute priorité prête à
-    être éxécutée
+    être exécutée
   \item  A  la fin  de  l'ISR,  le système  rend  le  CPU  à la  tâche
     non-prioritaire
   \item Quand  la tâche non-prioritaire termine  sont traitement, elle
     appelle \texttt{schedule}
   \item L'ordonnanceur donne la main à la tâche de forte priorité
-  \item La tâche de haute priorité peut (enfin) s'éxécuter
-  \end{enumerate} 
-\end{frame} 
+  \item La tâche de haute priorité peut (enfin) s'exécuter
+  \end{enumerate}
+\end{frame}
 
-\begin{frame}{Multitâche préemptif}
-  Un  système  multitâche préemptif  va  être  capable  de changer  de
+\begin{frame}{Multitâches préemptif}
+  Un  système  multitâches préemptif  va  être  capable  de changer  de
   contexte lors des interruptions:
   \begin{center}
     \pgfimage[width=10cm]{pics/preemptive-yes}
   \end{center}
 \end{frame}
 
-\begin{frame}{Multitâche préemptif}
-  \begin{enumerate} 
-  \item  Une tâche  non prioritaire  est en  cours d'éxecution  et est
+\begin{frame}{Multitâches préemptif}
+  \begin{enumerate}
+  \item  Une tâche  non prioritaire  est en  cours d'exécution  et est
     interrompue par un évènement (une IRQ)
-  \item L'ISR est appellé
+  \item L'ISR est rappelle
   \item Le traitement  l'IRQ rend une tâche de  haute priorité prête à
-    être éxécutée
+    être exécutée
   \item A la fin de l'ISR, le système appel le scheduler
   \item Le scheduler donne la main a la tâche de haute priorité
   \item  Quand  la tâche  prioritaire  termine  sont traitement,  elle
     appelle \texttt{schedule}
   \item   Vu  qu'il  n'y   a  plus   tâche  prioritaire   à  exécuter,
     l'ordonnanceur redonne la main à la tâche de faible priorité
-  \end{enumerate} 
-\end{frame} 
+  \end{enumerate}
+\end{frame}
 
 \begin{frame}{Le changement de contexte sur interruption}
   \begin{center}
     \pgfimage[width=10cm]{pics/interuption-2}
   \end{center}
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]{Round robin}
   Examinons  le cas de  deux tâches  de priorité  égales n'effectuant
-  jamais de relanchement volontaire:
-  \begin{lstlisting} 
+  jamais de relâchement volontaire:
+  \begin{lstlisting}
 task1() {
   for(;;) ;
 }
 task2() {
   for(;;) ;
 }
-  \end{lstlisting} 
-\end{frame} 
+  \end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]{Round robin}
-  Dans ce cas, si aucune interruption ne se produit, la premiere tâche
+  Dans ce cas, si aucune interruption ne se produit, la première tâche
   à avoir pris la main ne la rendra jamais. Afin de reprendre la main,
   on  utilise une  interruption  d'horloge.  Celle-ci  garanti que  le
-  système  pourra périodiquement  reordonnancer les  tâches.  La période
-  l'horologe utilisée est appellée quantum de temps ou HZ dans le cas de
+  système  pourra périodiquement  réordonnancer les  tâches.  La période
+  l'horloge utilisée est appelée quantum de temps ou HZ dans le cas de
   Linux.
 
   Dans   ce  cas-ci,   l'ordonnanceur  devra   donner  une   période  à
   \emph{task1} puis une période à  \emph{task2} et ainsi de suite.  Ce
-  comportement s'apelle \emph{Round-Robin} ou \emph{Tourniquet}.
+  comportement s'appelle \emph{Round-Robin} ou \emph{Tourniquet}.
   \begin{center}
     \input{pics/round_robin}
   \end{center}
@@ -213,31 +213,31 @@ task2() {
 
   En revanche, la mémoire est partagée entre les tâches. Ainsi, si une
   tâche A écrit par erreur sur l'espace d'une tâche B:
-  \begin{itemize} 
+  \begin{itemize}
   \item  La tâche B plante
   \item  Le problème est complexe à trouver
   \item Il  n'y a  aucune moyen  pour empêcher la  tâche A  de faire
     cette action.
-  \end{itemize} 
-\end{frame}
-
-\begin{frame}{La MMU}  
-  Les  CPU  modernes  intègrent   un  composant  appellé  MMU  (\emph{Memory
-  Management Unit}):
-  \begin{itemize}
-  \item  Unite de translation d'addresses mémoire
-  \item  On parle d'addresses physiques et virtuelles
-  \item Lorsque le  MMU est actif (cas nominal),  toutes les addresses
-    du code assembleur sont des addresses virtuelles
-  \item  Il est  possible de  configurer le  MMU avec  une instruction
-    spéciale et  en lui  donnant un pointeur  sur un tableau  (dans la
-    pratique,  il s'agit  plutot d'un  arbre) associant  les addresses
-    physiques et les addresses virtuelles
   \end{itemize}
 \end{frame}
 
-\begin{frame}{La MMU (2)}  
-  \begin{itemize} 
+\begin{frame}{La MMU}
+  Les  CPU modernes  intègrent un  composant appelé  MMU (\emph{Memory
+    Management Unit}):
+  \begin{itemize}
+  \item  Unité de translation d'adresses mémoire
+  \item  On parle d'adresses physiques et virtuelles
+  \item Lorsque le MMU est actif (cas nominal), toutes les adresses du
+    code assembleur sont des adresses virtuelles
+  \item  Il est  possible de  configurer le  MMU avec  une instruction
+    spéciale et  en lui  donnant un pointeur  sur un tableau  (dans la
+    pratique,  il s'agit  plutôt  d'un arbre)  associant les  adresses
+    physiques et les adresses virtuelles
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{La MMU (2)}
+  \begin{itemize}
   \item  Il est  possible  de changer  les  associations simplement  en
     chargeant un pointeur sur une autre table
   \item On  défini alors une table  par tâche.  Lors  du changement de
@@ -246,32 +246,32 @@ task2() {
     \begin{itemize}
     \item  Utilisateur
     \item  Superviseur
-    \end{itemize} 
+    \end{itemize}
   \item  Seul  le  mode  superviseur  (l'OS) permet  de  modifier  les
     associations de la MMU
   \end{itemize}
   \note{Nous verrons  par la suite comment passer  du mode superviseur
     au  mode utilisateur  et vice  versa\\}
-  \note{Vérifier  sur wikipedia  ``addresse  virtuelle'' et  ``mémoire
+  \note{Vérifier  sur  wikipedia  ``adresse virtuelle''  et  ``mémoire
     paginée''}
-\end{frame} 
+\end{frame}
 
 \begin{frame}{La MMU - gestion des exceptions}
-  Toutes les addresses physiques ne sont pas associées à des addresses
+  Toutes les adresses physiques ne sont pas associées à des adresses
   virtuelles
-  \begin{itemize} 
-  \item Une tâche A ne peut pas accèder à la mémoire d'une tâche B
+  \begin{itemize}
+  \item Une tâche A ne peut pas accéder à la mémoire d'une tâche B
   \item Protection contre les erreurs de programmation
   \item Permet d'assurer la sécurité des systèmes multi-utilisateurs
   \item Une tâche à l'impression d'avoir toute la mémoire pour elle
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{La MMU - gestion des exceptions}
-  Toutes les addresses  virtuelles ne sont pas associées  à des addresses
+  Toutes les adresses  virtuelles ne sont pas associées  à des adresses
   physiques
   \begin{itemize}
-  \item  Lorsqu'une  tâche accède  à  une  addresse  non associée.   Une
+  \item  Lorsqu'une  tâche accède  à  une  adresse  non associée.   Une
     exception est déclenchée.  Cela permet  à l'OS de reprendre la main
     et de traiter l'erreur (souvent en tuant la tâche fautive)
   \item Lorsqu'une tâche souhaite allouer de la mémoire
@@ -283,17 +283,17 @@ task2() {
     \item  L'OS choisi un  espace d'adresse  virtuelle où  associer le
       bloc de mémoire
     \item L'OS met à jour la MMU
-    \item L'OS retourne l'addresse virtuelle
-    \end{itemize} 
-  \end{itemize} 
-\end{frame} 
+    \item L'OS retourne l'adresse virtuelle
+    \end{itemize}
+  \end{itemize}
+\end{frame}
 
-\section{Optimisation possible grace à la MMU}
+\section{Optimisation possible grâce à la MMU}
 
 \begin{frame}{La MMU - gestion des exceptions}
   Le MMU permet à l'OS de mieux utiliser la mémoire:
-  \begin{itemize} 
-  \item  L'OS peut  donner  des espaces  d'addressage virtuel  contigu
+  \begin{itemize}
+  \item  L'OS peut  donner  des espaces  d'adressage virtuel  contigu
     alors que la mémoire physique est fractionnée
   \item Le système n'alloue jamais la plage $[0, 1024]$
     \begin{itemize}
@@ -303,9 +303,9 @@ task2() {
     \item En dehors des pointeurs,  les nombres que l'on manipule sont
       très  souvent <  1024.   Ce système  nous  permet de  rapidement
       repérer des casts abusifs entre des integers et des pointeurs
-    \end{itemize} 
+    \end{itemize}
   \item ``Sun a inventé le SegFault''
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Gestion de la mémoire}
@@ -334,9 +334,9 @@ task2() {
     concernée(s)
   \item Lorsque la tâche accède à la page supprimée, une exception est
     levée
-  \item Le système recupère alors la page sur le disque
-  \item Le système reécrit la page dans la mémoire physique
-  \item Il associe l'addresse virtuelle demandée avec la nouvelle page
+  \item Le système récupère alors la page sur le disque
+  \item Le système réécrit la page dans la mémoire physique
+  \item Il associe l'adresse virtuelle demandée avec la nouvelle page
     physique
   \item L'OS rend la main à la tâche
   \item Tout est transparent pour la tâche
@@ -354,45 +354,45 @@ task2() {
     modifiées
   \item Une page contenant des  données constantes (donné ou code) peut
     être mappée dans plusieurs tâches différentes
-  \item En retirant les droits  en éxecution sur les pages de données,
+  \item En retirant les droits  en exécution sur les pages de données,
     on améliore la sécurité du système (impossible d'exécuter une page
     contenant des données)
   \item Une  page accessible  en écriture peut  être mappée  dans deux
     tâches afin de leur permettre de partager des données
-  \end{itemize} 
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Gestion de la mémoire}
   Simplification des accès au IO
-  \begin{itemize} 
+  \begin{itemize}
   \item La tâche demande de mapper un fichier en mémoire
   \item  Le système  alloue un  espace d'adressage  virtuel égal  à la
     taille du fichier
   \item Le fichier en lui même n'est pas chargé en mémoire
   \item Lorsque la  tâche accès à un espace  du fichier, une exception
-    est levée et la page demandée est chargée de manière tranparente
+    est levée et la page demandée est chargée de manière transparente
   \item Le  système marque la  page comme Read-Only. Lorsque  la tâche
     tente d'écrire dans la page,  une exception est levée, la page est
-    marquée \emph{dirty}  , les  droits en écriture  sont données  et le
+    marquée \emph{dirty} ,  les droits en écriture sont  données et le
     système rend la main
   \item Lorsque  le système  à besoin de  mémoire, il peut  écrire les
     pages modifiées sur le disque et décharger la page de la mémoire
-  \item Lorsqu'une  tâche demande un fichier deja  présent en mémoire,
-    on map simplement la MMU sur  la page déjà présente (il faut alors
-    gérer correctement le marquage \emph{dirty} de la page)
+  \item Lorsqu'une  tâche demande un fichier déjà  présent en mémoire,
+    on  mappe simplement la  MMU sur  la page  déjà présente  (il faut
+    alors gérer correctement le marquage \emph{dirty} de la page)
   \item  cf.   champ  \emph{buffer}  et \emph{cache}  de  la  commande
     \texttt{free}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Gestion de la mémoire}
-  Sécurisation des accès aux periphériques
+  Sécurisation des accès aux périphériques
   \begin{itemize}
   \item Lorsque  les registres des périphériques sont  mappés en mémoire,
-    on utilise la MMU pour y accèder
+    on utilise la MMU pour y accéder
   \item Il  est possible d'autoriser  l'accès à un périphérique  à une
     tâche sans lui donner d'accès au reste du système
-  \item Un système utilisant  très fortement cette méthode est appellé
+  \item Un système utilisant  très fortement cette méthode est appelée
     micro-kernel
   \item La méthode est peu utilisée sous Linux
   \item cf. \emph{ioperm(2)}
@@ -403,13 +403,13 @@ task2() {
   Un processus utilisateur ne peut pas passer en mode superviseur.
 
   Comment passer en mode superviseur?
-  \begin{itemize} 
+  \begin{itemize}
   \item Lorsqu'une interruption/exception est déclenchée
   \item Cela nous permet de faire fonctionner les optimisations précédentes
-  \end{itemize} 
+  \end{itemize}
 
-  Comment appeller une fonction du système?
-  \begin{itemize} 
+  Comment appeler une fonction du système?
+  \begin{itemize}
   \item  Les  tâches ont  besoin  de  faire  des demandes  au  système
     (exemple: allouer de la mémoire)
   \item Ces fonctions système s'appellent des \emph{appels système} ou
@@ -431,7 +431,7 @@ task2() {
   \item On déclenche une interruption logicielle (\texttt{int 0x80})
   \item  Le  CPU  passe  en  mode  superviseur  et  appelle  l'ISR  de
     l'interruption
-  \item L'OS prend  la main, regarde le premier element  de la pile et
+  \item L'OS prend  la main, regarde le premier élément  de la pile et
     appelle la fonction correspondante (\texttt{asm-generic/unistd.h})
   \end{itemize}
   Il  existe maintenant  des instructions  spéciales sur  les  CPU pour
@@ -444,10 +444,10 @@ task2() {
   \begin{itemize}
   \item On  appelle les tâches  ayant des contextes  mémoires différents
     des \emph{Processus} (cf. \emph{fork(2)})
-  \item  Il est  possible  d'éxécuter plusieurs  tâches  dans un  même
+  \item  Il est  possible  d'exécuter plusieurs  tâches  dans un  même
     contexte mémoire
-  \item  Ces  tâche sont  appellées  \emph{threads} ou  \emph{processus
-      lègers} (cf. \emph{clone(2)})
+  \item  Ces  tâches sont  appelées  \emph{threads} ou  \emph{processus
+      légers} (cf. \emph{clone(2)})
   \item Le fonctionnement  est alors identique au mode  sans MMU, avec
     les mêmes défauts et avantages:
     \begin{itemize}
@@ -458,7 +458,7 @@ task2() {
     \end{itemize}
   \end{itemize}
   \note{Attention au latence lors de l'allocation, et du swap}
-\end{frame} 
+\end{frame}
 
 \begin{frame}[fragile]{Utilisation de processus}
 \begin{lstlisting}
@@ -476,8 +476,8 @@ int main() {
     // Child
   }
 }
-\end{lstlisting} 
-\end{frame} 
+\end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]{Utilisation de threads}
 \begin{lstlisting}
@@ -494,12 +494,12 @@ int main() {
   pthread_create(&id, NULL, task, (void *) arg);
   // Parent
 }
-\end{lstlisting} 
-\end{frame} 
+\end{lstlisting}
+\end{frame}
 
 % \begin{frame}{Résumé sur le multiptâche. Commandes ps et pmap, et /proc}
 % Memoire
-%   \item pmem, \%mem, rss, rsz, rssize: Mémoire résidente, c'est à dire quantité de mémoire physqiue effectivement utilisé par le processus (par consequent, la memoire swapée n'est pas prise en compte). 
+%   \item pmem, \%mem, rss, rsz, rssize: Mémoire résidente, c'est à dire quantité de mémoire physqiue effectivement utilisé par le processus (par consequent, la memoire swapée n'est pas prise en compte).
 %   \item vsz,vsize : Taille de la plage d'addressage virtuelle du processus (sans les mapping de devices). Peut-être très supérieure à rss
 %   \item  sz:     size in physical pages of the core image of the process. This includes text, data, and stack space. Device mappings are currently excluded; this is subject to change. See vsz and rss.
 
@@ -663,30 +663,30 @@ int main() {
 %        wchan     WCHAN  name of the kernel function in which the process is sleeping, a "-" if the process is running, or a "*" if the process is multi-threaded and ps is not displaying threads.
 % \note{On doit être capable de décrire toute les entrée de la commande ps}
 
-% \end{frame} 
+% \end{frame}
 
-\begin{frame}{Multitâche, MMU et Temps réel} 
+\begin{frame}{Multitâches, MMU et Temps réel}
   \begin{itemize}
-  \item Le multitâche permet une meilleure gestion de la concurence
+  \item Le multitâches permet une meilleure gestion de la concurrence
   \item MMU a de multiple avantages (sécurité, optimisation)
-  \item En revanche le fonctionnement  de la MMU entraine de multiples
+  \item En revanche le fonctionnement  de la MMU entraîne de multiples
     exceptions
   \item Une  allocation mémoire  peut d'un seul  coup changer  tout le
     mapping
   \item Un accès en mémoire  peut être immédiat 100 fois mais demander
-    un accès aux disque la 101eme fois
+    un accès aux disque la 101ème fois
   \item  Il devient  difficile de  garantir le  temps de  calcul d'une
     fonction
   \item Les  fonctions systèmes \texttt{mlock}  et \texttt{mlock\_all}
     permettent  de  demander  à  Linux  de garder  des  pages  (ou  la
-    totatlité en mémoire)
+    totalité en mémoire)
   \item  Il ne  faut pas  oublier d'allouer  une pile  suffisante avant
-    d'appeller \texttt{mlock\_all}
-    \note{Ajouter du code à ce sujet} 
+    d'appeler \texttt{mlock\_all}
+    \note{Ajouter du code à ce sujet}
   \item Néanmoins, cela ne change pas que l'allocation dynamique ne se
     fait pas en temps constant
-  \end{itemize} 
-\end{frame} 
+  \end{itemize}
+\end{frame}
 
 \begin{frame}[fragile]{Utilisation de \texttt{mlock}}
 \begin{lstlisting}
@@ -700,15 +700,14 @@ int main() {
   alloc_stack_1k();
   mlockall(MCL_CURRENT | MCL_FUTURE);
 }
-\end{lstlisting} 
-\end{frame} 
+\end{lstlisting}
+\end{frame}
 
 % \begin{frame}{Bibliographie}
-% \begin{itemize} 
+% \begin{itemize}
 %   \item Thomas Petazoni et ??? ???
 %   \item Documentation/ dans les sources du noyau
-% \end{itemize} 
+% \end{itemize}
 % \end{frame}
 
 \note{Montrer l'arborescence du kernel: mm, kernel, include, arch, drivers, scripts, tools, Documentation, }
-

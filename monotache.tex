@@ -31,7 +31,7 @@
 \section{Scrutation des évènements}
 \begin{frame}[fragile]{Scrutation des évènements}
   \begin{itemize}
-  \item Aussi appellé \emph{polling}
+  \item Aussi appelé \emph{polling}
   \item Boucle infinie
   \item On teste des valeurs des entrées à chaque tour de boucle
   \end{itemize}
@@ -60,7 +60,7 @@ int main() {
   \item Utilisation du CPU sous optimal. Beaucoup de temps est utilisé
     pour lire la valeur des  entrée. Ceci est particulièrement vrai si
     les évènements sont peu fréquents
-  \item Si certains évènements entrainent des temps de traitement long
+  \item Si certains évènements entraînent des temps de traitement long
     ou si il y a beaucoup  d'entrées à scruter, le temps de réponse en
     pire cas peut rapidement devenir très grand
   \item Tous les évènements sont traités avec la même priorité
@@ -73,7 +73,7 @@ int main() {
 
 \begin{frame}{Interruptions synchrones}
   \begin{itemize}
-  \item Appellé aussi Background/Foreground
+  \item Appelé aussi Background/Foreground
   \item Gestion des évènements dans les interruptions
   \end{itemize}
   \begin{center}
@@ -105,12 +105,12 @@ int main() {
   \item Temps de réponse au évènements plutôt bon
   \item Temps de réponse assez simple à calculer. Somme de
     \begin{itemize}
-    \item Temps de traitement de l'évenement
+    \item Temps de traitement de l'évènement
     \item Temps de traitement des évènements de priorité supérieures
     \item Temps du changement de contexte (plus ou moins constant)
-    \item Pire interval de temps ou les interruptions sont désactivées
+    \item Pire intervalle de temps ou les interruptions sont désactivées
     \end{itemize}
-  \item[$\rightarrow$] Dans  un système simple, ca peut  se calculer à
+  \item[$\rightarrow$] Dans  un système simple, ça peut  se calculer à
     la louche
   \item Le  temps de réponse en pire  cas des calculs en  tâche de fond
     est quasiment  identique au traitement  par scrutation (attention
@@ -121,22 +121,22 @@ int main() {
 \begin{frame}{Qu'est-ce qu'une interruption?}
   Il existe trois type d'interruptions:
   \begin{itemize}
-  \item Les interrruption matérielles:
+  \item Les interruptions matérielles:
     \begin{itemize}
-    \item   \textbf{IRQ}   (aussi   appellé   Interruption   externe).
+    \item   \textbf{IRQ}    (aussi   appelé   Interruption   externe).
       Asynchrone.   Exemples:  clavier,   horloge,  bus,  DMA,  second
       processeur, etc...
     \item  \textbf{Exception}.   Asynchrone  ou Synchrone.   Exemples:
       Division  par zéro,  Erreur arithmétique,  Erreur d'instruction,
-      Erreur d'alignement, Erreur de page, Breakpoint matériel, Double
-      faute,  etc...
+      Erreur  d'alignement,  Erreur  de  page, Break  point  matériel,
+      Double faute, etc...
 
       \note{Un  overflow arithmétique ne  produit pas  d'exception, il
         lève le flags ``retenue''\\}
 
       \note{Un  breakpoint  logiciel change  une  instruction par  une
         interruption  logicielle. Un  break point  software  n'est pas
-        possible en ROM alors que le breakpoint hardware oui\\}
+        possible en ROM alors que le break point hardware oui\\}
     \end{itemize}
   \item \textbf{Logicielle}. Déclenchée par une instruction. Synchrone.
   \end{itemize}
@@ -151,37 +151,36 @@ int main() {
 \begin{frame}{Fonctionnement d'une interruption}
   Quand une  interruption est levée:
   \begin{itemize}
-  \item le CPU sauve en  partie ou en totalité le contexte d'execution
+  \item le CPU sauve en  partie ou en totalité le contexte d'exécution
     (principalement le pointeur d'instruction) sur la pile
   \item Le CPU passe en mode superviseur (nous y reviendrons)
   \item  Le CPU  recherche dans  l'IVT (\emph{Interrupt  Vector Table}
-    aussi  appellée  IDT,  \emph{Interrupt  Description  Table})  l'ISR
+    aussi  appelée  IDT,  \emph{Interrupt  Description  Table})  l'ISR
     (\emph{Interruption Service Routine}) associée
   \item Le CPU place le pointeur d'instruction sur l'ISR
-  \item  L'ISR traite  l'évènement (fin  de traitement  d'une E/S,
-    etc...)
-  \item L'ISR acquite la  réception de l'interruption indiquant qu'une
-    nouvelle  donnée peut-être  traitée.
-  \item L'ISR restore le (un) contexte
+  \item L'ISR traite l'évènement (fin de traitement d'une E/S, etc...)
+  \item L'ISR acquitte la réception de l'interruption indiquant qu'une
+    nouvelle donnée peut-être traitée.
+  \item L'ISR restaure le (un) contexte
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Fonctionnement d'un PIC}
   Le PIC (Programmable Interrupt Controller) est un composant matériel
-  permettant  la gestion  des  IRQ.  Il peut-être  intégré  au CPU  ou
+  permettant  la gestion  des IRQ.   Il  peut-être intégré  au CPU  ou
   externe (ou à cheval entre les deux...). Il permet en particulier:
   \begin{itemize}
   \item Activer ou de désactiver des IRQ
   \item De masquer temporairement une IRQ
   \item De mettre en queue une interruption temporairement masquée
-  \item De controller la priorité des interruptions
+  \item De contrôler la priorité des interruptions
   \end{itemize}
-  Il arrive fréquement  qu'un PIC soit multiplexé sur  une seule ligne
+  Il arrive fréquemment qu'un PIC  soit multiplexé sur une seule ligne
   d'IRQ. Dans  ce cas, le premier  étage d'ISR lit un  registre du PIC
-  pour connaitre  le numéro de l'IRQ.   (Cas notoire du  8259A sur les
+  pour connaître  le numéro de l'IRQ.   (Cas notoire du  8259A sur les
   architectures x86)
 
-  \note {Il existe aussi des APIC (Advanced PIC). Sur PC notament}
+  \note {Il existe aussi des APIC (Advanced PIC). Sur PC notamment}
 \end{frame}
 
 \begin{frame}{Exemple}
@@ -194,15 +193,15 @@ int main() {
 \begin{frame}{Exemple}
   \begin{enumerate}
   \item Le périphérique \emph{Timer} lève sa ligne d'IRQ
-  \item Le PIC recoit l'interruption et lève une IRQ du processeur
+  \item Le PIC reçoit l'interruption et lève une IRQ du processeur
   \item  Le processeur  complète  l'instruction courante  et sauve  le
     registre d'instruction (PC) et le registre d'état (PSW)
   \item La tâche courante devient interrompue (Nous y reviendrons)
-  \item Le premier étage d'ISR est appellé
+  \item Le premier étage d'ISR est appelé
   \item  Le  gestionnaire d'interruption  complète  la sauvegarde  des
     registres
   \item   Le  gestionnaire  d'interruption   demande  au   PIC  quelle
-    interruption à  été appellée et il  lit dans l'IVT  quelle ISR est
+    interruption à  été appelée  et il lit  dans l'IVT quelle  ISR est
     associée
   \end{enumerate}
 \end{frame}
@@ -212,13 +211,13 @@ int main() {
     \setcounter{enumi}{7}
   \item Le  gestionnaire d'interruption se branche  sur l'ISR associée
     (ici, ISR1)
-  \item L'IRQ du processeur est  acquitée. Les autre IRQ peuvent ainsi
+  \item L'IRQ du processeur est acquittée. Les autre IRQ peuvent ainsi
     être levées
-  \item L'ISR1 lit la  valeur provenant du \emph{Timer} et acquite
+  \item  L'ISR1 lit la  valeur provenant  du \emph{Timer}  et acquitte
     l'interruption  du \emph{Timer}. Ce  périphérique peut  de nouveau
     lever des IRQ.
   \item Les registres généraux sont restaurés
-  \item Le contexte d'éxecution est restauré
+  \item Le contexte d'exécution est restauré
   \item Le registre PC est restauré
   \end{enumerate}
 \end{frame}
@@ -226,14 +225,14 @@ int main() {
 \subsection{Utilisation des interruptions}
 
 \begin{frame}{Exemple}
-  Exemple de différence d'approche entre la gestion par scrutation et
-  la gestion par interruption:\\
-
-  Prennons  l'acquisition  de   donnée  à  partir  d'un  convertisseur
+  Exemple de différence d'approche  entre la gestion par scrutation et
+  la gestion par interruption:
+  \\
+  Prenons  l'acquisition   de  donnée  à   partir  d'un  convertisseur
   analogique/numérique asynchrone
   \begin{itemize}
   \item  Dans  le  cas  du  traitement  par  scrutation,  nous  allons
-    periodiquement voir  si un résultat est arrivé.  Beaucoup de temps
+    périodiquement voir  si un résultat est arrivé.  Beaucoup de temps
     est  consommé  pour  rien   et  lorsque  le  résultat  arrive,  le
     traitement du résultat sera retardé
   \item  Une interruption  est  levée quand  une  nouvelle donnée  est
@@ -243,8 +242,8 @@ int main() {
 
 \begin{frame}{Latence des interruptions}
   \begin{itemize}
-  \item Un périphérique ne génère pas d'IRQ si la précédante n'est pas
-    acquitée (en principe)
+  \item Un périphérique ne génère pas d'IRQ si la précédente n'est pas
+    acquittée (en principe)
   \item Vu  que les  interruptions sont souvent  multiplexées, les
     interruptions sont  souvent désactivées lors de  la première phase
     de traitement
@@ -263,13 +262,13 @@ int main() {
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Precautions avec les interruption}
+\begin{frame}{Précautions avec les interruption}
   \begin{itemize}
-  \item Acquiter l'interruption le plus tôt possible
+  \item Acquitter l'interruption le plus tôt possible
   \item Rester le moins de temps possible dans une interruption
-  \item Accèder à un minimum de données pour éviter d'avoir à partager
+  \item Accéder à un minimum de données pour éviter d'avoir à partager
     des données avec le background
-  \item Transferer un maximum de traitement hors de l'interruption
+  \item Transférer un maximum de traitement hors de l'interruption
   \item[$\rightarrow$] Gestion des interruptions asynchrones
   \end{itemize}
 \end{frame}
@@ -282,7 +281,7 @@ int main() {
     \emph{bottom half}
   \item On délègue le maximum de traitement au \emph{bottom half}
   \item Permet de décharger les interruptions
-  \item Permet  de plus facilement prendre en  compte des intéractions
+  \item Permet  de plus facilement prendre en  compte des interactions
     entre  les   évènements  (exemple,  possibilité   d'attendre  deux
     évènements avant d'effectuer une action)
   \end{itemize}
@@ -337,7 +336,7 @@ void main() {
 \end{frame}
 
 \begin{frame}[fragile]{Exemple de partage de données}
-  Prenons le  cas où  \verb+f+ traite l'interruption  précédante (donc
+  Prenons le  cas où  \verb+f+ traite l'interruption  précédente (donc
   \verb+a = 1+) et qu'une nouvelle interruption est déclenchée:
   \begin{columns}
     \begin{column}{5cm}
@@ -375,20 +374,20 @@ a++;
   \emph{races  conditions}.   C'est à  dire  des problèmes  aléatoires
   produit par une séquence particulière d'évènements
   \begin{itemize}
-  \item   Les  \emph{races  conditions}   sont  souvent   difficiles  à
+  \item  Les   \emph{races  conditions}  sont   souvent  difficiles  à
     reproduire et à identifier
-  \item Les  \emph{races conditions} peuvent être latente  dans le code
+  \item Les \emph{races conditions}  peuvent être latente dans le code
     et se déclarer suite à une modification de l'environnement externe
   \item Une race condition coûte chère (difficulté de correction, peut
     potentiellement atterrir en production)
   \end{itemize}
-  Comment s'en protèger?
+  Comment s'en protéger?
   \begin{itemize}
   \item  Ne  pas  partager de données avec les interruptions
   \item Utiliser des accès atomiques
   \item  Utiliser  des  structures  adaptées: buffers  circulaires  et
     queues
-  \item  Désactiver  les  interruptions  lors  d'accès  à  des  données
+  \item  Désactiver  les  interruptions  lors d'accès  à  des  données
     partagées
   \end{itemize}
 \end{frame}
@@ -432,15 +431,15 @@ void read() {
 \subsection{Désactivation des interruptions}
 
 \begin{frame}{Désactivation des interruptions}
-  Si l'utilisation de Buffer circulaires ne résoud pas le problème, il
+  Si l'utilisation de Buffer circulaires ne résout pas le problème, il
   est possible de désactiver les interruptions.
 
-  La désactivation des interruptions peut entrainer des latences dans la
-  gestion  des  interruptions  et  des  pertes  d'interruptions  le  cas
+  La désactivation des interruptions  peut entraîner des latences dans
+  la gestion  des interruptions et  des pertes d'interruptions  le cas
   échéant.
 \end{frame}
 
-\begin{frame}{Cas des interruption en milieu multi coeur}
+\begin{frame}{Cas des interruption en milieu multi-coeurs}
   \begin{itemize}
   \item  On ne  désactive que  les interruptions  locales (sur  le CPU
     courant)
@@ -472,13 +471,13 @@ void unlock(int *m) {
   \end{lstlisting}
 \end{frame}
 
-\section{Les limites du monotache}
+\section{Les limites du monotâche}
 
 \begin{frame}{Problèmes de la gestion des interruptions asynchrones}
   Nous n'avons pas résolu notre problème récurent:
   \begin{itemize}
   \item  Le partage  de l'information  entre les  interruptions  et la
-    boucle principale entraine des latences
+    boucle principale entraîne des latences
   \end{itemize}
   On retrouve certains problèmes que l'on avait avec la scrutation:
   \begin{itemize}

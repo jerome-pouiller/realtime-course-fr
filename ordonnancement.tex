@@ -31,7 +31,7 @@
     \item Période d'activation : $T_i$
     \item Délai critique  ou \emph{deadline} (Délai maximum acceptable
       pour son exécution) : $D_i$
-    \item Capacité (Temps CPU nécessaire à l'éxecution de la tâche) :
+    \item Capacité (Temps CPU nécessaire à l'exécution de la tâche) :
       $C_i$
   \end{itemize}
 \end{frame}
@@ -57,11 +57,12 @@
   \end{itemize}
   Très souvent:
   \begin{itemize}
-    \item Les tâches sont connues au début de l'ordonnacement : $S_i = 0$
+  \item Les tâches sont connues  au début de l'ordonnancement : $S_i =
+    0$
     \item Les tâches périodiques sont actives dès le début de
       l'ordonnancement : $R_i = 0$
-    \item Le délai critique des  tâches périodiques est leur période  : $D_i =
-      T_i$
+    \item Le délai critique des  tâches périodiques est leur période :
+      $D_i = T_i$
   \end{itemize}
 \end{frame}
 
@@ -69,12 +70,12 @@
   Paramètres statiques:
   \begin{itemize}
   \item Date de réveil sur une période $k$ : $r_{ik}$
-  \item Echéance sur une période $k$ : $d_{ik} = r_{ik} + D_i$
+  \item Échéance sur une période $k$ : $d_{ik} = r_{ik} + D_i$
   \item Facteur d'utilisation du processeur: $U_i =  C_i / T_i$
   \item Facteur de charge du processeur : $CH_i = C_i / D_i $ ($CH_i =
     U_i$ si délai critique sur périodes)
-  \item Laxité (ou \emph{Slack}) de la tâche (retard maximum acceptable pour l'exécution
-    de la tâche) : $L_i = D_i - C_i$
+  \item  Laxité   (ou  \emph{Slack})  de  la   tâche  (retard  maximum
+    acceptable pour l'exécution de la tâche) : $L_i = D_i - C_i$
   \end{itemize}
 \end{frame}
 
@@ -101,7 +102,7 @@
   %  =  D_i(t)  -  \sum_{P_j  >      P_i} C_j(t)$ ($0 ≤ LC_i(t) ≤ L_i$)
 \end{frame}
 
-\note{Peut-etre ajouter slide 5 de Touchar}
+\note{Peut-être ajouter slide 5 de Touchar}
 
 \begin{frame}{Paramètres du système}
   \begin{itemize}
@@ -122,7 +123,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Etats des tâches}
+\begin{frame}{États des tâches}
   \begin{center}
     \input{pics/task_states}
   \end{center}
@@ -153,7 +154,7 @@
   \end{itemize}
 \end{frame}
 
-\subsection{Théroème de l'instant critique}
+\subsection{Théorème de l'instant critique}
 
 \begin{frame}{Théorème de l'instant critique}
   Si toutes les  tâches arrivent initialement dans le  système en même
@@ -186,7 +187,7 @@
 
   \begin{itemize}
     \item On démarre avec $w_i^0 = C_i$
-    \item Echec si $w_i^n > T_i$
+    \item Échec si $w_i^n > T_i$
     \item Réussite si $w_i^{n+1} = w_i^n$
   \end{itemize}
 \end{frame}
@@ -229,7 +230,7 @@
 \subsection{Rate Monotonique (RM)}
 
 \begin{frame}{Rate Monotonique}
-  Aussi appellé \emph{RMA} (\emph{Rate Monotonic Algorithm})
+  Aussi appelé \emph{RMA} (\emph{Rate Monotonic Algorithm})
 
   Ordonnancement à priorité statique où les priorités sont inversement
   proportionnelles aux périodes des tâches.
@@ -237,7 +238,7 @@
   Fonctionne  en version préemptive.  La version  non-préemptive n'est
   pas garantie.
 
-  Liu et Layland ont démontré qu'un système est ordonnancable si le
+  Liu et Layland ont démontré qu'un système est ordonnançable si le
   taux d'occupation du processeur $U$ vérifie la condition suffisante
   (non nécessaire) suivante :
 
@@ -323,7 +324,7 @@
 
 \begin{frame}{Deadline Monotonic (DM)}
   \begin{itemize}
-  \item Aussi appellé \emph{DMA} (\emph{Deadline Monotonic Algorithm}
+  \item Aussi appelé \emph{DMA} (\emph{Deadline Monotonic Algorithm}
   \item Algorithme à priorité statique
   \item Généralisation de Rate Monotonic pour les tâche avec $D_i < T_i$
   \item Basé sur le délai critique :
@@ -332,7 +333,7 @@
     \end{itemize}
   \item Test d'acceptabilité (suffisant mais pas nécessaire):
     $$CH = \sum_i^n \frac{C_i}{D_i} ≤ n \left(2^{\frac{1}{n}}-1\right)$$
-  \item Equivalent à Rate Monotonic  dans le cas des tâches à échéance
+  \item Équivalent à Rate Monotonic  dans le cas des tâches à échéance
     sur requête, meilleur dans les autres cas
   \end{itemize}
 \end{frame}
@@ -443,15 +444,16 @@
     \item La  priorité maximale est  donnée à la  tâche qui a  la plus
       petite laxité résiduelle: $L(t) = D(t) - C(t)$
     \end{itemize}
-  \item Equivalent à  EDF si on ne calcule la  laxité qu'au réveil des
+  \item Équivalent à  EDF si on ne calcule la  laxité qu'au réveil des
     tâches
   \item Optimum à trouver entre  la granularité du calcul et le nombre
     de changements de  contexte provoqués
     \note{Effectivement,  dans   un  EDF  ou  RM,   on  recalcule  que
-      lorsqu'une tache revient dans l'ordonanceur (= lorsqu'elle passe
-      de SLEEP  à RUN =sur evenement  = rare).  Ici il  faut choisr un
-      quantum pour le  calcul de la laxité.  Néanmoins,  c'est deja ce
-      qu'on fait des que l'on souhaite faire du round robin.}
+      lorsqu'une  tache  revient  dans l'ordonnanceur  (=  lorsqu'elle
+      passe  de SLEEP  à RUN  = sur  évènement =  rare).  Ici  il faut
+      choisir  un quantum  pour le  calcul de  la  laxité.  Néanmoins,
+      c'est déjà  ce qu'on fait des  que l'on souhaite  faire du round
+      robin.}
   \item Permet d'être parfois plus résistant aux erreurs
   \item Demande une connaissance de la capacité des tâches
   \item Gain discutable
@@ -533,16 +535,18 @@
 
 \subsection{Ordonnancement conjoint}
 
-\begin{frame}{Ordonnancemnet conjoint}
+\begin{frame}{Ordonnancement conjoint}
   \begin{itemize}
-  \item  Algorithme fonctionnant  avec DMA,  EDF ou  LST et  des tâches
+  \item Algorithme  fonctionnant avec  DMA, EDF ou  LST et  des tâches
     apériodiques avec des délais critiques
-  \item On  ordonnance les tâches  apériodiques de la même  manière que
+  \item On ordonnance  les tâches apériodiques de la  même manière que
     les tâches périodiques
   \item  Avant  d'accepter  la  tâche,  il faut  vérifier  le  critère
-    d'acceptabilité (ce qui correspond à évaluer l'algorithme hors ligne)
+    d'acceptabilité  (ce qui  correspond à  évaluer  l'algorithme hors
+    ligne)
   \end{itemize}
-  \note{Afin de faire un exemple il faudrait reprendre le cas du slack stealer, mais avec $C_A=3$}
+  \note{Afin de faire un exemple il faudrait reprendre le cas du slack
+    stealer, mais avec $C_A=3$}
 \end{frame}
 
 % \begin{frame}{Exemple}
@@ -562,11 +566,11 @@
 %   \end{center}
 % \end{frame}
 
-\subsection{Execution en arrière-plan}
+\subsection{Exécution en arrière-plan}
 
 \begin{frame}{Traitement en arrière-plan}
   \begin{itemize}
-  \item Aussi appellé \emph{backgound} ou sur \emph{temps creux}
+  \item Aussi appelé \emph{backgound} ou sur \emph{temps creux}
   \item Tâches apériodiques ordonnancées quand le processeur est oisif
     \begin{itemize}
     \item Les tâches périodiques restent les plus prioritaires
@@ -642,7 +646,7 @@
 
 \begin{frame}{Serveur par scrutation}
   \begin{itemize}
-  \item Aussi appellé \emph{polling}
+  \item Aussi appelé \emph{polling}
   \item A chaque activation,  traitement des tâches en suspens jusqu'à
     épuisement  de la capacité  ou jusqu'à  ce qu'il  n'y ait  plus de
     tâches en attente
@@ -653,7 +657,7 @@
   \item Quand une instance (un événement) de tâche apériodique arrive,
     elle attend jusqu’à ce que la capacité du serveur soit disponible.
   \item  Il est  possible de  rendre la  main au  CPU si  aucunes taches
-    apériodiques  n'est  en  attente  (TR  des  taches  periodiques  +,
+    apériodiques  n'est  en  attente  (TR  des  taches  périodiques  +,
     prédictabilité -)
   \item  Dans  le  cas  ou  le  serveur à  la  plus  petite  priorité,
     l'algorithme équivaut à peu près au traitement en background
@@ -759,10 +763,10 @@
 
 \begin{frame}{Serveur différé}
   \begin{itemize}
-  \item Aussi appellé serveur ajournable
+  \item Aussi appelé serveur ajournable
   \item La fausse bonne idée
   \item Mal géré, il provoque des erreurs d'ordonnancement
-  \item Cas d'éxecution \emph{dos à dos} du serveur
+  \item Cas d'exécutions \emph{dos à dos} du serveur
   \end{itemize}
 \end{frame}
 
@@ -786,7 +790,7 @@
 \begin{frame}{Serveur différé}
   Tout de même possible de l'utiliser si:
   $$\sum_{i \in TP} \frac{C_i}{T_i} ≤ \ln \frac{U_S + 2}{2U_S + 1}$$
-  Grosso modo,  on exige  que le système  soit ordonnancable  avec une
+  Grosso modo,  on exige  que le système  soit ordonnançable  avec une
   capacité du serveur deux fois plus importante.\\
   \pause
   Dans le cas précédant:
@@ -854,7 +858,7 @@
 
 \begin{frame}{Slack Stealer}
   \begin{itemize}
-  \item On alloue $min_i LC_i(t)$ périodes pour l'éxécution des tâches
+  \item On alloue $min_i LC_i(t)$ périodes pour l'exécution des tâches
     apériodiques
   \item  On recalcule  l'algorithme  à chaque  activation d'une  tâche
     (périodique ou apériodique) dans le système
@@ -863,7 +867,7 @@
     réponse
   \item  Garantir le  temps  de  réponse du  calcul  de $LC_i(t)$  est
     difficile
-  \item Du coup, c'est le serpent qui se mange la queue: On connait un
+  \item Du coup, c'est le serpent qui se mange la queue: On connaît un
     algorithme   optimal,   mais   il   est  incompatible   avec   les
     problématique du temps réel
   \item Principalement universitaire, peu utilisé dans l'industrie

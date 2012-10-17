@@ -19,11 +19,11 @@
   \tableofcontents[currentpart]
 \end{frame}
 
-\section{Ordonnancement avec contraintes de précédance}
+\section{Ordonnancement avec contraintes de précédence}
 
 \begin{frame}{Contraintes de précédence (1)}
-  Problèmatique: Une tâche $j$ doit s'éxecuter après $i$\\
-
+  Problématique: Une tâche $j$ doit s'exécuter après $i$
+  \\
   Les contraintes de précédence sur l'ordre d'exécution des tâches les
   unes par rapport aux autres sont généralement décrites par un graphe
   orienté:
@@ -85,7 +85,7 @@
       \hline
     \end{tabular}
   \end{center}
-  \uncover<3->{A renouveller pour chaque période}
+  \uncover<3->{A renouveler pour chaque période}
   % TODO: Tracer le chronogramme
 \end{frame}
 
@@ -118,26 +118,26 @@
       \hline
     \end{tabular}
   \end{center}
-  \uncover<4->{A renouveller pour chaque période}
+  \uncover<4->{A renouveler pour chaque période}
   % TODO: Tracer le chronogramme
 \end{frame}
 
 \begin{frame}{Contraintes de précédence avec EDF}
   Contraintes de précédence et EDF
   \begin{itemize}
-  \item  modification des  échéances de  facon à  ce qu'une  tâche ait
-    toujours un di inférieur à celui de ses successeurs (algorithme de
-    Chetto et al.)
-  \item une tâche ne doit être activable que si tous ses prédécesseurs
+  \item  Modification des  échéances de  façon à  ce qu'une  tâche ait
+    toujours un $d_i$ inférieur à celui de ses successeurs (algorithme
+    de Chetto et al.)
+  \item Une tâche ne doit être activable que si tous ses prédécesseurs
     ont terminé leur exécution
-  \item modification de la date de réveil et de l'échéance
+  \item Modification de la date de réveil et de l'échéance
     \begin{itemize}
     \item $r^*_i = \max \left\{ r_i, \max \left\{ r^*_j + C_j \right\}
       \right\}$ pour tous les $j$ tels que $j → i$
     \item $d^*_i = \min \left\{ d_i, \min \left\{ d^*_j - C_j \right\}
       \right\}$ pour tous les $j$ tels que $i → j$
-    \item on itère sur les prédécesseurs et successeurs immédiats
-    \item  on commence les  calculs par  les tâches  qui n'ont  pas de
+    \item On itère sur les prédécesseurs et successeurs immédiats
+    \item  On commence les  calculs par  les tâches  qui n'ont  pas de
       prédécesseurs pour le calcul des $r$ et par les tâches qui n'ont
       pas de successeur pour le calcul des $d$
     \end{itemize}
@@ -160,11 +160,11 @@
       \hline
     \end{tabular}
   \end{center}
-  \uncover<3->{A renouveller pour chaque période}
+  \uncover<3->{A renouveler pour chaque période}
   % TODO: Tracer le chronogramme
 \end{frame}
 
-\section{Problèmatique des accès concurents}
+\section{Problématique des accès concurrents}
 
 \subsection{Protection des structures de données}
 
@@ -172,7 +172,7 @@
   Le partage de données entre les tâches posent les mêmes problèmes que
   le partage de données avec les interruptions
 
-  Prennons deux tâches \c{f1} et \c{f2}:
+  Prenons deux tâches \c{f1} et \c{f2}:
   \begin{lstlisting}
 int a = 0;
 char t[255];
@@ -188,7 +188,7 @@ void f2() {
 \end{frame}
 
 \begin{frame}[fragile]{Exemple de partage de données}
-Prennons le cas ou \verb+f1+ est préemptée par \verb+f2+:
+Prenons le cas ou \verb+f1+ est préemptée par \verb+f2+:
   \begin{columns}
     \begin{column}{5cm}
       \begin{lstlisting}[showlines=true,emptylines=10]
@@ -235,7 +235,7 @@ void send(int data) {
 \end{frame}
 
 \begin{frame}[fragile]{Exemple de ressource partagée}
-  Etudions le cas de l'éxecution simultanée de cette fonction par deux
+  Étudions le cas de l'exécution simultanée de cette fonction par deux
   tâches.  La première tâche appelle \c{send} avec \cmd{data = 42}:
   \begin{lstlisting}
 *0xABC0 = 42
@@ -259,7 +259,7 @@ void send(int data) {
 \subsection{Réentrance}
 
 \begin{frame}{Comment éviter le problème?}
-  Nous devons élargir ce que nous avons précédement vu pour le partage
+  Nous devons élargir ce que nous avons précédemment vu pour le partage
   d'informations avec les interruptions.
 
   Les problèmes d'accès concurrents se traduisent très souvent par des
@@ -275,8 +275,8 @@ void send(int data) {
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Comment s'en protèger?}
-  Comment s'en protèger?
+\begin{frame}{Comment s'en protéger?}
+  Comment s'en protéger?
   \begin{itemize}
   \item  Ne  pas  utiliser  de  variables globales  ou  de  ressources
     partagées
@@ -284,7 +284,7 @@ void send(int data) {
   \item   Placer  des   accès   aux  ressources   partagée  dans   des
     \emph{sections critiques}
   \end{itemize}
-  Une  fonction  pouvant  être  appellée simultanénement  depuis  deux
+  Une  fonction  pouvant  être  appelée simultanément  depuis  deux
   contextes de tâches différentes est dite \emph{réentrante}
 \end{frame}
 
@@ -363,7 +363,7 @@ void unlock(mutex_t *m) {
 
 \begin{frame}[fragile]{Dead lock}
   \begin{itemize}
-  \item Aussi appellé \emph{étreinte fatale}
+  \item Aussi appelé \emph{étreinte fatale}
   \item Deux tâches utilisent  deux ressources imbriquées dans l'ordre
     inverses
   \end{itemize}
@@ -401,7 +401,7 @@ lock(m1);
 lock(m);
 lock(m);
   \end{lstlisting}
-  entraine un  \emph{double lock},  un type particulier  de \emph{Dead
+  entraîne un  \emph{double lock},  un type particulier  de \emph{Dead
     lock}
 \end{frame}
 
@@ -409,13 +409,14 @@ lock(m);
   \textbf{Remarque:} \\
   Ne jamais utiliser de mutex dans une interruption.
   \begin{itemize}
-  \item Si  la ressource  est occuppée par  la tâche qui  vient d'être
-    préemptée, le \texttt{lock()} s'éxécutera dans le même contexte
+  \item  Si la ressource  est occupée  par la  tâche qui  vient d'être
+    préemptée, le \texttt{lock()} s'exécutera dans le même contexte
   \item[$\rightarrow$] Double lock
-  \item De plus,  le blocage d'un mutex peut entrainer
-    une  très  important latence  ce  qui  est  en contradiction  avec
-    l'objectif de rester le minimum de temps dans une interruption
-  \item[$\rightarrow$] Règle générale: Il ne faut pas appeller \texttt{schedule} dans une interruption.
+  \item  De  plus, le  blocage  d'un  mutex  peut entraîner  une  très
+    important latence  ce qui est en contradiction  avec l'objectif de
+    rester le minimum de temps dans une interruption
+  \item[$\rightarrow$]  Règle  générale:   Il  ne  faut  pas  appeler
+    \texttt{schedule} dans une interruption.
   \end{itemize}
 \end{frame}
 
@@ -486,7 +487,7 @@ lock(m);
     \begin{center}
       \input{pics/cs-pi-2}
     \end{center}
-    La tâche $B$  s'éxecute alors qu'elle a une  priorité inférieure à
+    La tâche $B$  s'exécute alors qu'elle a une  priorité inférieure à
     $A$ et ne partage aucune ressource avec $A$.
   \end{itemize}
 \end{frame}
@@ -524,13 +525,13 @@ lock(m);
 
 \begin{frame}{Héritage de priorité}
   \begin{itemize}
-  \item Aussi appellé \emph{Priority inheritence}
+  \item Aussi appelé \emph{Priority inheritence}
   \item Principe: Si  une tâche bloque une ressource  demandée par une
     tâche  de plus  haute  priorité, elle  acquiert temporairement  la
     priorité de la tâche de haute priorité.
   \item Attention à la gestion de l'héritage en cascade.
   \item  L'algorithme parait  simple,  mais c'est  assez complexe.  Il
-    existe même des cas problèmatiques (dont le cout de résolution est
+    existe même des cas problématiques (dont le coût de résolution est
     polynomial)   dans   le   cas   d'architectures   multiprocesseurs
     symétriques sur des \cmd{rw\_lock}.
   \end{itemize}
@@ -566,7 +567,7 @@ lock(m);
   \begin{itemize}
   \item Blocages en  chaîne (cf. notre exemple avec  3 tâches) rendent
     le calcul des temps de réponses complexes
-  \item Deadlock
+  \item Dead lock
   \end{itemize}
 \end{frame}
 
@@ -574,11 +575,11 @@ lock(m);
 
 \begin{frame}{Priorité plafonnée originale}
   \begin{itemize}
-  \item  Aussi  appellée   \emph{Original  Ceiling  Priority  Protocol
+  \item  Aussi  appelée   \emph{Original  Ceiling  Priority  Protocol
       (OCPP)} ou tout simplement \emph{Ceiling Priority}
   \item Introduit  à la  fin des années  80 pour résoudre  le problème
-    d'inversion de priorité tout en prévenant l'occurence de deadlocks
-    et de blocages en chaîne
+    d'inversion  de   priorité  tout  en   prévenant  l'occurrence  de
+    \emph{dead locks} et de blocages en chaîne
   \item Amélioration  du protocole d'héritage de priorité  : une tâche
     ne peut pas entrer dans une section critique s'il y a un sémaphore
     acquis qui pourrait la bloquer
@@ -604,7 +605,7 @@ lock(m);
     $S_k$,  $i$  doit  avoir  une priorité  strictement  supérieure  à
     $C(S_*)$. Si  $P_i ≤ C(S_*)$, l'accès  à $S_k$ est  interdit et on
     dit  que  $i$ est  bloquée  sur $S_*$  par  la  tâche qui  possède
-    $S_*$. La priorité de $i$  est alors passée à la tâche proriétaire
+    $S_*$. La priorité de $i$  est alors passée à la tâche propriétaire
     de $S_*$
   \end{itemize}
 \end{frame}
@@ -613,7 +614,7 @@ lock(m);
 
 \begin{frame}{Priorité plafonnée immédiate}
   \begin{itemize}
-  \item  Aussi  appellée  \emph{Immediate  Ceiling  Priority  Protocol
+  \item  Aussi  appelée  \emph{Immediate  Ceiling  Priority  Protocol
       (ICPP)} ou \emph{Hightest Lock}
   \item Similaire à OCPP mais plus simple.
   \item Dès  qu'une tâche acquiert une sémaphore  $S_k$, elle acquiert
@@ -764,10 +765,10 @@ lock(m);
   $$\forall i \in tasks, \left( \sum_{k \in tasks} \frac{C_k}{T_k} \right) + \frac{B_i}{T_i} ≤ i \left(2^{\frac{1}{i}}-1\right)$$
   et le même calcul du temps de réponse:
   $$TR_i = B_i + C_i + \sum_{P_j > P_i} \left\lceil\frac{TR_i}{T_j}\right\rceil C_j$$
-  mais le calcul du temps de  blocage maximum de chaque tâche est plus
+  mais le calcul du temps de bloquage maximum de chaque tâche est plus
   simple :
   \begin{itemize}
-  \item on peut démontrer que le temps de bloquage maximum $B_i$ d'une
+  \item on peut démontrer que  le temps de blocage maximum $B_i$ d'une
     tâche $i$  est la durée de  la plus longue  des sections critiques
     ($\max  SC_{j,k}$)  parmi  celles  appartenant  à  des  tâches  de
     priorité inférieure à $P_i$ et  gardées par des sémaphores dont la
@@ -783,7 +784,7 @@ lock(m);
       $B_A = 4$ & $B_B = 4$ & $B_C = 4$ & $B_D = 0$\\
     \end{tabular}
   \end{center}
-  Vu que nos tâches ne sont pas périodiques, on peut estimer que 
+  Vu que nos tâches ne sont pas périodiques, on peut estimer que
   $$ \left\lceil\frac{TR_i}{T_j}\right\rceil = 1 $$
   donc
   \begin{align*}
@@ -798,7 +799,7 @@ lock(m);
 
 \section{Autres mécanismes de gestion d'accès concurrents}
 
-\note{Pour chacun  des mécanisme,  donner les fonction  dasn plusieurs
+\note{Pour chacun  des mécanisme,  donner les fonction  dans plusieurs
   API,  faire  un exemple  ou  mieux,  donner  le code:  Posix,  Java,
   Xenomai, ucosII, vxWorks}
 
@@ -817,14 +818,14 @@ lock(m);
 
 \begin{frame}{Sémaphore}
   \begin{itemize}
-  \item  Différence entre un  mutex et  un semaphore  binaire: presque
+  \item  Différence entre un  mutex et  un sémaphore  binaire: presque
     aucune.
-  \item Parfois le sémaphore  binaire est utilisé pour implémentéer le
+  \item Parfois  le sémaphore binaire est utilisé  pour implémenter le
     mutex.
-  \item Toutefois,  d'un point de  vue sémantique, on pourrait pemser  que le
-    mutex  permet  d'avoir un  morceau  de  code mutuelement  exclusif
-    tandis  que le  sémaphore est  une section  de code  limité  à une
-    ressource.
+  \item Toutefois,  d'un point de  vue sémantique, on  pourrait penser
+    que  le  mutex permet  d'avoir  un  morceau  de code  mutuellement
+    exclusif tandis que le sémaphore  est une section de code limité à
+    une ressource.
   \item  Généralement,  les algorithmes  d'héritage  de priorité  sont
     implémentés sur les mutex mais pas sur les sémaphore.
 %  \item  Notons  aussi  que  les  algorithmes  d'héritage  de  priorité
@@ -836,11 +837,11 @@ lock(m);
 
 \begin{frame}{Mutex Réentrant}
   \begin{itemize}
-  \item Idem  mutex, mais  si la même  tâche tente de  revérouiller le
+  \item Idem  mutex, mais si la  même tâche tente  de revérrouiller le
     même mutex, le mutex est non-bloquant.
-  \item Dans le cas  d'un mutex non-réentrant, ceci entraine forcement
-    un dead-lock.
-  \item Un sémaphore est maintenu pour connaitre le nombre de passage.
+  \item Dans le cas  d'un mutex non-réentrant, ceci entraîne forcement
+    un \emph{Dead lock}.
+  \item Un sémaphore est maintenu pour connaître le nombre de passage.
   \end{itemize}
 \end{frame}
 
@@ -849,7 +850,7 @@ lock(m);
 \begin{frame}[fragile]{Read/Write Lock}
 \note{\url{http://en.wikipedia.org/wiki/Readers-writers\_problem}}
 
-Permet de limiter le phénomène  de latence en dimiminuant le nombre de
+Permet de limiter le phénomène  de latence en diminuant le nombre de
 sections critiques.
 
 Solution 1 (\emph{reader preference}):
@@ -991,7 +992,7 @@ void broadcast()  {
 
 \begin{frame}[fragile]{Buffer circulaire et Queue}
   \begin{itemize}
-  \item  Précédement décrit dans  la section  ``Partage d'information
+  \item  Précédemment décrit dans  la section  ``Partage d'information
     avec les interruptions''
   \item Fonctionne aussi très bien entre les tâches
   \item Une  des rares structures  permettant d'être partagée à  la fois
@@ -1027,7 +1028,7 @@ void broadcast()  {
 \end{frame}
 
 \begin{frame}[fragile]{Spin Lock, Mutex et désactivation des interruptions}
-  On pourrait imaginer un cas cummulant les trois contraintes:
+  On pourrait imaginer un cas cumulant les trois contraintes:
   \begin{lstlisting}
 disable_interrupts()
 mutex_lock(m)
@@ -1044,8 +1045,8 @@ enable_interrupts()
 
 \begin{frame}{Algorithmes non-bloquants}
   \begin{itemize}
-  \item Algorithme thread-safe n'utilisant pas de sections ciritques.
-  \item Ces  algorithmes utilisent souvant  des instructions atomiques
+  \item Algorithme thread-safe n'utilisant pas de sections critiques.
+  \item Ces  algorithmes utilisent souvent  des instructions atomiques
     proposés par certains processeurs
   \item Par conséquent, ils sont peu portables
   \item Souvent utilisé dans les bases de données
